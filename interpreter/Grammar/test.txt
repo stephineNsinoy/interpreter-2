@@ -1,1 +1,3 @@
-﻿
+﻿BEGIN CODE
+INT i,x,y = 0
+END CODE

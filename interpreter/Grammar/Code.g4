@@ -56,7 +56,7 @@ scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
 // find a way for the newline when displaying
 
 expression
-    : constant                          #dataTypeExpression
+    : constant                          #constantExpression
     | IDENTIFIER                        #identifierExpression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
