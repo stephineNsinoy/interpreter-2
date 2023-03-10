@@ -1,1 +1,13 @@
 C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.AssemblyReference.cache
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.AssemblyReference.cache
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeLexer.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeParser.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeListener.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeBaseListener.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeVisitor.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\CodeBaseVisitor.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.Antlr4GeneratedCodeFileListAbsolute.txt
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.AssemblyInfoInputs.cache
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.AssemblyInfo.cs
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.CoreCompileInputs.cache

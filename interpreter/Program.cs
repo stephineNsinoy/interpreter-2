@@ -1,16 +1,17 @@
-﻿//using Antlr4.Runtime;
-//using interpreter;
-//using interpreter.Grammar;
+﻿using Antlr4.Runtime;
+using interpreter;
+using interpreter.;
+using interpreter.Grammar;
 
-//var fileName = "content\\test.ss";
+var fileName = "content\\test.txt";
 
-//var fileContents = File.ReadAllText(fileName);
+var fileContents = File.ReadAllText(fileName);
 
-//var inputStream = new AntlrInputStream(fileContents);
+var inputStream = new AntlrInputStream(fileContents);
 
-//var simpleLexer = new SimpleLexer(inputStream);
-//var commonTokenStream = new CommonTokenStream(simpleLexer);
-//var simpleParser = new SimpleParser(commonTokenStream);
-//var simpleContext = simpleParser.program();
-//var visitor = new SimpleVisitor();
-//visitor.Visit(simpleContext);
+var simpleLexer = new CodeLexer(inputStream);
+var commonTokenStream = new CommonTokenStream(simpleLexer);
+var simpleParser = new CodeParser(commonTokenStream);
+var simpleContext = simpleParser.program();
+var visitor = new CodeVisitor();
+visitor.Visit(simpleContext);

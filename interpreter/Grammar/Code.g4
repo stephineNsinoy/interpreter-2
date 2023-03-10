@@ -1,12 +1,11 @@
-﻿grammar Simple;
+﻿grammar Code;
 
-program: COMMENT* BEGIN_CODE line* END_CODE COMMENT* EOF ;
+program: BEGIN_CODE line* END_CODE  EOF ;
 
 BEGIN_CODE: 'BEGIN' 'CODE' ;
 END_CODE: 'END' 'CODE' ;
 
-line: declaration | statement | ifBlock | whileBlock | COMMENT* ;
-block: line* ;
+line: declaration | statement | ifBlock | whileBlock;
 
 statement: (assignment | functionCall) ';' ;
 
@@ -20,6 +19,7 @@ FLOAT: 'FLOAT';
 CHAR: 'CHAR';
 BOOL: 'BOOL';
 
+block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
 
 constant: INTEGER_VAL | FLOAT_VAL | CHARACTER_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
@@ -44,7 +44,7 @@ elseIfBlock: 'ELSE' (BEGIN_IF block END_IF) | ifBlock ;
 WHILE: 'WHILE' ;
 BEGIN_WHILE: 'BEGIN' 'WHILE' ;
 END_WHILE: 'END' 'WHILE' ;
-whileBlock: WHILE '(' expression ')' BEGIN_WHILE block END_WHILE ;
+whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
 
 // for DISPLAY: and SCAN:
 functionCall: IDENTIFIER ':' (expression (',' expression)*)? ;
