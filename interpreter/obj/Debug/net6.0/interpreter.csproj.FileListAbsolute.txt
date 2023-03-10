@@ -35,3 +35,16 @@ C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\obj\Debu
 C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.genruntimeconfig.cache
 C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\obj\Debug\net6.0\ref\interpreter.dll
 C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\bin\Debug\net6.0\Grammar\test.txt
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.dll
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\refint\interpreter.dll
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.pdb
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\interpreter.exe
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\Grammar\test.txt
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\interpreter.deps.json
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\interpreter.runtimeconfig.json
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\interpreter.dll
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\interpreter.pdb
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\bin\Debug\net6.0\Antlr4.Runtime.dll
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.CopyComplete
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.genruntimeconfig.cache
+C:\Users\quija\OneDrive\Desktop\3rd Year\Second sem\Intelligent Systems 2\Repositories\interpreter-2\interpreter\obj\Debug\net6.0\ref\interpreter.dll

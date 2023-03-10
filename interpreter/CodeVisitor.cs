@@ -16,14 +16,44 @@ namespace interpreter
         // TODO:
         // Make a function that will check if the declared variable is comaptible with the data type
 
-        //public override object VisitProgram([NotNull] CodeParser.ProgramContext context)
-        //{
-        //    var begin = context.BEGIN_CODE().GetText();
-        //    return base.VisitProgram(context);
-        //}
-     
-        public override object? VisitDeclaration(CodeParser.DeclarationContext context)
+        public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
+            const string beginDelimiter = "BEGIN CODE";
+            const string endDelimiter = "END CODE";
+            string beginCode = context.BEGIN_CODE().GetText();
+            string endCode = context.END_CODE().GetText();
+
+            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            {
+                // Both delimiters are present in the code
+                return base.VisitProgram(context); // Visit the program normally
+                
+            }
+            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
+            {
+                // Only the begin delimiter is present
+                Console.WriteLine("Missing END CODE delimiter");
+            }
+            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            {
+                // Only the end delimiter is present
+                Console.WriteLine("Missing BEGIN CODE delimiter");
+            }
+            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
+            {
+                // Neither delimiter is present
+                Console.WriteLine("Missing delimiters");
+            }
+            else
+            {
+                // At least one delimiter is missing
+                Console.WriteLine("Error: code block delimiter is missing");
+            }
+            return null;
+        }
+
+        public override object? VisitDeclaration(CodeParser.DeclarationContext context)
+        {   
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();

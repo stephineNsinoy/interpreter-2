@@ -2,8 +2,8 @@
 
 program: BEGIN_CODE line* END_CODE  EOF ;
 
-BEGIN_CODE: 'BEGIN' 'CODE' ;
-END_CODE: 'END' 'CODE' ;
+BEGIN_CODE: 'BEGIN CODE' ;
+END_CODE: 'END CODE' ;
 
 line: declaration | statement | ifBlock | whileBlock;
 
@@ -35,15 +35,15 @@ BLANK_LINE: [ \t]* [\r]? [\n] ;
 WS: [ \t\r]+ -> skip ;
 
 // GOODS
-BEGIN_IF: 'BEGIN' 'IF' ;
-END_IF: 'END' 'IF' ;
+BEGIN_IF: 'BEGIN IF' ;
+END_IF: 'END IF' ;
 ifBlock: 'IF' '('expression')' BEGIN_IF block END_IF elseIfBlock? ;
 elseIfBlock: 'ELSE' (BEGIN_IF block END_IF) | ifBlock ;
 
 // GOODS
 WHILE: 'WHILE' ;
-BEGIN_WHILE: 'BEGIN' 'WHILE' ;
-END_WHILE: 'END' 'WHILE' ;
+BEGIN_WHILE: 'BEGIN WHILE' ;
+END_WHILE: 'END WHILE' ;
 whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
 
 // for DISPLAY: and SCAN:

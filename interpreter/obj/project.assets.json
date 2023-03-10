@@ -4367,19 +4367,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\USER\\.nuget\\packages\\": {}
+    "C:\\Users\\quija\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\interpreter.csproj",
+      "projectUniqueName": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\interpreter.csproj",
       "projectName": "interpreter",
-      "projectPath": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\interpreter.csproj",
-      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\obj\\",
+      "projectPath": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\interpreter.csproj",
+      "packagesPath": "C:\\Users\\quija\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\quija\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4427,7 +4427,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
       }
     }
   }
