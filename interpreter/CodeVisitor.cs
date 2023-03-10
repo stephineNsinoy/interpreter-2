@@ -25,15 +25,48 @@ namespace interpreter
         // 3.) Make a Scan function
                 // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
+        /// <summary>
+        /// Checks if the delimters are present in the code
+        /// </summary>
+        /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
+        public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
+        {
+            const string beginDelimiter = "BEGIN CODE";
+            const string endDelimiter = "END CODE";
+            string beginCode = context.BEGIN_CODE().GetText();
+            string endCode = context.END_CODE().GetText();
 
-        //public override object VisitProgram([NotNull] CodeParser.ProgramContext context)
-        //{
-        //    var begin = context.BEGIN_CODE().GetText();
-        //    return base.VisitProgram(context);
-        //}
+            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            {
+                // Both delimiters are present in the code
+                return base.VisitProgram(context); // Visit the program normally
+                
+            }
+            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
+            {
+                // Only the begin delimiter is present
+                Console.WriteLine("Missing END CODE delimiter");
+            }
+            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            {
+                // Only the end delimiter is present
+                Console.WriteLine("Missing BEGIN CODE delimiter");
+            }
+            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
+            {
+                // Neither delimiter is present
+                Console.WriteLine("Missing delimiters");
+            }
+            else
+            {
+                // At least one delimiter is missing
+                Console.WriteLine("Error: code block delimiter is missing");
+            }
+            return null;
+        }
 
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
-        {
+        {   
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
