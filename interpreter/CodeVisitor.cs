@@ -16,6 +16,10 @@ namespace interpreter
         // TODO:
         // Make a function that will check if the declared variable is comaptible with the data type
 
+        /// <summary>
+        /// Checks if the delimters are present in the code
+        /// </summary>
+        /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
             const string beginDelimiter = "BEGIN CODE";
