@@ -1,0 +1,1 @@
+C:\Users\USER\Documents\programming languages\interpreter-2\interpreter\obj\Debug\net6.0\interpreter.csproj.AssemblyReference.cache
