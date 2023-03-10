@@ -22,8 +22,11 @@ namespace interpreter
 
         // 2.) Make a Display function
                  // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+
         // 3.) Make a Scan function
                 // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+
+        // 4.) Test the expressions
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -78,6 +81,7 @@ namespace interpreter
             foreach (var name in varNameArray)
             {
                 newVariable[name] = value;
+                Variable[name] = value;
             }
 
             VariableDeclaration[dataType] = newVariable;
@@ -89,6 +93,11 @@ namespace interpreter
         {
             var varName = context.IDENTIFIER().GetText();
             var value = Visit(context.expression());
+
+            if (!Variable.ContainsKey(varName))
+            {
+                throw new Exception($"Variable {varName} is not defined");
+            }
 
             Variable[varName] = value;
             return null;
