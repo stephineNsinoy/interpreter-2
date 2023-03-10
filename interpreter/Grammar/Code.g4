@@ -1,4 +1,4 @@
-﻿grammar Code;
+﻿grammar Simple;
 
 program: COMMENT* BEGIN_CODE line* END_CODE COMMENT* EOF ;
 
@@ -14,13 +14,19 @@ declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
 assignment: IDENTIFIER '=' expression ;
 
 // GOODS
-dataType: INT | FLOAT | STRING | BOOL | CHAR ;
+dataType: INT | FLOAT | BOOL | CHAR ;
+INT: 'INT' ;
+FLOAT: 'FLOAT';
+CHAR: 'CHAR';
+BOOL: 'BOOL';
 
-INT: [0-9]+ ;
-FLOAT: [0-9]+ '.' [0-9]+ ;
-STRING: ('"' ~'"'* '"') | ('\'' ~'\''* '\'') ;
-BOOL: '\"TRUE\"' | '\"FALSE\"' ;
-CHAR: '\'' ~[\r\n\'] '\'' ; 
+
+constant: INTEGER_VAL | FLOAT_VAL | CHARACTER_VAL | BOOL_VAL | STRING_VAL ;
+INTEGER_VAL: [0-9]+ ;
+FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
+STRING_VAL: ('"' ~'"'* '"') | ('\'' ~'\''* '\'') ;
+CHARACTER_VAL: '\"TRUE\"' | '\"FALSE\"' ;
+BOOL_VAL: '\'' ~[\r\n\'] '\'' ; 
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
@@ -50,7 +56,7 @@ scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
 // find a way for the newline when displaying
 
 expression
-    : dataType                          #dataTypeExpression
+    : constant                          #dataTypeExpression
     | IDENTIFIER                        #identifierExpression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
