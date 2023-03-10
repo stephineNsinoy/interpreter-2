@@ -31,6 +31,8 @@ BOOL_VAL: '\'' ~[\r\n\'] '\'' ;
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 COMMENT: '#' ~[\r\n]* -> skip ;
+unknown: SEMI_COLON | BLANK_LINE ;
+SEMI_COLON: '?' ;
 BLANK_LINE: [ \t]* [\r]? [\n] ; 
 WS: [ \t\r]+ -> skip ;
 
