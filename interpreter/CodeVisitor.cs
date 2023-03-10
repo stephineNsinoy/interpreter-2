@@ -14,14 +14,24 @@ namespace interpreter
         Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
 
         // TODO:
-        // Make a function that will check if the declared variable is comaptible with the data type
+        // 1.) Make a function that will check if the declared variable is comaptible with the data type
+                // VariableDeclaration[dataType] = newVariable;
+
+                // var iValue = VariableDeclaration["INT"];
+                // var sample = iValue?["x"];
+
+        // 2.) Make a Display function
+                 // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+        // 3.) Make a Scan function
+                // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+
 
         //public override object VisitProgram([NotNull] CodeParser.ProgramContext context)
         //{
         //    var begin = context.BEGIN_CODE().GetText();
         //    return base.VisitProgram(context);
         //}
-     
+
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
@@ -38,9 +48,6 @@ namespace interpreter
             }
 
             VariableDeclaration[dataType] = newVariable;
-
-            var iValue =  VariableDeclaration["INT"];
-            //var sample = iValue[0];
 
             return null;
         }
