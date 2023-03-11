@@ -26,21 +26,11 @@ namespace interpreter
         // var sample = iValue?["x"];
 
         // 2.) Make a Display function
-        // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+                 // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
         // 3.) Make a Scan function
-        // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+                // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
         // 4.) Test the expressions
-
-        private object? Display(object?[] args)
-        {
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
-
-            return null;
-        }
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -83,8 +73,6 @@ namespace interpreter
             return null;
         }
 
-
-        // TODO: find a way so that it wont concat the ':'
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
             var name = context.IDENTIFIER().GetText() +":" ;
@@ -103,18 +91,23 @@ namespace interpreter
             return func(args);
         }
 
-        // TODO: fix this so it will include a declaration without assignment
+        private object? Display(object?[] args)
+        {
+            foreach (var arg in args)
+            {
+                Console.Write(arg);
+            }
+
+            return null;
+        }
+
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {   
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
-            object? value = null;
-            if (Visit(context.expression()) != null)
-            {
-                value = Visit(context.expression());
-            }
+            var value = Visit(context.expression());
 
             var newVariable = new Variables();
             
@@ -129,7 +122,6 @@ namespace interpreter
             return null;
         }
 
-        // TODO: implement the x=y=4
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
             var varName = context.IDENTIFIER().GetText();
@@ -137,7 +129,7 @@ namespace interpreter
 
             if (!Variable.ContainsKey(varName))
             {
-                Console.WriteLine($"Variable {varName} is not defined");
+                throw new Exception($"Variable {varName} is not defined");
             }
 
             Variable[varName] = value;
