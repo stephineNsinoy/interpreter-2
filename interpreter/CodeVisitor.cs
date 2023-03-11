@@ -1,10 +1,12 @@
 ﻿using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static interpreter.Grammar.CodeParser;
 
 namespace interpreter
 {
@@ -13,17 +15,22 @@ namespace interpreter
         Dictionary<string, object?> Variable { get; } = new();
         Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
 
+        public CodeVisitor()
+        {
+            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+        }
+
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
-                // VariableDeclaration[dataType] = newVariable;
+        // VariableDeclaration[dataType] = newVariable;
 
-                // var iValue = VariableDeclaration["INT"];
-                // var sample = iValue?["x"];
+        // var iValue = VariableDeclaration["INT"];
+        // var sample = iValue?["x"];
 
         // 2.) Make a Display function
-                 // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+        // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
         // 3.) Make a Scan function
-                // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+        // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -31,42 +38,63 @@ namespace interpreter
         /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
-            const string beginDelimiter = "BEGIN CODE";
-            const string endDelimiter = "END CODE";
-            string beginCode = context.BEGIN_CODE().GetText();
-            string endCode = context.END_CODE().GetText();
+            string beginDelimiter = "BEGIN CODE";
+            string endDelimiter = "END CODE";
+            string? beginCode = context.BEGIN_CODE()?.GetText();
+            string? endCode = context.END_CODE()?.GetText();
 
-            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
                 return base.VisitProgram(context); // Visit the program normally
-                
             }
-            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
-            {
-                // Only the begin delimiter is present
-                Console.WriteLine("Missing END CODE delimiter");
-            }
-            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
             }
-            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
+            else if ((beginCode != null &&  beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
+            {
+                // Only the begin delimiter is present
+                Console.WriteLine("Missing END CODE delimiter");
+            }
+            else 
             {
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
             }
-            else
-            {
-                // At least one delimiter is missing
-                Console.WriteLine("Error: code block delimiter is missing");
-            }
             return null;
         }
 
+        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
+        {
+            var name = context.IDENTIFIER().GetText() + ":";
+            var args = context.expression().Select(Visit).ToArray();
+
+            if (!Variable.ContainsKey(name))
+            {
+                throw new Exception($"Function {name} is not defined.");
+            }
+
+            if (Variable[name] is not Func<object?[], object?> func)
+            {
+                throw new Exception($"Variable {name} is not a function.");
+            }
+
+            return func(args);
+        }
+
+        private object? Display(object?[] args)
+        {
+            foreach (var arg in args)
+            {
+                Console.Write(arg);
+            }
+            return null;
+        }
+        
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
-        {   
+        {
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -93,7 +121,6 @@ namespace interpreter
             Variable[varName] = value;
             return null;
         }
-
 
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
@@ -126,5 +153,31 @@ namespace interpreter
 
             throw new Exception("Unknown value type.");
         }
+
+        //TODO
+        //visit unknown is not recognized by the program    
+        //public override object? VisitUnknown([NotNull] UnknownContext context)
+        //{
+        //    var code = context.GetText();
+
+        //    for (int i = 0; i < code.Length; i++)
+        //    {
+        //        var currentChar = code[i];
+
+        //        // Check for a semicolon
+        //        if (currentChar == ';')
+        //        {
+        //            Console.WriteLine($"Syntax error: unexpected semicolon at position {i}");
+        //        }
+
+        //        // Check for a blank line
+        //        if (currentChar == '\n' && (i == 0 || code[i - 1] == '\n'))
+        //        {
+        //            Console.WriteLine($"Syntax error: unexpected blank line at position {i}");
+        //        }
+        //    }
+
+        //    return base.VisitUnknown(context);
+        //}
     }
 }
