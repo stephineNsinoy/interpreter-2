@@ -13,16 +13,20 @@ namespace interpreter
         Dictionary<string, object?> Variable { get; } = new();
         Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
 
+        public CodeVisitor()
+        {
+            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+        }
+
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
-                // VariableDeclaration[dataType] = newVariable;
+        // VariableDeclaration[dataType] = newVariable;
 
-                // var iValue = VariableDeclaration["INT"];
-                // var sample = iValue?["x"];
+        // var iValue = VariableDeclaration["INT"];
+        // var sample = iValue?["x"];
 
         // 2.) Make a Display function
                  // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-
         // 3.) Make a Scan function
                 // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
@@ -65,6 +69,35 @@ namespace interpreter
                 // At least one delimiter is missing
                 Console.WriteLine("Error: code block delimiter is missing");
             }
+      
+            return null;
+        }
+
+        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
+        {
+            var name = context.IDENTIFIER().GetText() +":" ;
+            var args = context.expression().Select(Visit).ToArray();
+
+            if (!Variable.ContainsKey(name))
+            {
+                throw new Exception($"Function {name} is not defined.");
+            }
+
+            if (Variable[name] is not Func<object?[], object?> func)
+            {
+                throw new Exception($"Variable {name} is not a function.");
+            }
+
+            return func(args);
+        }
+
+        private object? Display(object?[] args)
+        {
+            foreach (var arg in args)
+            {
+                Console.Write(arg);
+            }
+
             return null;
         }
 
@@ -77,7 +110,7 @@ namespace interpreter
             var value = Visit(context.expression());
 
             var newVariable = new Variables();
-
+            
             foreach (var name in varNameArray)
             {
                 newVariable[name] = value;
@@ -102,15 +135,13 @@ namespace interpreter
             Variable[varName] = value;
             return null;
         }
-
-
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
             var varName = context.IDENTIFIER().GetText();
 
             if (!Variable.ContainsKey(varName))
             {
-                throw new Exception($"Variable {varName} is not defined");
+                Console.WriteLine($"Variable {varName} is not defined");
             }
 
             return Variable[varName];
@@ -134,6 +165,28 @@ namespace interpreter
                 return c.GetText()[0];
 
             throw new Exception("Unknown value type.");
+        }
+
+        //TODO
+        //visit unknown is not recognized by the program    
+        public override object? VisitUnknown([NotNull] CodeParser.UnknownContext context)
+        {
+            var blank_line = context.BLANK_LINE().GetText();
+
+            var colon = context.SEMI_COLON().GetText();
+
+            Console.WriteLine(blank_line);
+
+            if (blank_line != null )
+            {
+                Console.WriteLine("Every line must contain a single statement");
+            }
+            if (colon != null)
+            {
+                Console.WriteLine("\';\' is not a valid statement");
+            }
+
+            return null;
         }
     }
 }
