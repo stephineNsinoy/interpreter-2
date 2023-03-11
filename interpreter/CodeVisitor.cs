@@ -11,7 +11,7 @@ namespace interpreter
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
         Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
+        Dictionary<string, Variables?> VariableDeclaration { get; } = new();
 
         public CodeVisitor()
         {
@@ -72,7 +72,7 @@ namespace interpreter
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            var name = context.IDENTIFIER().GetText() +":" ;
+            var name = context.IDENTIFIER().GetText() + ":";
             var args = context.expression().Select(Visit).ToArray();
 
             if (!Variable.ContainsKey(name))
@@ -99,7 +99,7 @@ namespace interpreter
         }
 
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
-        {   
+        {
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -108,7 +108,7 @@ namespace interpreter
             var value = Visit(context.expression());
 
             var newVariable = new Variables();
-            
+
             foreach (var name in varNameArray)
             {
                 newVariable[name] = value;
@@ -175,7 +175,7 @@ namespace interpreter
 
             Console.WriteLine(blank_line);
 
-            if (blank_line != null )
+            if (blank_line != null)
             {
                 Console.WriteLine("Every line must contain a single statement");
             }
