@@ -4363,24 +4363,23 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "Antlr4 >= 4.6.6",
-      "Antlr4.CodeGenerator >= 4.6.6",
       "Antlr4.Runtime >= 4.6.6"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\quija\\.nuget\\packages\\": {}
+    "C:\\Users\\USER\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\interpreter.csproj",
+      "projectUniqueName": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\interpreter.csproj",
       "projectName": "interpreter",
-      "projectPath": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\interpreter.csproj",
-      "packagesPath": "C:\\Users\\quija\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\quija\\OneDrive\\Desktop\\3rd Year\\Second sem\\Intelligent Systems 2\\Repositories\\interpreter-2\\interpreter\\obj\\",
+      "projectPath": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\interpreter.csproj",
+      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\USER\\Documents\\programming languages\\interpreter-2\\interpreter\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\quija\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4407,12 +4406,6 @@
             "target": "Package",
             "version": "[4.6.6, )"
           },
-          "Antlr4.CodeGenerator": {
-            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-            "suppressParent": "All",
-            "target": "Package",
-            "version": "[4.6.6, )"
-          },
           "Antlr4.Runtime": {
             "target": "Package",
             "version": "[4.6.6, )"
@@ -4434,7 +4427,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.406\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

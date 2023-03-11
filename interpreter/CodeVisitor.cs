@@ -1,4 +1,4 @@
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
@@ -11,12 +11,7 @@ namespace interpreter
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
         Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, Variables?> VariableDeclaration { get; } = new();
-
-        public CodeVisitor()
-        {
-            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-        }
+        Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
 
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
@@ -26,8 +21,15 @@ namespace interpreter
         // var sample = iValue?["x"];
 
         // 2.) Make a Display function
+                 // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
         // 3.) Make a Scan function
-        // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+                // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+
+        // 4.) Test the expressions
+
+        // 5.) Test if begin and end code cannot be placed anywhere
+
+        // 6.) This declaration is correct: INT y --- apply logic that will accept this declaration
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -35,30 +37,36 @@ namespace interpreter
         /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
-            string beginDelimiter = "BEGIN CODE";
-            string endDelimiter = "END CODE";
-            string? beginCode = context.BEGIN_CODE()?.GetText();
-            string? endCode = context.END_CODE()?.GetText();
+            const string beginDelimiter = "BEGIN CODE";
+            const string endDelimiter = "END CODE";
+            string beginCode = context.BEGIN_CODE().GetText();
+            string endCode = context.END_CODE().GetText();
 
-            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
                 return base.VisitProgram(context); // Visit the program normally
+                
             }
-            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
-            {
-                // Only the end delimiter is present
-                Console.WriteLine("Missing BEGIN CODE delimiter");
-            }
-            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
+            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
             {
                 // Only the begin delimiter is present
                 Console.WriteLine("Missing END CODE delimiter");
             }
-            else
+            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            {
+                // Only the end delimiter is present
+                Console.WriteLine("Missing BEGIN CODE delimiter");
+            }
+            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
             {
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
+            }
+            else
+            {
+                // At least one delimiter is missing
+                Console.WriteLine("Error: code block delimiter is missing");
             }
       
             return null;
@@ -91,13 +99,14 @@ namespace interpreter
 
             return null;
         }
-        
+
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
-        {
+        {   
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
+            // check if value is null or expression is missing so that (INT y) will be accepted
             var value = Visit(context.expression());
 
             var newVariable = new Variables();
@@ -117,6 +126,11 @@ namespace interpreter
         {
             var varName = context.IDENTIFIER().GetText();
             var value = Visit(context.expression());
+
+            if (!Variable.ContainsKey(varName))
+            {
+                throw new Exception($"Variable {varName} is not defined");
+            }
 
             Variable[varName] = value;
             return null;
