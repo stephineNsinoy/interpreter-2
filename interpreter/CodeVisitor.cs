@@ -42,38 +42,31 @@ namespace interpreter
         /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
-            const string beginDelimiter = "BEGIN CODE";
-            const string endDelimiter = "END CODE";
-            string beginCode = context.BEGIN_CODE().GetText();
-            string endCode = context.END_CODE().GetText();
+            string beginDelimiter = "BEGIN CODE";
+            string endDelimiter = "END CODE";
+            string? beginCode = context.BEGIN_CODE()?.GetText();
+            string? endCode = context.END_CODE()?.GetText();
 
-            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
                 return base.VisitProgram(context); // Visit the program normally
-
             }
-            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
-            {
-                // Only the begin delimiter is present
-                Console.WriteLine("Missing END CODE delimiter");
-            }
-            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
             }
-            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
+            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
+            {
+                // Only the begin delimiter is present
+                Console.WriteLine("Missing END CODE delimiter");
+            }
+            else
             {
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
             }
-            else
-            {
-                // At least one delimiter is missing
-                Console.WriteLine("Error: code block delimiter is missing");
-            }
-
             return null;
         }
 
