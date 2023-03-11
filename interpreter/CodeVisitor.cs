@@ -1,4 +1,4 @@
-﻿using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Misc;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,12 @@ namespace interpreter
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
         Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
+        Dictionary<string, Variables?> VariableDeclaration { get; } = new();
+
+        public CodeVisitor()
+        {
+            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+        }
 
         public CodeVisitor()
         {
@@ -26,7 +31,6 @@ namespace interpreter
         // var sample = iValue?["x"];
 
         // 2.) Make a Display function
-        
         // 3.) Make a Scan function
         // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
@@ -36,36 +40,30 @@ namespace interpreter
         /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
         {
-            const string beginDelimiter = "BEGIN CODE";
-            const string endDelimiter = "END CODE";
-            string beginCode = context.BEGIN_CODE().GetText();
-            string endCode = context.END_CODE().GetText();
+            string beginDelimiter = "BEGIN CODE";
+            string endDelimiter = "END CODE";
+            string? beginCode = context.BEGIN_CODE()?.GetText();
+            string? endCode = context.END_CODE()?.GetText();
 
-            if (beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
                 return base.VisitProgram(context); // Visit the program normally
-                
             }
-            else if (beginCode.Equals(beginDelimiter) && !endCode.Equals(endDelimiter))
-            {
-                // Only the begin delimiter is present
-                Console.WriteLine("Missing END CODE delimiter");
-            }
-            else if (!beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
             }
-            else if (!beginCode.Equals(beginDelimiter) || endCode.Equals(endDelimiter))
+            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
             {
-                // Neither delimiter is present
-                Console.WriteLine("Missing delimiters");
+                // Only the begin delimiter is present
+                Console.WriteLine("Missing END CODE delimiter");
             }
             else
             {
-                // At least one delimiter is missing
-                Console.WriteLine("Error: code block delimiter is missing");
+                // Neither delimiter is present
+                Console.WriteLine("Missing delimiters");
             }
       
             return null;
@@ -99,8 +97,35 @@ namespace interpreter
             return null;
         }
 
+        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
+        {
+            var name = context.IDENTIFIER().GetText() + ":";
+            var args = context.expression().Select(Visit).ToArray();
+
+            if (!Variable.ContainsKey(name))
+            {
+                throw new Exception($"Function {name} is not defined.");
+            }
+
+            if (Variable[name] is not Func<object?[], object?> func)
+            {
+                throw new Exception($"Variable {name} is not a function.");
+            }
+
+            return func(args);
+        }
+
+        private object? Display(object?[] args)
+        {
+            foreach (var arg in args)
+            {
+                Console.Write(arg);
+            }
+            return null;
+        }
+        
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
-        {   
+        {
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -162,24 +187,24 @@ namespace interpreter
 
         //TODO
         //visit unknown is not recognized by the program    
-        public override object? VisitUnknown([NotNull] CodeParser.UnknownContext context)
-        {
-            var blank_line = context.BLANK_LINE().GetText();
+        //public override object? VisitUnknown([NotNull] CodeParser.UnknownContext context)
+        //{
+        //    var blank_line = context.BLANK_LINE().GetText();
 
-            var colon = context.SEMI_COLON().GetText();
+        //    var colon = context.SEMI_COLON().GetText();
 
-            Console.WriteLine(blank_line);
+        //    Console.WriteLine(colon);
 
-            if (blank_line != null )
-            {
-                Console.WriteLine("Every line must contain a single statement");
-            }
-            if (colon != null)
-            {
-                Console.WriteLine("\';\' is not a valid statement");
-            }
+        //    if (colon != null)
+        //    {
+        //        Console.WriteLine("Every line must contain a single statement");
+        //    }
+        //    if (colon != null)
+        //    {
+        //        Console.WriteLine("\';\' is not a valid statement");
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
     }
 }

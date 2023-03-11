@@ -1,6 +1,6 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE  EOF ;
+program: COMMENT* BEGIN_CODE line* END_CODE COMMENT* EOF ;
 
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;
@@ -31,8 +31,9 @@ BOOL_VAL: '\'' ~[\r\n\'] '\'' ;
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 COMMENT: '#' ~[\r\n]* -> skip ;
-unknown: SEMI_COLON | BLANK_LINE ;
-SEMI_COLON: '?' ;
+
+//unknown: SEMI_COLON | BLANK_LINE ;
+SEMICOLON: ';' ;
 BLANK_LINE: [ \t]* [\r]? [\n] ; 
 WS: [ \t\r]+ -> skip ;
 
