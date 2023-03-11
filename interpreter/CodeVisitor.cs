@@ -105,7 +105,7 @@ namespace interpreter
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
             // check if value is null or expression is missing so that (INT y) will be accepted
-            var value = Visit(context.expression());
+            var value = context.expression() == null ? null : (object?)Visit(context.expression());
 
             var newVariable = new Variables();
 
