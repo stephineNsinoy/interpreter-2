@@ -1,4 +1,5 @@
 ﻿BEGIN CODE
+INT z
 INT i,x,y = 1
 DISPLAY: i 
 END CODE
