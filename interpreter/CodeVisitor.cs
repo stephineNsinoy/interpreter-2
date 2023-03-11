@@ -127,7 +127,8 @@ namespace interpreter
 
             if (!Variable.ContainsKey(varName))
             {
-                throw new Exception($"Variable {varName} is not defined");
+                Console.WriteLine($"Variable {varName} is not defined");
+                Environment.Exit(1);
             }
 
             Variable[varName] = value;
@@ -140,6 +141,7 @@ namespace interpreter
             if (!Variable.ContainsKey(varName))
             {
                 Console.WriteLine($"Variable {varName} is not defined");
+                Environment.Exit(1);
             }
 
             return Variable[varName];
