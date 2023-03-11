@@ -18,11 +18,6 @@ namespace interpreter
             Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
         }
 
-        public CodeVisitor()
-        {
-            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-        }
-
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
         // VariableDeclaration[dataType] = newVariable;
@@ -94,33 +89,6 @@ namespace interpreter
                 Console.Write(arg);
             }
 
-            return null;
-        }
-
-        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
-        {
-            var name = context.IDENTIFIER().GetText() + ":";
-            var args = context.expression().Select(Visit).ToArray();
-
-            if (!Variable.ContainsKey(name))
-            {
-                throw new Exception($"Function {name} is not defined.");
-            }
-
-            if (Variable[name] is not Func<object?[], object?> func)
-            {
-                throw new Exception($"Variable {name} is not a function.");
-            }
-
-            return func(args);
-        }
-
-        private object? Display(object?[] args)
-        {
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
             return null;
         }
         
