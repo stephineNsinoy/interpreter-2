@@ -1,6 +1,6 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE  EOF ;
+program: BEGIN_CODE line* END_CODE EOF ;
 
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;
@@ -49,7 +49,8 @@ END_WHILE: 'END WHILE' ;
 whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
 
 // for DISPLAY: and SCAN:
-functionCall: IDENTIFIER ':' (expression (',' expression)*)? ;
+functionCall: FUNCTIONS ':' (expression (',' expression)*)? ;
+FUNCTIONS: 'DISPLAY:' | 'SCAN:' ;
 
 // Not used
 SCAN: 'SCAN:';

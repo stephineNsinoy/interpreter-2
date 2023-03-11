@@ -16,7 +16,7 @@ namespace interpreter
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-        }
+        }   
 
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
@@ -72,7 +72,7 @@ namespace interpreter
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            var name = context.IDENTIFIER().GetText() + ":";
+            var name = context.FUNCTIONS().GetText();
             var args = context.expression().Select(Visit).ToArray();
 
             if (!Variable.ContainsKey(name))
