@@ -32,6 +32,10 @@ namespace interpreter
 
         // 4.) Test the expressions
 
+        // 5.) Test if begin and end code cannot be placed anywhere
+
+        // 6.) This declaration is correct: INT y --- apply logic that will accept this declaration
+
         /// <summary>
         /// Checks if the delimters are present in the code
         /// </summary>
@@ -107,6 +111,7 @@ namespace interpreter
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
+            // check if value is null or expression is missing so that (INT y) will be accepted
             var value = Visit(context.expression());
 
             var newVariable = new Variables();
