@@ -1,6 +1,6 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE  EOF ;
+program: COMMENT* BEGIN_CODE line* END_CODE COMMENT* EOF ;
 
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;

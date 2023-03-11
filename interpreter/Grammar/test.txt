@@ -1,4 +1,4 @@
 ﻿BEGIN CODE
-INT i,x,y = 1;
-DISPLAY: i
+INT i,x,y = 1
+DISPLAY: y
 END CODE

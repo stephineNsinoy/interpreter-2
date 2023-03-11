@@ -1,19 +1,17 @@
 ﻿using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static interpreter.Grammar.CodeParser;
 
 namespace interpreter
 {
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
         Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, Variables?> VariableDeclaration  { get; } = new();
+        Dictionary<string, Variables?> VariableDeclaration { get; } = new();
 
         public CodeVisitor()
         {
@@ -28,7 +26,7 @@ namespace interpreter
         // var sample = iValue?["x"];
 
         // 2.) Make a Display function
-        // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+
         // 3.) Make a Scan function
         // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
@@ -53,12 +51,12 @@ namespace interpreter
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
             }
-            else if ((beginCode != null &&  beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
+            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
             {
                 // Only the begin delimiter is present
                 Console.WriteLine("Missing END CODE delimiter");
             }
-            else 
+            else
             {
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
@@ -106,6 +104,7 @@ namespace interpreter
             foreach (var name in varNameArray)
             {
                 newVariable[name] = value;
+                Variable[name] = value;
             }
 
             VariableDeclaration[dataType] = newVariable;
@@ -121,14 +120,13 @@ namespace interpreter
             Variable[varName] = value;
             return null;
         }
-
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
             var varName = context.IDENTIFIER().GetText();
 
             if (!Variable.ContainsKey(varName))
             {
-                throw new Exception($"Variable {varName} is not defined");
+                Console.WriteLine($"Variable {varName} is not defined");
             }
 
             return Variable[varName];
@@ -156,28 +154,24 @@ namespace interpreter
 
         //TODO
         //visit unknown is not recognized by the program    
-        //public override object? VisitUnknown([NotNull] UnknownContext context)
+        //public override object? VisitUnknown([NotNull] CodeParser.UnknownContext context)
         //{
-        //    var code = context.GetText();
+        //    var blank_line = context.BLANK_LINE().GetText();
 
-        //    for (int i = 0; i < code.Length; i++)
+        //    var colon = context.SEMI_COLON().GetText();
+
+        //    Console.WriteLine(colon);
+
+        //    if (colon != null)
         //    {
-        //        var currentChar = code[i];
-
-        //        // Check for a semicolon
-        //        if (currentChar == ';')
-        //        {
-        //            Console.WriteLine($"Syntax error: unexpected semicolon at position {i}");
-        //        }
-
-        //        // Check for a blank line
-        //        if (currentChar == '\n' && (i == 0 || code[i - 1] == '\n'))
-        //        {
-        //            Console.WriteLine($"Syntax error: unexpected blank line at position {i}");
-        //        }
+        //        Console.WriteLine("Every line must contain a single statement");
+        //    }
+        //    if (colon != null)
+        //    {
+        //        Console.WriteLine("\';\' is not a valid statement");
         //    }
 
-        //    return base.VisitUnknown(context);
+        //    return null;
         //}
     }
 }
