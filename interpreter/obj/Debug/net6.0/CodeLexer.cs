@@ -66,7 +66,7 @@ public partial class CodeLexer : Lexer {
 		"'SCAN:'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null,
 		null, null, null, null, null, null, null, null, null, null, null, "BEGIN_CODE", 
 		"END_CODE", "INT", "FLOAT", "CHAR", "BOOL", "INTEGER_VAL", "FLOAT_VAL", 
 		"STRING_VAL", "CHARACTER_VAL", "BOOL_VAL", "IDENTIFIER", "COMMENT", "SEMICOLON", 
