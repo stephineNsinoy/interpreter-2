@@ -11,30 +11,160 @@ namespace interpreter
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
         Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, Variables?> VariableDeclaration { get; } = new();
+        Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
 
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-        }   
+            //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
+        }
 
-        // TODO:
-        // 1.) Make a function that will check if the declared variable is comaptible with the data type
-        // VariableDeclaration[dataType] = newVariable;
+        // TODOS:
+        // GOODS 1.) Make a function that will check if the declared variable is comaptible with the data type
 
-        // var iValue = VariableDeclaration["INT"];
-        // var sample = iValue?["x"];
+        // 2.) Complete the Display function
 
-        // 2.) Make a Display function
-        // Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
         // 3.) Make a Scan function
-        // Variable["SCAN:"] = new Func<object?[], object?>(Scan);
 
         // 4.) Test the expressions
 
         // 5.) Test if begin and end code cannot be placed anywhere
 
-        // 6.) This declaration is correct: INT y --- apply logic that will accept this declaration
+        // GOODS 6.) This declaration is correct: INT y --- apply logic that will accept this declaration
+
+        // GOODS 7.) Assignment still not supports x=y=5
+
+        // 8.) Handle error for declaring more than one character inside single quote ex. 'dada'
+
+        // 9.) Cannot read boolean values because it will be stored as a string
+
+        // GOODS 10.) Error handler when assigning values to a variable not conforming to data type
+
+        private object? Display(object?[] args)
+        {
+            foreach (var arg in args)
+            {
+                Console.Write(arg);
+            }
+
+            return null;
+        }
+
+        // Checks if declared variable value conforms with the data type
+        //public void CheckDeclaration(string dataType, string[] varName, object? value)
+        //{
+        //    bool isValid = true;
+        //    foreach (string name in varName)
+        //    {
+        //        if (dataType == "INT")
+        //        {
+        //            if (value is int || value is null)
+        //            {
+        //                // do nothing
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Variable {name} is not an integer");
+        //                isValid = false;
+        //            }
+        //        }
+        //        else if (dataType == "FLOAT")
+        //        {
+        //            if (value is float || value is null)
+        //            {
+        //                // do nothing
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Variable {name} is not a float");
+        //                isValid = false;
+        //            }
+        //        }
+        //        else if (dataType == "STRING")
+        //        {
+        //            if (value is string || value is null)
+        //            {
+        //                // do nothing
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Variable {name} is not a string");
+        //                isValid = false;
+        //            }
+        //        }
+        //        else if (dataType == "CHAR")
+        //        {
+        //            if (value is char || value is null)
+        //            {
+        //                // do nothing
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Variable {name} is not a character");
+        //                isValid = false;
+        //            }
+        //        }
+        //        else if (dataType == "BOOL")
+        //        {
+        //            if (value is bool || value is null)
+        //            {
+        //                // do nothing
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Variable {name} is not a boolean");
+        //                isValid = false;
+        //            }
+        //        }
+        //    }
+
+        //    if (!isValid)
+        //    {
+        //        Environment.Exit(1);
+        //    }
+        //}
+
+        private bool CheckDataType(string dataType, object? value)
+        {
+            if (value == null)
+            {
+                return true; // Null can be assigned to any data type
+            }
+
+            switch (dataType)
+            {
+                case "INT":
+                    return value is int;
+                case "FLOAT":
+                    return value is float;
+                case "BOOL":
+                    return value is bool;
+                case "STRING":
+                    return value is string;
+                case "CHAR":
+                    return value is char;
+                default:
+                    return false; // Invalid data type
+            }
+        }
+
+        private void CheckDeclaration(string dataType, string[] varNames, object? value)
+        {
+            bool isValid = true;
+
+            foreach (var name in varNames)
+            {
+                if (!CheckDataType(dataType, value))
+                {
+                    Console.WriteLine($"Invalid value assigned to variable {name}");
+                    isValid = false;
+                }
+            }
+            if (!isValid)
+            {
+                Environment.Exit(1);
+            }
+        }
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -70,70 +200,49 @@ namespace interpreter
             return null;
         }
 
-        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
-        {
-            var name = context.FUNCTIONS().GetText();
-            var args = context.expression().Select(Visit).ToArray();
-
-            if (!Variable.ContainsKey(name))
-            {
-                throw new Exception($"Function {name} is not defined.");
-            }
-
-            if (Variable[name] is not Func<object?[], object?> func)
-            {
-                throw new Exception($"Variable {name} is not a function.");
-            }
-
-            return func(args);
-        }
-
-        private object? Display(object?[] args)
-        {
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
-
-            return null;
-        }
-
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
-            // check if value is null or expression is missing so that (INT y) will be accepted
+            // Check if value is null or expression is missing so that (INT y) will be accepted
             var value = context.expression() == null ? null : (object?)Visit(context.expression());
-
-            var newVariable = new Variables();
 
             foreach (var name in varNameArray)
             {
-                newVariable[name] = value;
                 Variable[name] = value;
+                VariableDeclaration[name] = dataType;
             }
 
-            VariableDeclaration[dataType] = newVariable;
+            // Check if the value assigned to the variable conforms with the data type
+            CheckDeclaration(dataType, varNameArray, value);
 
             return null;
         }
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
-            var varName = context.IDENTIFIER().GetText();
+            var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
             var value = Visit(context.expression());
 
-            if (!Variable.ContainsKey(varName))
+            foreach (var name in varNameArray)
             {
-                Console.WriteLine($"Variable {varName} is not defined");
-                Environment.Exit(1);
+                if (!Variable.ContainsKey(name))
+                {
+                    Console.WriteLine($"Variable {name} is not defined");
+                    Environment.Exit(1);
+                }
+
+                var dataType = VariableDeclaration[name];
+                CheckDeclaration(dataType, varNameArray, value);
+
+                Variable[name] = value;
             }
 
-            Variable[varName] = value;
             return null;
         }
+
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
             var varName = context.IDENTIFIER().GetText();
@@ -155,16 +264,36 @@ namespace interpreter
             if (context.FLOAT_VAL() is { } f)
                 return float.Parse(f.GetText());
 
-            if (context.STRING_VAL() is { } s)
-                return s.GetText()[1..^1];
-
             if (context.BOOL_VAL() is { } b)
                 return b.GetText() == "\"TRUE\"";
 
-            if (context.CHARACTER_VAL() is { } c)
-                return c.GetText()[0];
+            if (context.STRING_VAL() is { } s)
+                return s.GetText()[1..^1];
+
+            if (context.CHAR_VAL() is { } c)
+                return c.GetText()[1];
+
+
 
             throw new Exception("Unknown value type.");
+        }
+
+        public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
+        {
+            var name = context.FUNCTIONS().GetText();
+            var args = context.expression().Select(Visit).ToArray();
+
+            if (!Variable.ContainsKey(name))
+            {
+                throw new Exception($"Function {name} is not defined.");
+            }
+
+            if (Variable[name] is not Func<object?[], object?> func)
+            {
+                throw new Exception($"Variable {name} is not a function.");
+            }
+
+            return func(args);
         }
 
         //TODO

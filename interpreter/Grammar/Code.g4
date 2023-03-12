@@ -10,7 +10,7 @@ line: declaration | statement | ifBlock | whileBlock;
 statement: (assignment | functionCall) ';' ;
 
 declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
-assignment: IDENTIFIER '=' expression ;
+assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
 dataType: INT | FLOAT | BOOL | CHAR ;
@@ -21,12 +21,13 @@ BOOL: 'BOOL';
 
 block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
 
-constant: INTEGER_VAL | FLOAT_VAL | CHARACTER_VAL | BOOL_VAL | STRING_VAL ;
+constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
 FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
-STRING_VAL: ('"' ~'"'* '"') | ('\'' ~'\''* '\'') ;
-CHARACTER_VAL: '\"TRUE\"' | '\"FALSE\"' ;
-BOOL_VAL: '\'' ~[\r\n\'] '\'' ; 
+// STRING_VAL: '"' ( ~('"' | '\\') | '\\' . )* '"' ~('"' ('TRUE' | 'FALSE') '"')?;
+STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
+BOOL_VAL: '"TRUE"' | '"FALSE"' ;
+CHAR_VAL: '\'' ~[\r\n\'] '\'' ; 
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
