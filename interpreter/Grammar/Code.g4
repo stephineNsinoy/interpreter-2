@@ -1,13 +1,13 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE EOF ;
+program: BEGIN_CODE declaration* line* END_CODE EOF ;
 
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;
 
-line: declaration | statement | ifBlock | whileBlock;
+line: statement | ifBlock | whileBlock;
 
-statement: (assignment | functionCall) ';' ;
+statement: assignment | functionCall;
 
 declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
@@ -53,7 +53,7 @@ whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
 functionCall: FUNCTIONS ':' (expression (',' expression)*)? ;
 FUNCTIONS: 'DISPLAY:' | 'SCAN:' ;
 
-// Not used
+// TODO: Not final and not implemented
 SCAN: 'SCAN:';
 scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
 
@@ -67,7 +67,7 @@ expression
     | 'NOT' expression                  #notExpression
     | expression multOp expression      #multiplicativeExpression
     | expression addOp expression       #additiveExpression
-    | expression compareOp expression   #comparisonExpression
+    | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
     | parenOpen expression parenClose   #escapeCodeExpression //add comment to be included
     ; 
