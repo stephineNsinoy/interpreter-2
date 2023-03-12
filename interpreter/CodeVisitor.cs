@@ -180,7 +180,33 @@ namespace interpreter
             if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
-                return base.VisitProgram(context); // Visit the program normally
+                // Check delimiter counts
+                var beginCodeTokens = context.GetTokens(CodeLexer.BEGIN_CODE).Count();
+                var endCodeTokens = context.GetTokens(CodeLexer.END_CODE).Count();
+
+                if (beginCodeTokens > 1)
+                {
+                    Console.WriteLine("More than one BEGIN CODE delimiter");
+                    return null;
+                }
+
+                if (endCodeTokens > 1)
+                {
+                    Console.WriteLine("More than one END CODE delimiter");
+                    return null;
+                }
+
+                // Check if END CODE delimiter appears before BEGIN CODE delimiter
+                var endCodeIndex = context.children.IndexOf(context.END_CODE());
+                var beginCodeIndex = context.children.IndexOf(context.BEGIN_CODE());
+
+                if (endCodeIndex < beginCodeIndex)
+                {
+                    Console.WriteLine("END CODE delimiter found before BEGIN CODE delimiter");
+                    return null;
+                }
+
+                return base.VisitProgram(context);
             }
             else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
@@ -197,8 +223,12 @@ namespace interpreter
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
             }
+
             return null;
         }
+
+
+
 
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
