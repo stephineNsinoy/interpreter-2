@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace interpreter
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
-        }
+        }   
 
         // TODO:
         // 1.) Make a function that will check if the declared variable is comaptible with the data type
@@ -51,17 +50,7 @@ namespace interpreter
             if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
                 // Both delimiters are present in the code
-                // Check delimiter counts
-                var beginCodeTokensCount = context.GetTokens(CodeLexer.BEGIN_CODE).Count();
-                var endCodeTokensCount = context.GetTokens(CodeLexer.END_CODE).Count();
-                if (beginCodeTokensCount != endCodeTokensCount)
-                {
-                    Console.WriteLine("BEGIN CODE and END CODE delimiters do not match");
-                    return null;
-                }
-
-                // Visit the program normally if there are no issues with the delimiters
-                return base.VisitProgram(context);
+                return base.VisitProgram(context); // Visit the program normally
             }
             else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
