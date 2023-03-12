@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
+using interpreter.Functions;
 using interpreter.Grammar;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,19 @@ namespace interpreter
 {
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
-        Dictionary<string, object?> Variable { get; } = new();
-        Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
+        private Dictionary<string, object?> Variable { get; } = new();
+        private Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
+        private Evaluator _evaluator;
+        private Operator _op;
+        private bool _isBeginCodeVisited = false;
+        private bool _isEndCodeVisited = false;
 
         public CodeVisitor()
         {
-            Variable["DISPLAY:"] = new Func<object?[], object?>(Display);
+            _evaluator = new Evaluator();
+            _op = new Operator();
+
+            Variable["DISPLAY:"] = new Func<object?[], object?>(_op.Display);
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
@@ -26,7 +34,12 @@ namespace interpreter
 
         // 3.) Make a Scan function
 
-        // 4.) Test the expressions
+        // 4.) implement the expressions operators
+                // Additive - GOODS
+                // Comparative - GOODS
+                // Multiplicative
+                // Logical
+                // Unary
 
         // 5.) Test if begin and end code cannot be placed anywhere
 
@@ -40,131 +53,9 @@ namespace interpreter
 
         // GOODS 10.) Error handler when assigning values to a variable not conforming to data type
 
-        private object? Display(object?[] args)
-        {
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
+        // 11.) Error handler if there are declarations or lines after END CODE
 
-            return null;
-        }
-
-        // Checks if declared variable value conforms with the data type
-        //public void CheckDeclaration(string dataType, string[] varName, object? value)
-        //{
-        //    bool isValid = true;
-        //    foreach (string name in varName)
-        //    {
-        //        if (dataType == "INT")
-        //        {
-        //            if (value is int || value is null)
-        //            {
-        //                // do nothing
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine($"Variable {name} is not an integer");
-        //                isValid = false;
-        //            }
-        //        }
-        //        else if (dataType == "FLOAT")
-        //        {
-        //            if (value is float || value is null)
-        //            {
-        //                // do nothing
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine($"Variable {name} is not a float");
-        //                isValid = false;
-        //            }
-        //        }
-        //        else if (dataType == "STRING")
-        //        {
-        //            if (value is string || value is null)
-        //            {
-        //                // do nothing
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine($"Variable {name} is not a string");
-        //                isValid = false;
-        //            }
-        //        }
-        //        else if (dataType == "CHAR")
-        //        {
-        //            if (value is char || value is null)
-        //            {
-        //                // do nothing
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine($"Variable {name} is not a character");
-        //                isValid = false;
-        //            }
-        //        }
-        //        else if (dataType == "BOOL")
-        //        {
-        //            if (value is bool || value is null)
-        //            {
-        //                // do nothing
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine($"Variable {name} is not a boolean");
-        //                isValid = false;
-        //            }
-        //        }
-        //    }
-
-        //    if (!isValid)
-        //    {
-        //        Environment.Exit(1);
-        //    }
-        //}
-
-        private bool CheckDataType(string dataType, object? value)
-        {
-            if (value == null)
-            {
-                return true; // Null can be assigned to any data type
-            }
-
-            switch (dataType)
-            {
-                case "INT":
-                    return value is int;
-                case "FLOAT":
-                    return value is float;
-                case "BOOL":
-                    return value is bool;
-                case "STRING":
-                    return value is string;
-                case "CHAR":
-                    return value is char;
-                default:
-                    return false; // Invalid data type
-            }
-        }
-
-        private void CheckDeclaration(string dataType, string[] varNames, object? value)
-        {
-            bool isValid = true;
-
-            foreach (var name in varNames)
-            {
-                if (!CheckDataType(dataType, value))
-                {
-                    Console.WriteLine($"Invalid value assigned to variable {name}");
-                    isValid = false;
-                }
-            }
-            if (!isValid)
-            {
-                Environment.Exit(1);
-            }
-        }
+        // 12.) Implement the escape code []
 
         /// <summary>
         /// Checks if the delimters are present in the code
@@ -177,31 +68,119 @@ namespace interpreter
             string? beginCode = context.BEGIN_CODE()?.GetText();
             string? endCode = context.END_CODE()?.GetText();
 
+            //Both delimiters are present in the code
             if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
             {
-                // Both delimiters are present in the code
+                // Visit the declarations and lines only if the delimiters are at the beginning and end of the program
+                if (context.declaration().Length == 0 && context.line().Length == 0)
+                {
+                    Console.WriteLine("CODE not recognized \n" +
+                                       "Delimiters must be in the right position");
+                    Environment.Exit(1);
+                }
+
+                // Declaration contains BEGIN CODE
+                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(beginDelimiter)))
+                {
+                    Console.WriteLine($"{beginDelimiter} must only be at the beginning of the program");
+                    Environment.Exit(1);
+                }
+
+                // Line contains BEGIN CODE
+                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(beginDelimiter)))
+                {
+                    Console.WriteLine($"{beginDelimiter} must be only at the beginning of the program");
+                    Environment.Exit(1);
+                }
+
+                _isBeginCodeVisited = true;
+
+                // NOT WORKING
+                // Declaration contains END CODE
+                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(endDelimiter) && d.GetText().IndexOf(endDelimiter) > 0))
+                {
+                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
+                    Environment.Exit(1);
+                }
+
+                // Line contains END CODE
+                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(endDelimiter) && l.GetText().IndexOf(endDelimiter) < l.GetText().Length - endDelimiter.Length))
+                {
+                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
+                    Environment.Exit(1);
+                }
+
+                _isEndCodeVisited = true;
+
                 return base.VisitProgram(context); // Visit the program normally
             }
+
             else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
             {
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
+                Environment.Exit(1);
             }
+
             else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
             {
                 // Only the begin delimiter is present
                 Console.WriteLine("Missing END CODE delimiter");
+                Environment.Exit(1);
             }
+
             else
             {
                 // Neither delimiter is present
                 Console.WriteLine("Missing delimiters");
+                Environment.Exit(1);
             }
+
             return null;
         }
 
+        // NOT WORKING -- checks if there is a declaration in a line
+
+        //public override object? VisitLine([NotNull] CodeParser.LineContext context)
+        //{
+        //    if (ContainsDeclaration(context))
+        //    {
+        //        Console.WriteLine("Error: Declaration found in line where it is not allowed.");
+        //        Environment.Exit(1);
+        //    }
+
+        //    return base.VisitLine(context);
+        //}
+
+        //private bool ContainsDeclaration([NotNull] CodeParser.LineContext context)
+        //{
+        //    if (context.declaration() != null)
+        //    {
+        //        return true;
+        //    }
+
+        //    foreach (var child in context.children)
+        //    {
+        //        if (child is CodeParser.LineContext line)
+        //        {
+        //            if (ContainsDeclaration(line))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //    }
+
+        //    return false;
+        //}
+
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
+            if (!_isBeginCodeVisited)
+            {
+                Console.WriteLine("Declaration must be placed after BEGIN CODE");
+                Environment.Exit(1);
+            }
+
             string dataType = context.dataType().GetText();
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -216,13 +195,19 @@ namespace interpreter
             }
 
             // Check if the value assigned to the variable conforms with the data type
-            CheckDeclaration(dataType, varNameArray, value);
+            _evaluator.CheckDeclaration(dataType, varNameArray, value);
 
             return null;
         }
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
+            if (!_isBeginCodeVisited)
+            {
+                Console.WriteLine("Assignment must be placed after BEGIN CODE");
+                Environment.Exit(1);
+            }
+
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
             var value = Visit(context.expression());
 
@@ -235,13 +220,13 @@ namespace interpreter
                 }
 
                 var dataType = VariableDeclaration[name];
-                CheckDeclaration(dataType, varNameArray, value);
+                _evaluator.CheckDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
 
             return null;
-        }
+        } 
 
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
@@ -280,6 +265,12 @@ namespace interpreter
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
+            if (!_isBeginCodeVisited)
+            {
+                Console.WriteLine("Function call must be placed after BEGIN CODE");
+                Environment.Exit(1);
+            }
+
             var name = context.FUNCTIONS().GetText();
             var args = context.expression().Select(Visit).ToArray();
 
@@ -316,6 +307,41 @@ namespace interpreter
             }
 
             return null;
+        }
+
+        public override object? VisitAdditiveExpression([NotNull] CodeParser.AdditiveExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            var op = context.addOp().GetText();
+
+            return op switch
+            {
+                "+" => _op.Add(left, right),
+                "-" => _op.Subtract(left, right),
+                "&" => _op.Concatenate(left, right),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        public override object? VisitComparativeExpression([NotNull] CodeParser.ComparativeExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            var op = context.compareOp().GetText();
+
+            return op switch
+            {
+                "==" => _op.IsEqual(left, right),
+                "<>" => _op.IsNotEqual(left, right),
+                ">" => _op.GreaterThan(left, right),
+                "<" => _op.LessThan(left, right),
+                ">=" => _op.GreaterThanOrEqual(left, right),
+                "<=" => _op.LessThanOrEqual(left, right),
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }
