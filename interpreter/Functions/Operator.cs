@@ -8,7 +8,7 @@ namespace interpreter.Functions
 {
     public class Operator
     {
-        public object? Display(object?[] args)
+        public static object? Display(object?[] args)
         {
             foreach (var arg in args)
             {
@@ -21,7 +21,7 @@ namespace interpreter.Functions
         /***************************
             Additive expressions
         ***************************/
-        public object? Add(object? left, object? right)
+        public static object? Add(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l + r;
@@ -40,7 +40,7 @@ namespace interpreter.Functions
             return null;
         }
 
-        public object? Subtract(object? left, object? right)
+        public static object? Subtract(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l - r;
@@ -59,7 +59,7 @@ namespace interpreter.Functions
             return null;
         }
 
-        public object? Concatenate(object? left, object? right)
+        public static object? Concatenate(object? left, object? right)
         {
             return $"{left}{right}";
 
@@ -72,7 +72,7 @@ namespace interpreter.Functions
         /******************************
             Comparative expressions
         *******************************/
-        public bool IsEqual(object? left, object? right)
+        public static bool IsEqual(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l == r;
@@ -94,12 +94,12 @@ namespace interpreter.Functions
             return false;
         }   
 
-        public bool IsNotEqual(object? left, object? right)
+        public static bool IsNotEqual(object? left, object? right)
         {
             return !IsEqual(left, right);
         }
 
-        public bool GreaterThan(object? left, object? right)
+        public static bool GreaterThan(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l > r;
@@ -118,7 +118,7 @@ namespace interpreter.Functions
             return false;
         }
 
-        public bool LessThan(object? left, object? right)
+        public static bool LessThan(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l < r;
@@ -137,7 +137,7 @@ namespace interpreter.Functions
             return false;
         }
 
-        public bool GreaterThanOrEqual(object? left, object? right)
+        public static bool GreaterThanOrEqual(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l >= r;
@@ -156,7 +156,7 @@ namespace interpreter.Functions
             return false;
         }
 
-        public bool LessThanOrEqual(object? left, object? right)
+        public static bool LessThanOrEqual(object? left, object? right)
         {
             if (left is int l && right is int r)
                 return l <= r;
@@ -175,7 +175,7 @@ namespace interpreter.Functions
             return false;
         }
 
-        public bool IsTrue(object? value)
+        public static bool IsTrue(object? value)
         {
             if (value is bool b)
                 return b;
@@ -185,6 +185,68 @@ namespace interpreter.Functions
             return false;
         }
 
-        public bool IsFalse(object? value) => !IsTrue(value);
+        public static bool IsFalse(object? value) => !IsTrue(value);
+
+
+        /******************************
+            Multiplicative expressions
+        *******************************/
+
+        public static object? Multiply(object? left, object? right)
+        {
+            if (left is int l && right is int r)
+                return l * r;
+
+            if (left is float lf && right is float rf)
+                return lf * rf;
+
+            if (left is int lInt && right is float rFloat)
+                return lInt * rFloat;
+
+            if (left is float lFloat && right is int rInt)
+                return lFloat * rInt;
+
+            Console.WriteLine($"Cannot multiply values of types {left?.GetType()} and {right?.GetType()}");
+            Environment.Exit(1);
+            return null;
+        }
+
+        public static object? Divide(object? left, object? right)
+        {
+            if (left is int l && right is int r)
+                return l / r;
+
+            if (left is float lf && right is float rf)
+                return lf / rf;
+
+            if (left is int lInt && right is float rFloat)
+                return lInt / rFloat;
+
+            if (left is float lFloat && right is int rInt)
+                return lFloat / rInt;
+
+            Console.WriteLine($"Cannot divide values of types {left?.GetType()} and {right?.GetType()}");
+            Environment.Exit(1);
+            return null;
+        }
+
+        public static object? Modulo(object? left, object? right)
+        {
+            if (left is int l && right is int r)
+                return l % r;
+
+            if (left is float lf && right is float rf)
+                return lf % rf;
+
+            if (left is int lInt && right is float rFloat)
+                return lInt % rFloat;
+
+            if (left is float lFloat && right is int rInt)
+                return lFloat % rInt;
+
+            Console.WriteLine($"Cannot get modulo of types {left?.GetType()} and {right?.GetType()}");
+            Environment.Exit(1);
+            return null;
+        }
     }
 }
