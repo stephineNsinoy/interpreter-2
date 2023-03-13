@@ -13,17 +13,13 @@ namespace interpreter
     {
         private Dictionary<string, object?> Variable { get; } = new();
         private Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
-        private Evaluator _evaluator;
-        private Operator _op;
+
         private bool _isBeginCodeVisited = false;
         private bool _isEndCodeVisited = false;
 
         public CodeVisitor()
         {
-            _evaluator = new Evaluator();
-            _op = new Operator();
-
-            Variable["DISPLAY:"] = new Func<object?[], object?>(_op.Display);
+            Variable["DISPLAY:"] = new Func<object?[], object?>(Operator.Display);
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
@@ -37,7 +33,8 @@ namespace interpreter
         // 4.) implement the expressions operators
                 // Additive - GOODS
                 // Comparative - GOODS
-                // Multiplicative
+                // Multiplicative - GOODS
+                // With Parenthesis - GOODS
                 // Logical
                 // Unary
 
@@ -57,85 +54,23 @@ namespace interpreter
 
         // 12.) Implement the escape code []
 
+        // PARTIALLY GOODS 13.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
+                // Make if block and else if block with begin if and end if
+                // separate the begin - code and end - code
+    
         /// <summary>
         /// Checks if the delimters are present in the code
         /// </summary>
         /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
-        public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
+        public override object? VisitLineBlock([NotNull] CodeParser.LineBlockContext context)
         {
-            string beginDelimiter = "BEGIN CODE";
-            string endDelimiter = "END CODE";
-            string? beginCode = context.BEGIN_CODE()?.GetText();
-            string? endCode = context.END_CODE()?.GetText();
-
-            //Both delimiters are present in the code
-            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (Evaluator.EvaluateDelimiter(context))
             {
-                // Visit the declarations and lines only if the delimiters are at the beginning and end of the program
-                if (context.declaration().Length == 0 && context.line().Length == 0)
-                {
-                    Console.WriteLine("CODE not recognized \n" +
-                                       "Delimiters must be in the right position");
-                    Environment.Exit(1);
-                }
-
-                // Declaration contains BEGIN CODE
-                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(beginDelimiter)))
-                {
-                    Console.WriteLine($"{beginDelimiter} must only be at the beginning of the program");
-                    Environment.Exit(1);
-                }
-
-                // Line contains BEGIN CODE
-                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(beginDelimiter)))
-                {
-                    Console.WriteLine($"{beginDelimiter} must be only at the beginning of the program");
-                    Environment.Exit(1);
-                }
-
                 _isBeginCodeVisited = true;
-
-                // NOT WORKING
-                // Declaration contains END CODE
-                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(endDelimiter) && d.GetText().IndexOf(endDelimiter) > 0))
-                {
-                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
-                    Environment.Exit(1);
-                }
-
-                // Line contains END CODE
-                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(endDelimiter) && l.GetText().IndexOf(endDelimiter) < l.GetText().Length - endDelimiter.Length))
-                {
-                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
-                    Environment.Exit(1);
-                }
-
                 _isEndCodeVisited = true;
-
-                return base.VisitProgram(context); // Visit the program normally
+                return base.VisitLineBlock(context); // Visit the program normally
             }
-
-            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
-            {
-                // Only the end delimiter is present
-                Console.WriteLine("Missing BEGIN CODE delimiter");
-                Environment.Exit(1);
-            }
-
-            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
-            {
-                // Only the begin delimiter is present
-                Console.WriteLine("Missing END CODE delimiter");
-                Environment.Exit(1);
-            }
-
-            else
-            {
-                // Neither delimiter is present
-                Console.WriteLine("Missing delimiters");
-                Environment.Exit(1);
-            }
-
+            
             return null;
         }
 
@@ -173,6 +108,8 @@ namespace interpreter
         //    return false;
         //}
 
+
+        // TODO: this cannot read INT x, y = 1, z. x and z should be null, currently it is not the case
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             if (!_isBeginCodeVisited)
@@ -195,10 +132,11 @@ namespace interpreter
             }
 
             // Check if the value assigned to the variable conforms with the data type
-            _evaluator.CheckDeclaration(dataType, varNameArray, value);
+            Evaluator.EvaluateDeclaration(dataType, varNameArray, value);
 
             return null;
         }
+
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
@@ -209,7 +147,8 @@ namespace interpreter
             }
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-            var value = Visit(context.expression());
+            var value = context.expression() == null ? null : (object?)Visit(context.expression());
+
 
             foreach (var name in varNameArray)
             {
@@ -220,7 +159,7 @@ namespace interpreter
                 }
 
                 var dataType = VariableDeclaration[name];
-                _evaluator.CheckDeclaration(dataType, varNameArray, value);
+                Evaluator.EvaluateDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
@@ -309,6 +248,11 @@ namespace interpreter
             return null;
         }
 
+        public override object? VisitParenthesizedExpression([NotNull] CodeParser.ParenthesizedExpressionContext context)
+        {
+            return Visit(context.expression());
+        }
+
         public override object? VisitAdditiveExpression([NotNull] CodeParser.AdditiveExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -318,9 +262,9 @@ namespace interpreter
 
             return op switch
             {
-                "+" => _op.Add(left, right),
-                "-" => _op.Subtract(left, right),
-                "&" => _op.Concatenate(left, right),
+                "+" => Operator.Add(left, right),
+                "-" => Operator.Subtract(left, right),
+                "&" => Operator.Concatenate(left, right),
                 _ => throw new NotImplementedException()
             };
         }
@@ -334,12 +278,28 @@ namespace interpreter
 
             return op switch
             {
-                "==" => _op.IsEqual(left, right),
-                "<>" => _op.IsNotEqual(left, right),
-                ">" => _op.GreaterThan(left, right),
-                "<" => _op.LessThan(left, right),
-                ">=" => _op.GreaterThanOrEqual(left, right),
-                "<=" => _op.LessThanOrEqual(left, right),
+                "==" => Operator.IsEqual(left, right),
+                "<>" => Operator.IsNotEqual(left, right),
+                ">" => Operator.GreaterThan(left, right),
+                "<" => Operator.LessThan(left, right),
+                ">=" => Operator.GreaterThanOrEqual(left, right),
+                "<=" => Operator.LessThanOrEqual(left, right),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        public override object? VisitMultiplicativeExpression([NotNull] CodeParser.MultiplicativeExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            var op = context.multOp().GetText();
+
+            return op switch
+            {
+                "*" => Operator.Multiply(left, right),
+                "/" => Operator.Divide(left, right),
+                "%" => Operator.Modulo(left, right),
                 _ => throw new NotImplementedException()
             };
         }
