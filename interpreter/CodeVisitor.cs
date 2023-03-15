@@ -30,31 +30,6 @@ namespace interpreter
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
-        // TODOS:
-            // GOODS 1.) Make a function that will check if the declared variable is comaptible with the data type
-            // 2.) Complete the Display function
-            // 3.) Make a Scan function
-            // 4.) implement the expressions operators
-                    // Additive - GOODS
-                    // Comparative - GOODS
-                    // Multiplicative - GOODS
-                    // With Parenthesis - GOODS
-                    // Logical
-                    // Unary
-            // 5.) Test if begin and end code cannot be placed anywhere
-                    // Error handler if there is a BEGIN CODE inside or outside
-                    // Error handler if there are declarations or lines after END 
-            // GOODS 6.) INT y,x --- apply logic that will accept this declaration
-            // GOODS 7.) Assignment still not supports x=y=5
-            // 8.) Handle error for declaring more than one character inside single quote ex. 'dada'
-            // 9.) Cannot read boolean values because it will be stored as a string
-            // GOODS 10.) Error handler when assigning values to a variable not conforming to data type
-            // 11.) Implement the escape code []
-            // PARTIALLY GOODS 12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
-            // 12.) IF ELSE ELSEIF statement implementation
-            // 13.) WHILE statement implementation
-            // 14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
-
         /// <summary>
         /// Checks if the delimters are present in the code
         /// </summary>
@@ -70,41 +45,6 @@ namespace interpreter
 
             return null;
         }
-
-        // NOT WORKING -- checks if there is a declaration in a line
-
-        //public override object? VisitLine([NotNull] CodeParser.LineContext context)
-        //{
-        //    if (ContainsDeclaration(context))
-        //    {
-        //        Console.WriteLine("Error: Declaration found in line where it is not allowed.");
-        //        Environment.Exit(1);
-        //    }
-
-        //    return base.VisitLine(context);
-        //}
-
-        //private bool ContainsDeclaration([NotNull] CodeParser.LineContext context)
-        //{
-        //    if (context.declaration() != null)
-        //    {
-        //        return true;
-        //    }
-
-        //    foreach (var child in context.children)
-        //    {
-        //        if (child is CodeParser.LineContext line)
-        //        {
-        //            if (ContainsDeclaration(line))
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
 
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
