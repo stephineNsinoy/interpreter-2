@@ -260,18 +260,7 @@ namespace interpreter
         {
             if (value == null)
             {
-                string variables = "";
-                int i = 0;
-                foreach (var name in varNameArray)
-                {
-                    variables += name;
-                    if (varNameArray.Length > 1 && i < varNameArray.Length -1)
-                    {
-                        variables += "=";
-                    }
-                    i++;
-                }
-
+                string variables = string.Join("=", varNameArray);
                 Console.WriteLine($"Incorrect statement {variables}=?");
                 Environment.Exit(1);
             }
