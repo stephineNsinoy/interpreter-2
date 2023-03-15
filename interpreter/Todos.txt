@@ -11,7 +11,7 @@ TODOS:
                   GOODS -  Multiplicative 
                   GOODS -  With Parenthesis 
                         -  Logical
-                        -  Unary
+                  GOODS -  Unary
 
             5.) Test if begin and end code cannot be placed anywhere
                         - Error handler if there is a BEGIN CODE inside or outside
