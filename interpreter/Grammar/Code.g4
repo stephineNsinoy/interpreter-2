@@ -1,15 +1,19 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE EOF ;
+program: lineBlock EOF ;
 
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;
 
-line: declaration | statement | ifBlock | whileBlock;
+lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-statement: (assignment | functionCall) ';' ;
+line: statement | ifBlock | whileBlock;
 
+statement: assignment | functionCall;
+
+//declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER)* ('=' expression)? ;
 declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
+// declaration: dataType IDENTIFIER (',' IDENTIFIER)* ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
@@ -19,7 +23,7 @@ FLOAT: 'FLOAT';
 CHAR: 'CHAR';
 BOOL: 'BOOL';
 
-block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
+// block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
 
 constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
@@ -40,20 +44,21 @@ WS: [ \t\r]+ -> skip ;
 // GOODS
 BEGIN_IF: 'BEGIN IF' ;
 END_IF: 'END IF' ;
-ifBlock: 'IF' '('expression')' BEGIN_IF block END_IF elseIfBlock? ;
-elseIfBlock: 'ELSE' (BEGIN_IF block END_IF) | ifBlock ;
+
+ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? ;
+elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
 
 // GOODS
 WHILE: 'WHILE' ;
 BEGIN_WHILE: 'BEGIN WHILE' ;
 END_WHILE: 'END WHILE' ;
-whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
+whileBlock: WHILE '(' expression ')' BEGIN_WHILE line* END_WHILE ;
 
 // for DISPLAY: and SCAN:
 functionCall: FUNCTIONS ':' (expression (',' expression)*)? ;
 FUNCTIONS: 'DISPLAY:' | 'SCAN:' ;
 
-// Not used
+// TODO: Not final and not implemented
 SCAN: 'SCAN:';
 scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
 
@@ -67,7 +72,7 @@ expression
     | 'NOT' expression                  #notExpression
     | expression multOp expression      #multiplicativeExpression
     | expression addOp expression       #additiveExpression
-    | expression compareOp expression   #comparisonExpression
+    | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
     | parenOpen expression parenClose   #escapeCodeExpression //add comment to be included
     ; 
