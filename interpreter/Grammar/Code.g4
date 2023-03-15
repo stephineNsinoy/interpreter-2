@@ -25,8 +25,8 @@ BOOL: 'BOOL';
 // block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
 
 constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
-INTEGER_VAL: [0-9]+ ;
-FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
+INTEGER_VAL: ('-' | '+')? [0-9]+ ;
+FLOAT_VAL: ('-' | '+')? [0-9]+ '.' [0-9]+ ;
 // STRING_VAL: '"' ( ~('"' | '\\') | '\\' . )* '"' ~('"' ('TRUE' | 'FALSE') '"')?;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
