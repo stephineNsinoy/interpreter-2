@@ -1,6 +1,5 @@
 #comment
 BEGIN CODE
-INT i,x,y
-x=y="2"
-DISPLAY: x
+BOOL x = "FALSE"
+DISPLAY: x AND "TRUE"
 END CODE
