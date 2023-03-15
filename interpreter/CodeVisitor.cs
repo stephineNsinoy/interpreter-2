@@ -46,6 +46,9 @@ namespace interpreter
             return null;
         }
 
+        /// <summary>
+        /// Still needs to be double checked, test for all possbile cases
+        /// </summary>
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
