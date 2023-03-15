@@ -16,15 +16,25 @@ namespace interpreter
                 return true; // Null can be assigned to any data type
             }
 
-            return dataType switch
+            switch (dataType)
             {
-                "INT" => value is int,
-                "FLOAT" => value is float,
-                "BOOL" => value is bool,
-                "STRING" => value is string,
-                "CHAR" => value is char,
-                _ => false,// Invalid data type
-            };
+                case "INT":
+                    return value is int;
+                case "FLOAT":
+                    return value is float;
+                case "BOOL":
+                    //checks the string value, parses it into boolean, and returns
+                    //it as a boolean depending on what the user input
+                    string? boolStr = value as string;
+                    bool? parsedStr = EvaluateBool(boolStr);
+                    return parsedStr != null;
+                case "STRING":
+                    return value is string;
+                case "CHAR":
+                    return value is char;
+                default:
+                    return false; // Invalid data type
+            }
         }
 
         public static void EvaluateDeclaration(string dataType, string[] varNames, object? value)
@@ -118,6 +128,24 @@ namespace interpreter
             }
 
             return false;
+        }
+
+        public static bool? EvaluateBool(string? str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return null;
+            }
+
+            if (str.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else if (str.Equals("FALSE", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return null;
         }
     }
 }
