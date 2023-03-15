@@ -303,5 +303,24 @@ namespace interpreter
                 _ => throw new NotImplementedException()
             };
         }
+
+        public override object? VisitBooleanExpression([NotNull] CodeParser.BooleanExpressionContext context)
+        {
+            var left = Visit(context.expression(0))?.ToString();
+            var right = Visit(context.expression(1))?.ToString();
+
+            var op = context.logicOp().LOGICAL_OPERATOR().GetText();
+
+            var parsedLeft = Evaluator.EvaluateBool(left);
+            var parsedRight = Evaluator.EvaluateBool(right);
+
+            return op switch
+            {
+                "AND" => Operator.And(parsedLeft, parsedRight),
+                "OR" => Operator.Or(parsedLeft, parsedRight),
+                "NOT" => Operator.Not(parsedRight),
+                _ => throw new NotImplementedException()
+            };
+        }
     }
 }
