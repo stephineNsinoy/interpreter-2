@@ -8,6 +8,7 @@ namespace interpreter.Functions
 {
     public class Operator
     {
+        private Evaluator evalute = new Evaluator();
         public static object? Display(object?[] args)
         {
             foreach (var arg in args)
@@ -246,6 +247,41 @@ namespace interpreter.Functions
 
             Console.WriteLine($"Cannot get modulo of types {left?.GetType()} and {right?.GetType()}");
             Environment.Exit(1);
+            return null;
+        }
+
+        /******************************
+            LOGICAL OPERATOR expressions
+        *******************************/
+
+        public static object? And(object? left, object? right)
+        {
+            if (left is bool l && right is bool r)
+                return l && r;
+
+            Console.WriteLine($"Cannot perform logical AND on types {left?.GetType()} and {right?.GetType()}");
+            Environment.Exit(1);
+            return null;
+        }
+
+        public static object? Or(object? left, object? right)
+        {
+            if (left is bool l && right is bool r)
+                return l || r;
+
+            Console.WriteLine($"Cannot perform logical OR on types {left?.GetType()} and {right?.GetType()}");
+            Environment.Exit(1);
+            return null;
+        }
+
+
+        //NOt working as of now, sorry noy huhu
+        public static object? Not(object? value)
+        {
+            if (value is bool b)
+                return !b;
+
+            Console.WriteLine($"Cannot perform logical NOT on type {value?.GetType()}");
             return null;
         }
     }
