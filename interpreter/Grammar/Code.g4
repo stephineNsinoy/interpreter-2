@@ -11,9 +11,8 @@ line: statement | ifBlock | whileBlock;
 
 statement: assignment | functionCall;
 
-//declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER)* ('=' expression)? ;
-declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
-// declaration: dataType IDENTIFIER (',' IDENTIFIER)* ;
+declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
+// declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
@@ -32,14 +31,6 @@ FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 CHAR_VAL: '\'' ~[\r\n\'] '\'' ; 
-
-// GOODS
-IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
-COMMENT: '#' ~[\r\n]* -> skip ;
-unknown: SEMI_COLON | BLANK_LINE ;
-SEMI_COLON: '?' ;
-BLANK_LINE: [ \t]* [\r]? [\n] ; 
-WS: [ \t\r]+ -> skip ;
 
 // GOODS
 BEGIN_IF: 'BEGIN IF' ;
@@ -86,3 +77,11 @@ parenOpen: '[' ;
 parenClose: ']' ;
 
 LOGICAL_OPERATOR: 'AND' | 'OR' | 'NOT' ;
+
+// GOODS
+IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
+COMMENT: '#' ~[\r\n]* -> skip ;
+unknown: SEMI_COLON | BLANK_LINE ;
+SEMI_COLON: ';' ;
+BLANK_LINE: [ \t]* [\r]? [\n] ; 
+WS: [ \t\r]+ -> skip ;
