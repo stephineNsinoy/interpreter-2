@@ -34,7 +34,6 @@ BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 CHAR_VAL: '\'' ~[\r\n\'] '\'' ; 
 
 // GOODS
-IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 COMMENT: '#' ~[\r\n]* -> skip ;
 unknown: SEMI_COLON | BLANK_LINE ;
 SEMI_COLON: '?' ;
@@ -86,3 +85,4 @@ parenOpen: '[' ;
 parenClose: ']' ;
 
 LOGICAL_OPERATOR: 'AND' | 'OR' | 'NOT' ;
+IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
