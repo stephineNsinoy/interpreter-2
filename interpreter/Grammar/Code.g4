@@ -65,7 +65,7 @@ expression
     | expression addOp expression       #additiveExpression
     | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
-    | parenOpen expression parenClose   #escapeCodeExpression //add comment to be included
+    | '[' expression ']'                #escapeCodeExpression //add comment to be included
     ; 
 
 // add unary operator
@@ -73,10 +73,8 @@ multOp: '*' | '/' | '%' ;
 addOp: '+' | '-' | '&' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
 logicOp: LOGICAL_OPERATOR ;
-parenOpen: '[' ;
-parenClose: ']' ;
 
-LOGICAL_OPERATOR: 'AND' | 'OR' | 'NOT' ;
+LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
