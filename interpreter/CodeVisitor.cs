@@ -188,9 +188,6 @@ namespace interpreter
             if (context.FLOAT_VAL() is { } f)
                 return float.Parse(f.GetText());
 
-            //if (context.BOOL_VAL() is { } b)
-            //    return b.GetText() == "\"TRUE\"";
-
             if (context.STRING_VAL() is { } s)
             {
                 if(s.GetText() != null && (s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\"")))
@@ -313,9 +310,9 @@ namespace interpreter
         {
             var left = Visit(context.expression(0));
             var right = Visit(context.expression(1));
-
+            
             var op = context.logicOp().LOGICAL_OPERATOR().GetText();
-
+            
             return op switch
             {
                 "AND" => Operator.And(left, right),
