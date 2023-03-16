@@ -272,9 +272,13 @@ namespace interpreter
             {
                 "AND" => Operator.And(left, right),
                 "OR" => Operator.Or(left, right),
-                "NOT" => Operator.Not(right),
                 _ => throw new NotImplementedException()
             };
+        }
+
+        public override object? VisitNotExpression([NotNull] CodeParser.NotExpressionContext context)
+        {
+            return Operator.Not(Evaluator.EvaluateBool(context.ToString()));
         }
     }
 }
