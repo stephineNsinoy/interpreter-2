@@ -1,5 +1,6 @@
 #comment
 BEGIN CODE
-STRING y = "TRUE"
-DISPLAY: y 
+BOOL y = "FALSE"
+BOOL x = "FALSE"
+DISPLAY: NOT x
 END CODE
