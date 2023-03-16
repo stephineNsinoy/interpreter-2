@@ -16,7 +16,6 @@ namespace interpreter
 {
     public class Evaluator
     {
-
         /************************************
               EVALUATION FOR DELIMITERS
         *************************************/
@@ -300,6 +299,19 @@ namespace interpreter
                 Console.WriteLine($"Variable {name} is not a function.");
                 Environment.Exit(1);
             }
+        }
+
+        /************************************
+              EVALUATION FOR STRING TO BOOLEAN
+        *************************************/
+        
+        /// <summary>
+        /// Parses the string TRUE and FALSE to their corresponding 
+        /// boolean values
+        /// </summary>
+        public static bool EvaluateBool(string str)
+        {
+            return str.Equals("\"TRUE\"");
         }
     }
 }

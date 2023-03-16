@@ -133,7 +133,7 @@ namespace interpreter
             return Variable[varName];
         }
 
-        public override object VisitConstant([NotNull] CodeParser.ConstantContext context)
+        public override object? VisitConstant([NotNull] CodeParser.ConstantContext context)
         {
             if (context.INTEGER_VAL() is { } i)
                 return int.Parse(i.GetText());
@@ -141,11 +141,14 @@ namespace interpreter
             if (context.FLOAT_VAL() is { } f)
                 return float.Parse(f.GetText());
 
-            if (context.BOOL_VAL() is { } b)
-                return b.GetText() == "\"TRUE\"";
-
             if (context.STRING_VAL() is { } s)
-                return s.GetText()[1..^1];
+            {
+                if(s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\""))
+                    return Evaluator.EvaluateBool(s.GetText());
+                
+                else
+                    return s.GetText()[1..^1];
+            }
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
@@ -256,6 +259,26 @@ namespace interpreter
                 "%" => Operator.Modulo(left, right),
                 _ => throw new NotImplementedException()
             };
+        }
+
+        public override object? VisitBooleanExpression([NotNull] CodeParser.BooleanExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+            
+            var op = context.logicOp().LOGICAL_OPERATOR().GetText();
+            
+            return op switch
+            {
+                "AND" => Operator.And(left, right),
+                "OR" => Operator.Or(left, right),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        public override object? VisitNotExpression([NotNull] CodeParser.NotExpressionContext context)
+        {
+            return Operator.Not(Evaluator.EvaluateBool(context.ToString()));
         }
     }
 }

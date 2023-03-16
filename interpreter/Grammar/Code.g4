@@ -16,11 +16,12 @@ declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expressi
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
-dataType: INT | FLOAT | BOOL | CHAR ;
+dataType: INT | FLOAT | BOOL | CHAR | STRING;
 INT: 'INT' ;
 FLOAT: 'FLOAT';
 CHAR: 'CHAR';
 BOOL: 'BOOL';
+STRING: 'STRING' ;
 
 // block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
 
