@@ -1,6 +1,6 @@
 #comment
 BEGIN CODE
 BOOL x = "TRUE"
-BOOL y = "FALSE"
-DISPLAY: x OR y
+BOOL y = "tae"
+DISPLAY: y
 END CODE

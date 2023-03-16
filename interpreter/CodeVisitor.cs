@@ -190,12 +190,11 @@ namespace interpreter
 
             if (context.STRING_VAL() is { } s)
             {
-                if(s.GetText() != null && (s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\"")))
-                {
-                    var parsedStr = Evaluator.EvaluateBool(s.GetText());
-                    return parsedStr;
-                }
-                return s.GetText()[1..^1];
+                if(s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\""))
+                    return Evaluator.EvaluateBool(s.GetText());
+                
+                else
+                    Console.WriteLine(s.GetText()[1..^1]);
             }
 
             if (context.CHAR_VAL() is { } c)
