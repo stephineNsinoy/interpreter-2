@@ -309,13 +309,8 @@ namespace interpreter
         /// Parses the string TRUE and FALSE to their corresponding 
         /// boolean values
         /// </summary>
-        public static bool? EvaluateBool(string? str)
+        public static bool EvaluateBool(string str)
         {
-            if (string.IsNullOrEmpty(str))
-            {
-                return null;
-            }
-            
             return str.Equals("\"TRUE\"");
         }
     }
