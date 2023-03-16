@@ -1,6 +1,5 @@
 #comment
 BEGIN CODE
-BOOL x = "TRUE"
-BOOL y = "tae"
-DISPLAY: y
+STRING y = "TRUE"
+DISPLAY: y 
 END CODE

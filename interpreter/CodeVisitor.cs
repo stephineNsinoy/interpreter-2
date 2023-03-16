@@ -1,17 +1,24 @@
 ﻿using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using interpreter.Functions;
 using interpreter.Grammar;
+using interpreter.Variables;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace interpreter
 {
     public class CodeVisitor : CodeBaseVisitor<object?>
     {
+        // Variable name and its value
         private Dictionary<string, object?> Variable { get; } = new();
+
+        // Variable name and its data type
         private Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
 
         private bool _isBeginCodeVisited = false;
@@ -23,41 +30,6 @@ namespace interpreter
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
-        // TODOS:
-        // GOODS 1.) Make a function that will check if the declared variable is comaptible with the data type
-
-        // 2.) Complete the Display function
-
-        // 3.) Make a Scan function
-
-        // 4.) implement the expressions operators
-                // Additive - GOODS
-                // Comparative - GOODS
-                // Multiplicative - GOODS
-                // With Parenthesis - GOODS
-                // Logical
-                // Unary
-
-        // 5.) Test if begin and end code cannot be placed anywhere
-
-        // GOODS 6.) This declaration is correct: INT y --- apply logic that will accept this declaration
-
-        // GOODS 7.) Assignment still not supports x=y=5
-
-        // 8.) Handle error for declaring more than one character inside single quote ex. 'dada'
-
-        // 9.) Cannot read boolean values because it will be stored as a string
-
-        // GOODS 10.) Error handler when assigning values to a variable not conforming to data type
-
-        // 11.) Error handler if there are declarations or lines after END CODE
-
-        // 12.) Implement the escape code []
-
-        // PARTIALLY GOODS 13.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
-                // Make if block and else if block with begin if and end if
-                // separate the begin - code and end - code
-    
         /// <summary>
         /// Checks if the delimters are present in the code
         /// </summary>
@@ -70,69 +42,60 @@ namespace interpreter
                 _isEndCodeVisited = true;
                 return base.VisitLineBlock(context); // Visit the program normally
             }
-            
+
             return null;
         }
 
-        // NOT WORKING -- checks if there is a declaration in a line
-
-        //public override object? VisitLine([NotNull] CodeParser.LineContext context)
-        //{
-        //    if (ContainsDeclaration(context))
-        //    {
-        //        Console.WriteLine("Error: Declaration found in line where it is not allowed.");
-        //        Environment.Exit(1);
-        //    }
-
-        //    return base.VisitLine(context);
-        //}
-
-        //private bool ContainsDeclaration([NotNull] CodeParser.LineContext context)
-        //{
-        //    if (context.declaration() != null)
-        //    {
-        //        return true;
-        //    }
-
-        //    foreach (var child in context.children)
-        //    {
-        //        if (child is CodeParser.LineContext line)
-        //        {
-        //            if (ContainsDeclaration(line))
-        //            {
-        //                return true;
-        //            }
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
-
-        // TODO: this cannot read INT x, y = 1, z. x and z should be null, currently it is not the case
+        /// <summary>
+        /// Still needs to be double checked, test for all possbile cases
+        /// </summary>
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
-            if (!_isBeginCodeVisited)
-            {
-                Console.WriteLine("Declaration must be placed after BEGIN CODE");
-                Environment.Exit(1);
-            }
+            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
             string dataType = context.dataType().GetText();
 
-            var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
+            var content = context.children.ToList();
 
-            // Check if value is null or expression is missing so that (INT y) will be accepted
-            var value = context.expression() == null ? null : (object?)Visit(context.expression());
+            var varDeclarations = context.IDENTIFIER()
+                                 .Select(id => new VariableDeclaration { Name = id.GetText(), Value = null })
+                                 .ToList();
 
-            foreach (var name in varNameArray)
+            Evaluator.EvaluateDeclarationContent(varDeclarations, content);
+
+            var expressionList = context.expression()?.ToList() ?? new List<CodeParser.ExpressionContext>();
+            var valueIndex = 0;
+
+            Evaluator.EvaluateIsVariableReDeclared(varDeclarations, Variable);
+
+            // Iterate the declaration content
+            for (int i = 0; i < content.Count(); i++)
             {
-                Variable[name] = value;
-                VariableDeclaration[name] = dataType;
-            }
+                foreach (var varDecl in varDeclarations)
+                {
+                    if (varDecl.Name == content[i].GetText())
+                    {
+                        Evaluator.EvaluateIsDeclarationValid(content[i - 1].GetText());
 
-            // Check if the value assigned to the variable conforms with the data type
-            Evaluator.EvaluateDeclaration(dataType, varNameArray, value);
+                        //Check if the variable has an initial value
+                        if (i != content.Count() - 1 && content[i + 1].GetText() == "=")
+                        {
+                            Evaluator.EvaluateIsValuePresent(expressionList[valueIndex].GetText());
+
+                            if (expressionList.Count > valueIndex)
+                            {
+                                varDecl.Value = Visit(expressionList[valueIndex]);
+                                valueIndex++;
+                            }
+                        }
+                    }
+
+                    Variable[varDecl.Name!] = varDecl.Value;
+                    VariableDeclaration[varDecl.Name!] = dataType;
+
+                    Evaluator.EvaluateDeclaration(dataType, new string[] { varDecl.Name! }, varDecl.Value);
+                }
+            }
 
             return null;
         }
@@ -140,29 +103,23 @@ namespace interpreter
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
-            if (!_isBeginCodeVisited)
-            {
-                Console.WriteLine("Assignment must be placed after BEGIN CODE");
-                Environment.Exit(1);
-            }
+            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-            var value = context.expression() == null ? null : (object?)Visit(context.expression());
-
+            var value = context.expression() == null ? null :(object?)Visit(context.expression());
 
             foreach (var name in varNameArray)
             {
-                if (!Variable.ContainsKey(name))
-                {
-                    Console.WriteLine($"Variable {name} is not defined");
-                    Environment.Exit(1);
-                }
-
+                Evaluator.EvaluateIsVariableDefined(name, Variable);
+            
                 var dataType = VariableDeclaration[name];
+
                 Evaluator.EvaluateDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
+
+            Evaluator.EvaluateAssignment(varNameArray, value);
 
             return null;
         } 
@@ -171,11 +128,7 @@ namespace interpreter
         {
             var varName = context.IDENTIFIER().GetText();
 
-            if (!Variable.ContainsKey(varName))
-            {
-                Console.WriteLine($"Variable {varName} is not defined");
-                Environment.Exit(1);
-            }
+            Evaluator.EvaluateIsVariableDefined(varName, Variable);
 
             return Variable[varName];
         }
@@ -194,29 +147,32 @@ namespace interpreter
                     return Evaluator.EvaluateBool(s.GetText());
                 
                 else
-                    Console.WriteLine(s.GetText()[1..^1]);
+                    return s.GetText()[1..^1];
             }
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
 
-            throw new Exception("Unknown value type.");
+            Console.WriteLine("Unknown value type.");
+            Environment.Exit(1);
+            return null;
         }
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            if (!_isBeginCodeVisited)
-            {
-                Console.WriteLine("Function call must be placed after BEGIN CODE");
-                Environment.Exit(1);
-            }
+            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
             var name = context.FUNCTIONS().GetText();
             var args = context.expression().Select(Visit).ToArray();
 
-            if (!Variable.ContainsKey(name))
+            try
             {
-                throw new Exception($"Function {name} is not defined.");
+                Evaluator.EvaluateIsFunctionDefined(name, Variable);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Environment.Exit(1);
             }
 
             if (Variable[name] is not Func<object?[], object?> func)

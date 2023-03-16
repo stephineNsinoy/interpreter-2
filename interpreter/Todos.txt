@@ -1,0 +1,40 @@
+TODOS:
+    GOODS   1.) Make a function that will check if the declared variable is comaptible with the data type
+
+            2.) Complete the Display function
+
+            3.) Make a Scan function
+
+            4.) implement the expressions operators
+                  GOODS -  Additive 
+                  GOODS -  Comparative
+                  GOODS -  Multiplicative 
+                  GOODS -  With Parenthesis 
+                        -  Logical
+                  GOODS -  Unary
+
+            5.) Test if begin and end code cannot be placed anywhere
+                        - Error handler if there is a BEGIN CODE inside or outside
+                        - Error handler if there are declarations or lines after END 
+
+    GOODS   6.) INT y,x --- apply logic that will accept this declaration
+
+    GOODS   7.) Assignment still not supports x=y=5
+
+            8.) Handle error for declaring more than one character inside single quote ex. 'dada'
+
+            9.) Cannot read boolean values because it will be stored as a string
+
+    GOODS   10.) Error handler when assigning values to a variable not conforming to data type
+
+            11.) Implement the escape code []
+
+    GOODS   12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
+
+            13.) Check if there is a declaration in the line*
+
+            14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
+
+            15.) IF ELSE ELSEIF statement implementation
+
+            16.) WHILE statement implementation
