@@ -8,7 +8,6 @@ namespace interpreter.Functions
 {
     public class Operator
     {
-        private Evaluator evalute = new Evaluator();
         public static object? Display(object?[] args)
         {
             foreach (var arg in args)
@@ -274,8 +273,7 @@ namespace interpreter.Functions
             return null;
         }
 
-
-        //NOt working as of now, sorry noy huhu
+        
         public static object? Not(object? value)
         {
             if (value is bool b)
