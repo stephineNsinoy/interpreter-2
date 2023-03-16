@@ -180,7 +180,7 @@ namespace interpreter
             return Variable[varName];
         }
 
-        public override object VisitConstant([NotNull] CodeParser.ConstantContext context)
+        public override object? VisitConstant([NotNull] CodeParser.ConstantContext context)
         {
             if (context.INTEGER_VAL() is { } i)
                 return int.Parse(i.GetText());
@@ -188,16 +188,21 @@ namespace interpreter
             if (context.FLOAT_VAL() is { } f)
                 return float.Parse(f.GetText());
 
-            if (context.BOOL_VAL() is { } b)
-                return b.GetText() == "\"TRUE\"";
+            //if (context.BOOL_VAL() is { } b)
+            //    return b.GetText() == "\"TRUE\"";
 
             if (context.STRING_VAL() is { } s)
+            {
+                if(s.GetText() != null && (s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\"")))
+                {
+                    var parsedStr = Evaluator.EvaluateBool(s.GetText());
+                    return parsedStr;
+                }
                 return s.GetText()[1..^1];
+            }
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
-
-
 
             throw new Exception("Unknown value type.");
         }
@@ -306,19 +311,16 @@ namespace interpreter
 
         public override object? VisitBooleanExpression([NotNull] CodeParser.BooleanExpressionContext context)
         {
-            var left = Visit(context.expression(0))?.ToString();
-            var right = Visit(context.expression(1))?.ToString();
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
 
             var op = context.logicOp().LOGICAL_OPERATOR().GetText();
 
-            var parsedLeft = Evaluator.EvaluateBool(left);
-            var parsedRight = Evaluator.EvaluateBool(right);
-
             return op switch
             {
-                "AND" => Operator.And(parsedLeft, parsedRight),
-                "OR" => Operator.Or(parsedLeft, parsedRight),
-                "NOT" => Operator.Not(parsedRight),
+                "AND" => Operator.And(left, right),
+                "OR" => Operator.Or(left, right),
+                "NOT" => Operator.Not(right),
                 _ => throw new NotImplementedException()
             };
         }

@@ -1,5 +1,6 @@
 #comment
 BEGIN CODE
-BOOL x = "FALSE"
-DISPLAY: x AND "TRUE"
+BOOL x = "TRUE"
+BOOL y = "FALSE"
+DISPLAY: x OR y
 END CODE

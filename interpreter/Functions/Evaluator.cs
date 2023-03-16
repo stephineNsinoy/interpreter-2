@@ -25,9 +25,7 @@ namespace interpreter
                 case "BOOL":
                     //checks the string value, parses it into boolean, and returns
                     //it as a boolean depending on what the user input
-                    string? boolStr = value as string;
-                    bool? parsedStr = EvaluateBool(boolStr);
-                    return parsedStr != null;
+                    return value is bool;
                 case "STRING":
                     return value is string;
                 case "CHAR":
@@ -137,11 +135,11 @@ namespace interpreter
                 return null;
             }
 
-            if (str.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+            if (str.Equals("\"TRUE\""))
             {
                 return true;
             }
-            else if (str.Equals("FALSE", StringComparison.OrdinalIgnoreCase))
+            else if (str.Equals("\"FALSE\""))
             {
                 return false;
             }
