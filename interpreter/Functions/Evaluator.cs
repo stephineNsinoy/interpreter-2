@@ -315,16 +315,8 @@ namespace interpreter
             {
                 return null;
             }
-
-            if (str.Equals("\"TRUE\""))
-            {
-                return true;
-            }
-            else if (str.Equals("\"FALSE\""))
-            {
-                return false;
-            }
-            return null;
+            
+            return str.Equals("\"TRUE\"");
         }
     }
 }
