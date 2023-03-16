@@ -75,7 +75,7 @@ addOp: '+' | '-' | '&' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
 logicOp: LOGICAL_OPERATOR ;
 
-LOGICAL_OPERATOR: 'AND' | 'OR' | 'NOT' ;
+LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
