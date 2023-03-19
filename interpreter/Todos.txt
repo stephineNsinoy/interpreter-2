@@ -2,6 +2,7 @@ TODOS:
     GOODS   1.) Make a function that will check if the declared variable is comaptible with the data type
 
             2.) Complete the Display function
+                  GOODS - Can recognize '$' as newline
 
             3.) Make a Scan function
 
@@ -10,7 +11,7 @@ TODOS:
                   GOODS -  Comparative
                   GOODS -  Multiplicative 
                   GOODS -  With Parenthesis 
-                        -  Logical
+                  GOODS -  Logical
                   GOODS -  Unary
 
             5.) Test if begin and end code cannot be placed anywhere
@@ -23,11 +24,11 @@ TODOS:
 
             8.) Handle error for declaring more than one character inside single quote ex. 'dada'
 
-            9.) Cannot read boolean values because it will be stored as a string
+    GOODS   9.) Cannot read boolean values because it will be stored as a string
 
     GOODS   10.) Error handler when assigning values to a variable not conforming to data type
 
-            11.) Implement the escape code []
+IN-PROGRESS 11.) Implement the escape code []
 
     GOODS   12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
 
@@ -37,4 +38,6 @@ TODOS:
 
             15.) IF ELSE ELSEIF statement implementation
 
-            16.) WHILE statement implementation
+IN-PROGRESS 16.) WHILE statement implementation
+
+            17.) Make an error handler for not declaring variables after begin code
