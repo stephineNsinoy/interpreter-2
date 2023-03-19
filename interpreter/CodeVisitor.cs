@@ -30,13 +30,9 @@ namespace interpreter
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
-        /// <summary>
-        /// Checks if the delimters are present in the code
-        /// </summary>
-        /// <returns>nothing if delimters are present, throws an error if they are not present</returns>
         public override object? VisitLineBlock([NotNull] CodeParser.LineBlockContext context)
         {
-            if (Evaluator.EvaluateDelimiter(context))
+            if (Evaluator.EvaluateCodeDelimiter(context))
             {
                 _isBeginCodeVisited = true;
                 _isEndCodeVisited = true;
@@ -100,7 +96,6 @@ namespace interpreter
             return null;
         }
 
-
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
             Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
@@ -162,7 +157,7 @@ namespace interpreter
         {
             Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
-            var name = context.FUNCTIONS().GetText();
+            var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
             var args = context.expression().Select(Visit).ToArray();
 
             try
@@ -278,7 +273,46 @@ namespace interpreter
 
         public override object? VisitNotExpression([NotNull] CodeParser.NotExpressionContext context)
         {
-            return Operator.Not(Evaluator.EvaluateBool(context.ToString()));
+            return Operator.Not(Visit(context.expression()));
+        }
+
+        // IN-PROGRESS
+        public override object? VisitEscapeCodeExpression([NotNull] CodeParser.EscapeCodeExpressionContext context)
+        {
+            var test = context.children;
+            string escapedText = context.GetText().Substring(1, context.GetText().Length - 2);
+            return escapedText;
+        }
+
+        // IN-PROGRESS
+        public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
+        {
+            Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
+               ? Operator.IsTrue
+               : Operator.IsFalse
+           ;
+
+            Evaluator.EvaluateWhileDelimiter(context);
+
+            if (condition(Visit(context.expression())))
+            {
+                do
+                {
+                    foreach (var line in context.line())
+                    {
+                        Visit(line);
+                    }
+                } while (condition(Visit(context.expression())));
+            }
+
+            return base.VisitWhileBlock(context);
+        }
+
+        public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
+        {
+            var newLine = context.GetText();
+            newLine = newLine.Replace("$", "\n");
+            return newLine;
         }
     }
 }
