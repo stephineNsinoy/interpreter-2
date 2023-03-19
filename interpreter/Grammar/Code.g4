@@ -46,15 +46,12 @@ BEGIN_WHILE: 'BEGIN WHILE' ;
 END_WHILE: 'END WHILE' ;
 whileBlock: WHILE '(' expression ')' BEGIN_WHILE line* END_WHILE ;
 
-// for DISPLAY: and SCAN:
-functionCall: FUNCTIONS ':' (expression (',' expression)*)? ;
-FUNCTIONS: 'DISPLAY:' | 'SCAN:' ;
+functionCall
+    : DISPLAY (expression (',' expression)*)?
+    | SCAN IDENTIFIER (',' IDENTIFIER)* ;
 
-// TODO: Not final and not implemented
-SCAN: 'SCAN:';
-scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
-
-// find a way for the newline when displaying
+DISPLAY: 'DISPLAY:' ;
+SCAN: 'SCAN:' ;
 
 expression
     : constant                          #constantExpression
@@ -66,10 +63,10 @@ expression
     | expression addOp expression       #additiveExpression
     | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
-    | '[' expression ']'                #escapeCodeExpression //add comment to be included
-    ; 
+    | ESCAPE                            #escapeCodeExpression // still needs to be tested
+    | NEXTLINE                          #nextLineExpression
+    ;
 
-// add unary operator
 multOp: '*' | '/' | '%' ;
 addOp: '+' | '-' | '&' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
@@ -79,8 +76,12 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
+ESCAPE: '[' .*? ']' ;
+NEXTLINE: '$' ;
 COMMENT: '#' ~[\r\n]* -> skip ;
+WS: [ \t\r]+ -> skip ;
+
+// STILL NEEDS TO BE TESTED
 unknown: SEMI_COLON | BLANK_LINE ;
 SEMI_COLON: ';' ;
 BLANK_LINE: [ \t]* [\r]? [\n] ; 
-WS: [ \t\r]+ -> skip ;
