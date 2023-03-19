@@ -1,6 +1,12 @@
-#comment
+# this is a sample program in CODE
 BEGIN CODE
-BOOL y = "FALSE"
-BOOL x = "FALSE"
-DISPLAY: y OR x
+INT x=1, y=2, z=5
+FLOAT f = 2.2
+CHAR a_1='n' 
+BOOL t="TRUE"
+BOOL a = NOT t
+x=y=4
+a_1='c'
+# this is a comment
+DISPLAY: x & t & z & $ & a_1 & a & $ & f & " " & [#] & "last"
 END CODE
