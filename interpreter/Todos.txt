@@ -33,6 +33,7 @@ IN-PROGRESS 11.) Implement the escape code []
     GOODS   12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
 
             13.) Check if there is a declaration in the line*
+                       - if line contains (INT, FLOAT, BOOL, CHAR) in line handle error
 
             14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
 
