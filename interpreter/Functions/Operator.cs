@@ -10,11 +10,10 @@ namespace interpreter.Functions
     {
         public static object? Display(object?[] args)
         {
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
-
+            var output = string.Join("", args.Select(arg => arg?.ToString()));
+            output = output.Replace("True", "TRUE");
+            output = output.Replace("False", "FALSE");
+            Console.Write(output);
             return null;
         }
 
@@ -175,18 +174,6 @@ namespace interpreter.Functions
             return false;
         }
 
-        public static bool IsTrue(object? value)
-        {
-            if (value is bool b)
-                return b;
-
-            Console.WriteLine("Value is not boolean.");
-            Environment.Exit(1);
-            return false;
-        }
-
-        public static bool IsFalse(object? value) => !IsTrue(value);
-
 
         /******************************
             Multiplicative expressions
@@ -249,9 +236,9 @@ namespace interpreter.Functions
             return null;
         }
 
-        /******************************
+        /***********************************
             LOGICAL OPERATOR expressions
-        *******************************/
+        ************************************/
 
         public static object? And(object? left, object? right)
         {
@@ -273,7 +260,6 @@ namespace interpreter.Functions
             return null;
         }
 
-        
         public static object? Not(object? value)
         {
             if (value is bool b)
@@ -282,5 +268,22 @@ namespace interpreter.Functions
             Console.WriteLine($"Cannot perform logical NOT on type {value?.GetType()}");
             return null;
         }
+
+
+        /******************************
+            WHILE loop expressions
+        *******************************/
+
+        public static bool IsTrue(object? value)
+        {
+            if (value is bool b)
+                return b;
+
+            Console.WriteLine("Value is not boolean.");
+            Environment.Exit(1);
+            return false;
+        }
+
+        public static bool IsFalse(object? value) => !IsTrue(value);
     }
 }
