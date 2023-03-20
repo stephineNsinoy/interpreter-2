@@ -308,6 +308,7 @@ namespace interpreter
         {
             string symbol = context.unary().GetText();
             var expressionValue = Visit(context.expression());
+
             return Operator.UnaryValue(symbol, expressionValue);
         }
 
