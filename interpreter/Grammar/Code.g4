@@ -27,15 +27,13 @@ CHAR: 'CHAR';
 BOOL: 'BOOL';
 STRING: 'STRING' ;
 
-// block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
-
 constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
-INTEGER_VAL: ('-' | '+')? [0-9]+ ;
-FLOAT_VAL: ('-' | '+')? [0-9]+ '.' [0-9]+ ;
+INTEGER_VAL: [0-9]+ ;
+FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
 // STRING_VAL: '"' ( ~('"' | '\\') | '\\' . )* '"' ~('"' ('TRUE' | 'FALSE') '"')?;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
-CHAR_VAL: '\'' ~[\r\n\'] '\'' ; 
+CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
 
 ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? elseBlock? ;
@@ -61,24 +59,26 @@ expression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
     | 'NOT' expression                  #notExpression
+    | unary expression                  #unaryExpression
     | expression multOp expression      #multiplicativeExpression
     | expression addOp expression       #additiveExpression
     | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
-    | ESCAPE                            #escapeCodeExpression // still needs to be tested
+    | expression concat expression      #concatExpression
     | NEXTLINE                          #nextLineExpression
     ;
 
 multOp: '*' | '/' | '%' ;
-addOp: '+' | '-' | '&' ;
+addOp: '+' | '-' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
+unary: '+' | '-' ;
+concat: '&' ;
 logicOp: LOGICAL_OPERATOR ;
 
 LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
-ESCAPE: '[' .*? ']' ;
 NEXTLINE: '$' ;
 COMMENT: '#' ~[\r\n]* -> skip ;
 WS: [ \t\r]+ -> skip ;

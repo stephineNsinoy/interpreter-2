@@ -28,7 +28,7 @@ TODOS:
 
     GOODS   10.) Error handler when assigning values to a variable not conforming to data type
 
-IN-PROGRESS 11.) Implement the escape code []
+    GOODS   11.) Implement the escape code []
 
     GOODS   12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
 
@@ -42,3 +42,5 @@ IN-PROGRESS 11.) Implement the escape code []
 IN-PROGRESS 16.) WHILE statement implementation
 
             17.) Make an error handler for not declaring variables after begin code
+
+            18.) x=z=-4=4 -> Handle this error
