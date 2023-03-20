@@ -320,6 +320,12 @@ namespace interpreter
         // IN-PROGRESS
         public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
         {
+            if (Evaluator.EvaluateIfBlockDelimiters(context) == false)
+            {
+                Environment.Exit(1);
+                return null;
+            }
+            
             var condition = (bool?)Visit(context.expression());
 
             if (condition == null)
@@ -329,24 +335,16 @@ namespace interpreter
             }
 
             isIfBlockExecuted = false; // added boolean variable
-            var delimiter = Evaluator.EvaluateIfBlockDelimiters(context);
-
-            if(delimiter == false)
-            {
-                return null;
-            }
             
             if (condition == true)
             {
-                if (delimiter == true)
+                foreach (var line in context.line())
                 {
-                    foreach (var line in context.line())
-                    {
-                        Visit(line);
-                        isIfBlockExecuted = true;
-                    }
-                    return null;
+                    Visit(line);
+                    isIfBlockExecuted = true;
                 }
+                return null;
+                
             }
 
             // check if the ifBlock has not been executed
@@ -374,6 +372,12 @@ namespace interpreter
         // IN-PROGRESS
         public override object? VisitElseIfBlock([NotNull] CodeParser.ElseIfBlockContext context)
         {
+            if (Evaluator.EvaluateElseIfBlockDelimiters(context) == false)
+            {
+                Environment.Exit(1);
+                return null;
+            }
+            
             var condition = (bool?)Visit(context.expression());
 
             if (condition == null)
@@ -382,7 +386,7 @@ namespace interpreter
                 return null;
             }
 
-            if(isIfBlockExecuted == false)
+            if (isIfBlockExecuted == false)
             {
                 if (condition == true)
                 {
@@ -416,12 +420,18 @@ namespace interpreter
                     }
                 }
             }
-            return null; 
+            return null;
         }
 
         // IN-PROGRESS
         public override object? VisitElseBlock([NotNull] CodeParser.ElseBlockContext context)
         {
+            if(Evaluator.EvaluateElseBlockDelimiters(context) == false)
+            {
+                Environment.Exit(1);
+                return null;
+                
+            }
             foreach (var line in context.line())
             {
                 Visit(line);

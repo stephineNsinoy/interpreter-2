@@ -1,7 +1,16 @@
 # this is a sample program in CODE
 BEGIN CODE
 INT x = 5
-IF(x == 5)
+IF(x == 6)
+BEGIN IF
 	DISPLAY: "sa if block nisud"
+END IF 
+ELSE IF (x == 7)
+BEGIN IF
+	DISPLAY: "sa if else block ni sud"
 END IF
+ELSE
+BEGIN IF
+	DISPLAY: "sa else block nisud"
+#END IF
 END CODE
