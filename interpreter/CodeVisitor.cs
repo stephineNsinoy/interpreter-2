@@ -216,7 +216,6 @@ namespace interpreter
             {
                 "+" => Operator.Add(left, right),
                 "-" => Operator.Subtract(left, right),
-                "&" => Operator.Concatenate(left, right),
                 _ => throw new NotImplementedException()
             };
         }
@@ -277,14 +276,6 @@ namespace interpreter
         }
 
         // IN-PROGRESS
-        public override object? VisitEscapeCodeExpression([NotNull] CodeParser.EscapeCodeExpressionContext context)
-        {
-            var test = context.children;
-            string escapedText = context.GetText().Substring(1, context.GetText().Length - 2);
-            return escapedText;
-        }
-
-        // IN-PROGRESS
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
             Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
@@ -309,10 +300,23 @@ namespace interpreter
         }
 
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
+        { 
+            return "\n";
+        }
+
+        public override object? VisitUnaryExpression([NotNull] CodeParser.UnaryExpressionContext context)
         {
-            var newLine = context.GetText();
-            newLine = newLine.Replace("$", "\n");
-            return newLine;
+            string symbol = context.unary().GetText();
+            var expressionValue = Visit(context.expression());
+            return Operator.UnaryValue(symbol, expressionValue);
+        }
+
+        public override object? VisitConcatExpression([NotNull] CodeParser.ConcatExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            return Operator.Concatenate(left, right);
         }
     }
 }
