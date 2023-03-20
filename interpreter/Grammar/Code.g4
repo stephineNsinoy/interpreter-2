@@ -5,9 +5,13 @@ program: lineBlock EOF ;
 BEGIN_CODE: 'BEGIN CODE' ;
 END_CODE: 'END CODE' ;
 
+// GOODS
+BEGIN_IF: 'BEGIN IF' ;
+END_IF: 'END IF' ;
+
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: statement | ifBlock | whileBlock;
+line: statement | ifBlock | whileBlock | elseIfBlock | elseBlock ;
 
 statement: assignment | functionCall;
 
@@ -33,12 +37,10 @@ STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 CHAR_VAL: '\'' ~[\r\n\'] '\'' ; 
 
-// GOODS
-BEGIN_IF: 'BEGIN IF' ;
-END_IF: 'END IF' ;
 
-ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? ;
-elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
+ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? elseBlock? ;
+elseIfBlock: 'ELSE IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? elseBlock ;
+elseBlock: 'ELSE' BEGIN_IF line* END_IF ;
 
 // GOODS
 WHILE: 'WHILE' ;

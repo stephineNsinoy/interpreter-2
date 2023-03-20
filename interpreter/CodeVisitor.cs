@@ -24,6 +24,8 @@ namespace interpreter
         private bool _isBeginCodeVisited = false;
         private bool _isEndCodeVisited = false;
 
+        private bool isIfBlockExecuted = false;
+
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(Operator.Display);
@@ -313,6 +315,119 @@ namespace interpreter
             var newLine = context.GetText();
             newLine = newLine.Replace("$", "\n");
             return newLine;
+        }
+
+        // IN-PROGRESS
+        public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
+        {
+            var condition = (bool?)Visit(context.expression());
+
+            if (condition == null)
+            {
+                Console.WriteLine("Error: condition cannot be null");
+                return null;
+            }
+
+            isIfBlockExecuted = false; // added boolean variable
+            var delimiter = Evaluator.EvaluateIfBlockDelimiters(context);
+
+            if(delimiter == false)
+            {
+                return null;
+            }
+            
+            if (condition == true)
+            {
+                if (delimiter == true)
+                {
+                    foreach (var line in context.line())
+                    {
+                        Visit(line);
+                        isIfBlockExecuted = true;
+                    }
+                    return null;
+                }
+            }
+
+            // check if the ifBlock has not been executed
+            if (isIfBlockExecuted == false && condition == false)
+            {
+                var elseIfBlock = context.elseIfBlock();
+
+                if (elseIfBlock != null)
+                {
+                    Visit(elseIfBlock);
+                }
+                else
+                {
+                    var elseBlock = context.elseBlock();
+
+                    if (elseBlock != null)
+                    {
+                        Visit(elseBlock);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // IN-PROGRESS
+        public override object? VisitElseIfBlock([NotNull] CodeParser.ElseIfBlockContext context)
+        {
+            var condition = (bool?)Visit(context.expression());
+
+            if (condition == null)
+            {
+                Console.WriteLine("Error: condition cannot be null");
+                return null;
+            }
+
+            if(isIfBlockExecuted == false)
+            {
+                if (condition == true)
+                {
+                    foreach (var line in context.line())
+                    {
+                        Visit(line);
+                    }
+                }
+
+                else if (condition == false)
+                {
+                    var elseIfBlock = context.elseIfBlock();
+
+                    if (elseIfBlock == null)
+                    {
+                        var elseBlock = context.elseBlock();
+
+                        if (elseBlock == null)
+                        {
+                            Console.WriteLine("Error: NO Else Block Found");
+                        }
+
+                        else
+                        {
+                            return Visit(elseBlock);
+                        }
+                    }
+                    else
+                    {
+                        return Visit(elseIfBlock);
+                    }
+                }
+            }
+            return null; 
+        }
+
+        // IN-PROGRESS
+        public override object? VisitElseBlock([NotNull] CodeParser.ElseBlockContext context)
+        {
+            foreach (var line in context.line())
+            {
+                Visit(line);
+            }
+
+            return null;
         }
     }
 }

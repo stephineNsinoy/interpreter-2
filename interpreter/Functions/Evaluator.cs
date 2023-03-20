@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Tree;
 using interpreter.Grammar;
 using interpreter.Variables;
@@ -99,10 +100,43 @@ namespace interpreter
                 Console.WriteLine("Missing delimiters");
                 Environment.Exit(1);
             }
-
-
             return false;
         }
+
+        public static bool EvaluateIfBlockDelimiters(CodeParser.IfBlockContext context)
+        {
+            string beginIfDelimiter = "BEGIN IF";
+            string endIfDelimiter = "END IF";
+
+            string? beginIf = context.BEGIN_IF()?.GetText();
+            string? endIf = context.END_IF()?.GetText();
+
+            if (beginIf != null && endIf != null && beginIf.Equals(beginIfDelimiter) && endIf.Equals(endIfDelimiter))
+            {
+                Environment.Exit(1);
+                return true;
+            }
+
+            if (beginIf == null && endIf == null)
+            {
+                Console.WriteLine("Missing BEGIN IF and END IF delimiters");
+                return false;
+            }
+
+            else if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
+            {
+                Console.WriteLine("Missing BEGIN IF delimiter");
+                return false;
+            }
+
+            else if ((beginIf != null && beginIf.Equals(beginIfDelimiter)) && (endIf == null || !endIf.Equals(endIfDelimiter)))
+            {
+                Console.WriteLine("Missing END IF delimiter");
+                return false;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// Checks if statements are placed after BEGIN CODE

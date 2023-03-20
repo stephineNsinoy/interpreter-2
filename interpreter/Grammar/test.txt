@@ -1,12 +1,7 @@
 # this is a sample program in CODE
 BEGIN CODE
-INT x=1, y=2, z=5
-FLOAT f = 2.2
-CHAR a_1='n' 
-BOOL t="TRUE"
-BOOL a = NOT t
-x=y=4
-a_1='c'
-# this is a comment
-DISPLAY: x & t & z & $ & a_1 & a & $ & f & " " & [#] & "last"
+INT x = 5
+IF(x == 5)
+	DISPLAY: "sa if block nisud"
+END IF
 END CODE
