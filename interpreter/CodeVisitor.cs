@@ -275,6 +275,27 @@ namespace interpreter
             return Operator.Not(Visit(context.expression()));
         }
 
+        public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
+        { 
+            return "\n";
+        }
+
+        public override object? VisitUnaryExpression([NotNull] CodeParser.UnaryExpressionContext context)
+        {
+            string symbol = context.unary().GetText();
+            var expressionValue = Visit(context.expression());
+
+            return Operator.UnaryValue(symbol, expressionValue);
+        }
+
+        public override object? VisitConcatExpression([NotNull] CodeParser.ConcatExpressionContext context)
+        {
+            var left = Visit(context.expression(0));
+            var right = Visit(context.expression(1));
+
+            return Operator.Concatenate(left, right);
+        }
+
         // IN-PROGRESS
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
@@ -297,27 +318,6 @@ namespace interpreter
             }
 
             return base.VisitWhileBlock(context);
-        }
-
-        public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
-        { 
-            return "\n";
-        }
-
-        public override object? VisitUnaryExpression([NotNull] CodeParser.UnaryExpressionContext context)
-        {
-            string symbol = context.unary().GetText();
-            var expressionValue = Visit(context.expression());
-
-            return Operator.UnaryValue(symbol, expressionValue);
-        }
-
-        public override object? VisitConcatExpression([NotNull] CodeParser.ConcatExpressionContext context)
-        {
-            var left = Visit(context.expression(0));
-            var right = Visit(context.expression(1));
-
-            return Operator.Concatenate(left, right);
         }
     }
 }
