@@ -17,6 +17,30 @@ namespace interpreter.Functions
             return null;
         }
 
+        private static object? GetObject(object? obj)
+        {
+            if (obj is int)
+            {
+                return "INT";
+            }
+            else if (obj is float)
+            {
+                return "FLOAT";
+            }
+            else if (obj is char)
+            {
+                return "CHAR";
+            }
+            else if (obj is bool)
+            {
+                return "BOOL";
+            }
+            else
+            {
+                return "NULL";
+            }
+        }
+
         /***************************
             Additive expressions
         ***************************/
@@ -34,7 +58,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat + rInt;
 
-            Console.WriteLine($"Cannot add values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot add values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -53,7 +77,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat - rInt;
 
-            Console.WriteLine($"Cannot subtract values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot subtract values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -88,7 +112,7 @@ namespace interpreter.Functions
             if (left is string lString && right is string rString)
                 return lString == rString;
 
-            Console.WriteLine($"Cannot compare values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot compare values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return false;
         }   
@@ -112,7 +136,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat > rInt;
 
-            Console.WriteLine($"Cannot compare values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot compare values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return false;
         }
@@ -131,7 +155,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat < rInt;
 
-            Console.WriteLine($"Cannot compare values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot compare values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return false;
         }
@@ -150,7 +174,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat >= rInt;
 
-            Console.WriteLine($"Cannot compare values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot compare values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return false;
         }
@@ -169,7 +193,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat <= rInt;
 
-            Console.WriteLine($"Cannot compare values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot compare values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return false;
         }
@@ -193,7 +217,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat * rInt;
 
-            Console.WriteLine($"Cannot multiply values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot multiply values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -212,7 +236,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat / rInt;
 
-            Console.WriteLine($"Cannot divide values of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot divide values of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -231,7 +255,7 @@ namespace interpreter.Functions
             if (left is float lFloat && right is int rInt)
                 return lFloat % rInt;
 
-            Console.WriteLine($"Cannot get modulo of types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot get modulo of types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -245,7 +269,7 @@ namespace interpreter.Functions
             if (left is bool l && right is bool r)
                 return l && r;
 
-            Console.WriteLine($"Cannot perform logical AND on types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot perform logical AND on types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -255,7 +279,7 @@ namespace interpreter.Functions
             if (left is bool l && right is bool r)
                 return l || r;
 
-            Console.WriteLine($"Cannot perform logical OR on types {left?.GetType()} and {right?.GetType()}");
+            Console.WriteLine($"Cannot perform logical OR on types {GetObject(left)} and {GetObject(right)}");
             Environment.Exit(1);
             return null;
         }
@@ -265,7 +289,7 @@ namespace interpreter.Functions
             if (value is bool b)
                 return !b;
 
-            Console.WriteLine($"Cannot perform logical NOT on type {value?.GetType()}");
+            Console.WriteLine($"Cannot perform logical NOT on type {GetObject(value?.GetType())}");
             return null;
         }
 
