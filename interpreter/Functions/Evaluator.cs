@@ -114,29 +114,23 @@ namespace interpreter
             string? beginIf = context.BEGIN_IF()?.GetText();
             string? endIf = context.END_IF()?.GetText();
 
-            if ((beginIf != null && endIf != null) && (beginIf.Equals(beginIfDelimiter) == true && endIf.Equals(endIfDelimiter) == true))
-            {
-                return true;
-            }
-
-            else if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
+            if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing BEGIN IF delimiter in IF BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if ((beginIf != null && beginIf.Equals(beginIfDelimiter)) && (endIf == null || !endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing END IF delimiter in IF BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if (beginIf == null && endIf == null)
             {
                 Console.WriteLine("Missing BEGIN IF and END IF delimiters in IF BLOCK");
-                return false;
+                Environment.Exit(1);
             }
-            
             return false;
         }
 
@@ -151,29 +145,23 @@ namespace interpreter
             string? beginIf = context.BEGIN_IF()?.GetText();
             string? endIf = context.END_IF()?.GetText();
 
-            if ((beginIf != null && endIf != null) && (beginIf.Equals(beginIfDelimiter) == true && endIf.Equals(endIfDelimiter) == true))
-            {
-                return true;
-            }
-
-            else if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
+            if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing BEGIN IF delimiter in IF ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if ((beginIf != null && beginIf.Equals(beginIfDelimiter)) && (endIf == null || !endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing END IF delimiter in IF ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if (beginIf == null && endIf == null)
             {
                 Console.WriteLine("Missing BEGIN IF and END IF delimiters in IF ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
-
             return false;
         }
 
@@ -188,29 +176,23 @@ namespace interpreter
             string? beginIf = context.BEGIN_IF()?.GetText();
             string? endIf = context.END_IF()?.GetText();
 
-            if ((beginIf != null && endIf != null) && (beginIf.Equals(beginIfDelimiter) == true && endIf.Equals(endIfDelimiter) == true))
-            {
-                return true;
-            }
-
-            else if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
+            if ((beginIf == null || !beginIf.Equals(beginIfDelimiter)) && (endIf != null && endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing BEGIN IF delimiter in ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if ((beginIf != null && beginIf.Equals(beginIfDelimiter)) && (endIf == null || !endIf.Equals(endIfDelimiter)))
             {
                 Console.WriteLine("Missing END IF delimiter in ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
 
             else if (beginIf == null && endIf == null)
             {
                 Console.WriteLine("Missing BEGIN IF and END IF delimiters in ELSE BLOCK");
-                return false;
+                Environment.Exit(1);
             }
-
             return false;
         }
 
@@ -518,6 +500,44 @@ namespace interpreter
                 Console.WriteLine("Missing WHILE delimiters");
                 Environment.Exit(1);
             }
+        }
+
+        /// <summary>
+        /// Evaluates if the IF BLOCK is present
+        /// </summary>
+        public static bool? EvaluateIsIfBLockPresent(bool isIfBlockPresent)
+        {
+            if (isIfBlockPresent == false)
+            {
+                Console.WriteLine("Missing IF Block");
+                Environment.Exit(1);
+                return null;
+            }
+            return null;
+        } 
+
+        /// <summary>
+        /// Evaluates if the condition is null
+        /// </summary>
+        public static bool? EvaluateConditon(bool? condition)
+        {
+            if(condition == null)
+            {
+                Console.WriteLine("Condition cannot be null");
+                Environment.Exit(1);
+                return null;
+            }
+            return null;
+        }
+
+        public static bool? EvaluateElseBlock(CodeParser.ElseBlockContext context)
+        {
+            if(context == null)
+            {
+                Console.WriteLine("Error: No ELSE block found");
+                Environment.Exit(1);
+            }
+            return null;
         }
     }
 }
