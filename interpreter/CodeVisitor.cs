@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -25,6 +26,7 @@ namespace interpreter
         private bool _isEndCodeVisited = false;
 
         private bool isIfBlockExecuted = false;
+        private bool isIfBlockPresent = false;
 
         public CodeVisitor()
         {
@@ -322,44 +324,45 @@ namespace interpreter
             return base.VisitWhileBlock(context);
         }
 
-        // IN-PROGRESS
+        /// <summary>
+        /// Visits the if block, evaluates the condition, and executes
+        /// the necessary statements.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
         {
-            if (Evaluator.EvaluateIfBlockDelimiters(context) == false)
-            {
-                Environment.Exit(1);
-                return null;
-            }
-            
-            var condition = (bool?)Visit(context.expression());
+            Evaluator.EvaluateIfBlockDelimiters(context);
 
-            if (condition == null)
-            {
-                Console.WriteLine("Error: condition cannot be null");
-                return null;
-            }
+            var expression = context.expression();
 
-            isIfBlockExecuted = false; // added boolean variable
+            //gets the condition and evaluates if it is a boolean
+            var condition = Operator.IsTrue(Visit(expression));
             
+            //if condition is true, visit the if block
             if (condition == true)
             {
                 foreach (var line in context.line())
                 {
                     Visit(line);
                     isIfBlockExecuted = true;
+                    isIfBlockPresent = true;
                 }
                 return null;
                 
             }
 
-            // check if the ifBlock has not been executed
+            // check if the ifBlock has not been executed to go to if else and else statement
+            //depending on the condition
             if (isIfBlockExecuted == false && condition == false)
             {
+                isIfBlockPresent = true;
                 var elseIfBlock = context.elseIfBlock();
 
                 if (elseIfBlock != null)
                 {
                     Visit(elseIfBlock);
+                    
                 }
                 else
                 {
@@ -374,22 +377,20 @@ namespace interpreter
             return null;
         }
 
-        // IN-PROGRESS
+        /// <summary>
+        /// Visits the else if block and executes the necessary statements
+        /// </summary>
         public override object? VisitElseIfBlock([NotNull] CodeParser.ElseIfBlockContext context)
         {
-            if (Evaluator.EvaluateElseIfBlockDelimiters(context) == false)
-            {
-                Environment.Exit(1);
-                return null;
-            }
-            
-            var condition = (bool?)Visit(context.expression());
+            Evaluator.EvaluateElseIfBlockDelimiters(context);
+           
+            Evaluator.EvaluateIsIfBLockPresent(isIfBlockPresent);
 
-            if (condition == null)
-            {
-                Console.WriteLine("Error: condition cannot be null");
-                return null;
-            }
+            var expression = context.expression();
+
+            var condition = Operator.IsTrue(Visit(expression));
+
+            Evaluator.EvaluateConditon(condition);
 
             if (isIfBlockExecuted == false)
             {
@@ -409,15 +410,10 @@ namespace interpreter
                     {
                         var elseBlock = context.elseBlock();
 
-                        if (elseBlock == null)
-                        {
-                            Console.WriteLine("Error: NO Else Block Found");
-                        }
-
-                        else
-                        {
-                            return Visit(elseBlock);
-                        }
+                        Evaluator.EvaluateElseBlock(elseBlock);
+                        
+                        return Visit(elseBlock);
+                        
                     }
                     else
                     {
@@ -428,20 +424,19 @@ namespace interpreter
             return null;
         }
 
-        // IN-PROGRESS
+        /// <summary>
+        /// Visits the else block and executes the necessary statements
+        /// </summary>
         public override object? VisitElseBlock([NotNull] CodeParser.ElseBlockContext context)
         {
-            if(Evaluator.EvaluateElseBlockDelimiters(context) == false)
-            {
-                Environment.Exit(1);
-                return null;
-                
-            }
+            Evaluator.EvaluateElseBlockDelimiters(context);
+
+            Evaluator.EvaluateIsIfBLockPresent(isIfBlockPresent);
+
             foreach (var line in context.line())
             {
                 Visit(line);
             }
-
             return null;
         }
     }
