@@ -42,6 +42,13 @@ namespace interpreter
             return null;
         }
 
+        // IN-PROGRESS
+        public override object? VisitLine([NotNull] CodeParser.LineContext context)
+        {
+            Evaluator.EvaluateNewLine(context.GetText());
+            return base.VisitLine(context);
+        }
+
         /// <summary>
         /// Still needs to be double checked, test for all possbile cases
         /// </summary>
@@ -99,6 +106,7 @@ namespace interpreter
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
             Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
+            Evaluator.EvaluateNotValidDeclaration(context);
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
             var value = context.expression() == null ? null :(object?)Visit(context.expression());
@@ -176,28 +184,6 @@ namespace interpreter
             }
 
             return func(args);
-        }
-
-        //TODO
-        //visit unknown is not recognized by the program    
-        public override object? VisitUnknown([NotNull] CodeParser.UnknownContext context)
-        {
-            var blank_line = context.BLANK_LINE().GetText();
-
-            var colon = context.SEMI_COLON().GetText();
-
-            Console.WriteLine(blank_line);
-
-            if (blank_line != null)
-            {
-                Console.WriteLine("Every line must contain a single statement");
-            }
-            if (colon != null)
-            {
-                Console.WriteLine("\';\' is not a valid statement");
-            }
-
-            return null;
         }
 
         public override object? VisitParenthesizedExpression([NotNull] CodeParser.ParenthesizedExpressionContext context)
