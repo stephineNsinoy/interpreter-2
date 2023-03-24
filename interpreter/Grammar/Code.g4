@@ -2,17 +2,16 @@
 
 program: lineBlock EOF ;
 
-BEGIN_CODE: 'BEGIN CODE' ;
-END_CODE: 'END CODE' ;
+BEGIN_CODE: NEWLINE? 'BEGIN CODE' NEWLINE ;
+END_CODE: 'END CODE' NEWLINE?;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: statement | ifBlock | whileBlock;
+line: (statement | ifBlock | whileBlock) NEWLINE;
 
 statement: assignment | functionCall;
 
-declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
-// declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
+declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* NEWLINE ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
@@ -26,7 +25,6 @@ STRING: 'STRING' ;
 constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
 FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
-// STRING_VAL: '"' ( ~('"' | '\\') | '\\' . )* '"' ~('"' ('TRUE' | 'FALSE') '"')?;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
@@ -42,10 +40,10 @@ elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
 WHILE: 'WHILE' ;
 BEGIN_WHILE: 'BEGIN WHILE' ;
 END_WHILE: 'END WHILE' ;
-whileBlock: WHILE '(' expression ')' BEGIN_WHILE line* END_WHILE ;
+whileBlock: WHILE '(' expression ')' NEWLINE BEGIN_WHILE NEWLINE line* END_WHILE NEWLINE;
 
 functionCall
-    : DISPLAY (expression (',' expression)*)?
+    : DISPLAY (expression (',' expression)*)? 
     | SCAN IDENTIFIER (',' IDENTIFIER)* ;
 
 DISPLAY: 'DISPLAY:' ;
@@ -78,10 +76,7 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
-COMMENT: '#' ~[\r\n]* -> skip ;
-WS: [ \t\r]+ -> skip ;
 
-// STILL NEEDS TO BE TESTED
-unknown: SEMI_COLON | BLANK_LINE ;
-SEMI_COLON: ';' ;
-BLANK_LINE: [ \t]* [\r]? [\n] ; 
+COMMENT: '#' ~[\r\n]* NEWLINE? -> skip ;
+NEWLINE: [\r?\n]+ ;
+WS: [ \t\r]+ -> skip ;
