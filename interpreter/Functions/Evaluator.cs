@@ -530,6 +530,9 @@ namespace interpreter
             return null;
         }
 
+        /// <summary>
+        /// Evaluates the else block if it is present
+        /// </summary>
         public static bool? EvaluateElseBlock(CodeParser.ElseBlockContext context)
         {
             if(context == null)
