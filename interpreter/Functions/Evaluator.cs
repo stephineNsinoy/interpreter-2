@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Dfa;
 using Antlr4.Runtime.Tree;
@@ -30,9 +31,11 @@ namespace interpreter
             string endDelimiter = "END CODE";
             string? beginCode = context.BEGIN_CODE()?.GetText();
             string? endCode = context.END_CODE()?.GetText();
+            string missingBeginCode = "<missing BEGIN_CODE>";
+            string missingEndCode = "<missing END_CODE>";
 
             //Both delimiters are present in the code
-            if (beginCode != null && endCode != null && beginCode.Equals(beginDelimiter) && endCode.Equals(endDelimiter))
+            if (beginCode != null && endCode != null && beginCode != missingBeginCode && endCode != missingEndCode)
             {
                 // Visit the declarations and lines only if the delimiters are at the beginning and end of the program
                 if (context.declaration().Length == 0 && context.line().Length == 0)
@@ -45,49 +48,29 @@ namespace interpreter
                 // Declaration contains BEGIN CODE
                 if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(beginDelimiter)))
                 {
-                    Console.WriteLine($"{beginDelimiter} must only be at the beginning of the program");
-                    Environment.Exit(1);
-                }
-                //IEnumerable<string> lines = context.line().Select(l => l.GetText());
-                //foreach (var line in context.line())
-                //{
-                //    Console.WriteLine(line.GetText());
-                //}
-
-                // Line contains BEGIN CODE
-                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(beginDelimiter)))
-                {
-                    Console.WriteLine($"{beginDelimiter} must be only at the beginning of the program");
+                    Console.WriteLine($"BEGIN CODE must only be at the beginning of the program");
                     Environment.Exit(1);
                 }
 
                 //_isBeginCodeVisited = true;
 
-                // NOT WORKING
                 // Declaration contains END CODE
                 if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(endDelimiter) && d.GetText().IndexOf(endDelimiter) > 0))
                 {
-                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
-                    Environment.Exit(1);
-                }
-
-                // Line contains END CODE
-                if (context.line().Length > 0 && context.line().Any(l => l.GetText().Contains(endDelimiter) && l.GetText().IndexOf(endDelimiter) < l.GetText().Length - endDelimiter.Length))
-                {
-                    Console.WriteLine($"{endDelimiter} must be only at the end of the program");
+                    Console.WriteLine($"END CODE must be only at the end of the program");
                     Environment.Exit(1);
                 }
 
                 return true;
             }
-            else if ((beginCode == null || !beginCode.Equals(beginDelimiter)) && (endCode != null && endCode.Equals(endDelimiter)))
+            else if ((beginCode == null || beginCode == missingBeginCode) && (endCode != null || endCode != missingEndCode))
             {
                 // Only the end delimiter is present
                 Console.WriteLine("Missing BEGIN CODE delimiter");
                 Environment.Exit(1);
             }
 
-            else if ((beginCode != null && beginCode.Equals(beginDelimiter)) && (endCode == null || !endCode.Equals(endDelimiter)))
+            else if ((beginCode != null || beginCode != missingBeginCode) && (endCode == null || endCode == missingEndCode))
             {
                 // Only the begin delimiter is present
                 Console.WriteLine("Missing END CODE delimiter");
@@ -235,7 +218,7 @@ namespace interpreter
             };
         }
 
-
+        
         /************************************
               EVALUATION FOR DECLARATION
         *************************************/
@@ -286,8 +269,8 @@ namespace interpreter
             var secondValue = content[1].GetText();
             var lastValue = content[content.Count() - 1].GetText();
 
-            if (varDeclarations.Count == 0 || secondValue != varDeclarations[0].Name ||
-                string.IsNullOrWhiteSpace(lastValue) || lastValue == "," || lastValue == "=")
+            if (varDeclarations.Count == 0 || secondValue != varDeclarations[0].Name 
+                || lastValue == "," || lastValue == "=" || lastValue == "<missing NEWLINE>")
             {
                 Console.WriteLine("Invalid declaration statement");
                 Environment.Exit(1);
@@ -369,7 +352,6 @@ namespace interpreter
                 Environment.Exit(1);
             }
         }
-
 
         /************************************
               EVALUATION FOR FUNCTIONS
@@ -541,6 +523,33 @@ namespace interpreter
                 Environment.Exit(1);
             }
             return null;
+        }
+
+
+        // IN-PROGRESS
+        public static void EvaluateNewLine(string content)
+        {
+            if (content.Contains("<missing NEWLINE>"))
+            {
+                Console.WriteLine("Every line must contain only one statement");
+                Environment.Exit(1);
+            }
+        }
+
+        // IN-PROGRESS
+        public static void EvaluateNotValidDeclaration<T>(T context) where T : ParserRuleContext
+        {
+            bool hasInt = context.GetText().Contains("INT");
+            bool hasChar = context.GetText().Contains("CHAR");
+            bool hasBool = context.GetText().Contains("BOOL");
+            bool hasString = context.GetText().Contains("STRING");
+            bool hasFloat = context.GetText().Contains("FLOAT");
+
+            if (hasInt || hasBool || hasChar || hasString || hasFloat)
+            {
+                Console.WriteLine("Declaration must only be placed after BEGIN CODE");
+                Environment.Exit(1);
+            }
         }
     }
 }
