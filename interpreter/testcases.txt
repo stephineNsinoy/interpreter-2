@@ -23,9 +23,7 @@ END CODE
 #comment
 #comment
 
-
-
-2. NOT GOODS
+2. GOODS
 BEGIN CODE #comment
 INT xyz =5, abc=100
 xyz= ((abc *5)/10 + 10) * -1 
@@ -51,5 +49,13 @@ BEGIN CODE
 INT xyz =5, abc=100
 xyz= ((abc *5)/10 + 10) * -1
 abc=xyz==4=4
+DISPLAY: [[] & xyz & []]            
+END CODE
+
+6.NOT GOODS
+BEGIN CODE
+INT xyz =5, abc=100
+xyz= ((abc *5)/10 + 10) * -1
+abc=xyz=4=4
 DISPLAY: [[] & xyz & []]            
 END CODE

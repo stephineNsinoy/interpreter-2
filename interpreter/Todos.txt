@@ -1,22 +1,23 @@
 TODOS:
     GOODS   1.) Make a function that will check if the declared variable is comaptible with the data type
 
-            2.) Complete the Display function
+    GOODS   2.) Complete the Display function
                   GOODS - Can recognize '$' as newline
 
             3.) Make a Scan function
 
-            4.) implement the expressions operators
+    GOODS   4.) implement the expressions operators
                   GOODS -  Additive 
                   GOODS -  Comparative
                   GOODS -  Multiplicative 
                   GOODS -  With Parenthesis 
                   GOODS -  Logical
                   GOODS -  Unary
+                  GOODS -  Concat
 
-            5.) Test if begin and end code cannot be placed anywhere
-                        - Error handler if there is a BEGIN CODE inside or outside
-                        - Error handler if there are declarations or lines after END 
+    GOODS   5.) Test if begin and end code cannot be placed anywhere
+                  GOODS - Error handler if there is a BEGIN CODE inside or outside
+                  GOODS - Error handler if there are statements after END CODE
 
     GOODS   6.) INT y,x --- apply logic that will accept this declaration
 
@@ -45,4 +46,4 @@ IN-PROGRESS 16.) WHILE statement implementation
 
             18.) x=z=-4=4 -> Handle this error
 
-            19.) 1 statement per line only
+    GOODS   19.) 1 statement per line only
