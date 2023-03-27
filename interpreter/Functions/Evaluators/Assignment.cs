@@ -15,13 +15,13 @@
             {
                 string variables = string.Join("=", varNameArray);
                 Console.WriteLine($"SYNTAX ERROR: Incorrect statement: {variables}=?");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
 
             if (content.Contains("=="))
             {
                 Console.WriteLine("SYNTAX ERROR: Invalid assignment statement - consecutive equals sign detected");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -34,7 +34,7 @@
             if (!Variable.ContainsKey(varName))
             {
                 Console.WriteLine($"ERROR: Variable {varName} is not defined");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
     }

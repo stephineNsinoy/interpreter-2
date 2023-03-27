@@ -11,7 +11,7 @@
             if (newline == null)
             {
                 Console.WriteLine("SYNTAX ERROR: Every line must contain only one statement");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
     }

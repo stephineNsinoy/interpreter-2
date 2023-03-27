@@ -20,7 +20,7 @@
                 return lFloat + rInt;
 
             Console.WriteLine($"Cannot add values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
 
@@ -39,7 +39,7 @@
                 return lFloat - rInt;
 
             Console.WriteLine($"Cannot subtract values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
     }

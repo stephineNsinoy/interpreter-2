@@ -12,7 +12,7 @@
                 return l && r;
 
             Console.WriteLine($"Cannot perform logical AND on types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
 
@@ -22,7 +22,7 @@
                 return l || r;
 
             Console.WriteLine($"Cannot perform logical OR on types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
 

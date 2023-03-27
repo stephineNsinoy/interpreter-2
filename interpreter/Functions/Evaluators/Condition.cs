@@ -12,7 +12,7 @@
                 return b;
 
             Console.WriteLine("ERROR: Value is not boolean.");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
 

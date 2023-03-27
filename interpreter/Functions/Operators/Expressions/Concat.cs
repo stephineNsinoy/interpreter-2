@@ -7,7 +7,7 @@
             return $"{left}{right}";
 
             //Console.WriteLine($"Cannot concatenate values of types {left?.GetType()} and {right?.GetType()}");
-            //Environment.Exit(1);
+            //Environment.Exit(400);
             //return null;
         }
     }

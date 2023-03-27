@@ -32,7 +32,7 @@
             else
             {
                 Console.WriteLine($"ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
-                Environment.Exit(1);
+               Environment.Exit(400);
             }
 
             return null;

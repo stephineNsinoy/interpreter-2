@@ -14,13 +14,13 @@
             if (!Variable.ContainsKey(name))
             {
                 Console.WriteLine($"ERROR: Function {name} is not defined.");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
 
             if (Variable[name] is not Func<object?[], object?>)
             {
                 Console.WriteLine($"ERROR: {name} is not a function.");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
     }

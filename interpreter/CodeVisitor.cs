@@ -158,8 +158,8 @@ namespace interpreter
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
 
-            Console.WriteLine("Unknown value type.");
-            Environment.Exit(1);
+            Console.WriteLine("ERROR: Unknown value type.");
+            Environment.Exit(400);
             return null;
         }
 
@@ -177,12 +177,12 @@ namespace interpreter
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
 
             if (Variable[name] is not Func<object?[], object?> func)
             {
-                throw new Exception($"Variable {name} is not a function.");
+                throw new Exception($"ERROR: {name} is not a function.");
             }
 
             return func(args);

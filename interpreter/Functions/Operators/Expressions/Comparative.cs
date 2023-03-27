@@ -26,7 +26,7 @@
                 return lBool == rBool;
 
             Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
 
@@ -50,7 +50,7 @@
                 return lFloat > rInt;
 
             Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
 
@@ -69,7 +69,7 @@
                 return lFloat < rInt;
 
             Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
 
@@ -88,7 +88,7 @@
                 return lFloat >= rInt;
 
             Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
 
@@ -107,7 +107,7 @@
                 return lFloat <= rInt;
 
             Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return false;
         }
     }

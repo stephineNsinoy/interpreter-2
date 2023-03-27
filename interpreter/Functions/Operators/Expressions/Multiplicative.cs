@@ -21,7 +21,7 @@
                 return lFloat * rInt;
 
             Console.WriteLine($"Cannot multiply values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
 
@@ -40,7 +40,7 @@
                 return lFloat / rInt;
 
             Console.WriteLine($"Cannot divide values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
 
@@ -59,7 +59,7 @@
                 return lFloat % rInt;
 
             Console.WriteLine($"Cannot get modulo of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
-            Environment.Exit(1);
+            Environment.Exit(400);
             return null;
         }
     }

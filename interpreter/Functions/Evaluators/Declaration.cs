@@ -47,7 +47,7 @@ namespace interpreter.Functions.Evaluators
                 if (name == "<missing IDENTIFIER>")
                 {
                     Console.WriteLine("SYNTAX ERROR - MISSING: IDENTIFIER!");
-                    Environment.Exit(1);
+                    Environment.Exit(400);
                 }
 
                 // Checks if value assigned corresponds to data type
@@ -59,7 +59,7 @@ namespace interpreter.Functions.Evaluators
             }
             if (!isValid)
             {
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -80,7 +80,7 @@ namespace interpreter.Functions.Evaluators
             if (varDeclarations.Count == 0 || secondValue != varDeclarations[0].Name)
             {
                 Console.WriteLine("Invalid declaration statement");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -94,7 +94,7 @@ namespace interpreter.Functions.Evaluators
             if (string.IsNullOrWhiteSpace(expression) || expression == "," || expression == "=")
             {
                 Console.WriteLine("SYNTAX ERROR: Value is missing");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -109,7 +109,7 @@ namespace interpreter.Functions.Evaluators
             if (redeclaredVars.Any())
             {
                 Console.WriteLine($"ERROR: Variable {string.Join(" - ", redeclaredVars)} is already declared");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -126,7 +126,7 @@ namespace interpreter.Functions.Evaluators
             if (content == "=")
             {
                 Console.WriteLine("SYNTAX ERROR: Invalid declaration statement");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
 
@@ -142,7 +142,7 @@ namespace interpreter.Functions.Evaluators
             if (hasInt || hasBool || hasChar || hasString || hasFloat)
             {
                 Console.WriteLine("SYNTAX ERROR: Declaration must only be placed after BEGIN CODE");
-                Environment.Exit(1);
+                Environment.Exit(400);
             }
         }
     }
