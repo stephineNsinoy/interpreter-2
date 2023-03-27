@@ -1,0 +1,50 @@
+1.NOT GOODS
+BEGIN CODE
+#comment
+#comment
+#comment
+INT xyz =5, abc=100
+#comment
+#comment
+#comment
+xyz= ((abc *5)/10 + 10) * -1 
+#comment
+#comment
+#comment
+DISPLAY: [[] & xyz & []] 
+#comment
+#comment
+#comment
+END CODE
+#comment
+#comment
+#comment
+
+2. NOT GOODS
+BEGIN CODE #comment
+INT xyz =5, abc=100
+xyz= ((abc *5)/10 + 10) * -1 
+DISPLAY: [[] & xyz & []] 
+END CODE
+
+3. GOODS
+BEGIN CODE
+INT xyz =5, abc=100 
+xyz= ((abc *5)/10 + 10) * -1 DISPLAY: [[] & xyz & []] 
+END CODE
+
+4. NOT GOODS
+BEGIN CODE
+INT xyz =5, abc=100
+xyz= ((abc *5)/10 + 10) * -1
+INT xyz =2
+DISPLAY: [[] & xyz & []]            
+END CODE
+
+5.GOODS
+BEGIN CODE
+INT xyz =5, abc=100
+xyz= ((abc *5)/10 + 10) * -1
+abc=xyz==4=4
+DISPLAY: [[] & xyz & []]            
+END CODE

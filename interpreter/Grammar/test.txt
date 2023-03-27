@@ -1,12 +1,20 @@
-# this is a sample program in CODE
 BEGIN CODE
-INT x=1, y=2, z=5
-FLOAT f = 2.2
-CHAR a_1='n' 
-BOOL t="TRUE"
-BOOL a = NOT t
-x=y=4
-a_1='c'
-# this is a comment
-DISPLAY: x & t & z & $ & a_1 & a & $ & f & " " & [#] & "last"
+#comment
+#comment
+#comment
+INT xyz =5, abc=100
+#comment
+#comment
+#comment
+xyz= ((abc *5)/10 + 10) * -1 
+#comment	
+#comment
+#comment
+DISPLAY: [[] & xyz & []] 
+#comment
+#comment
+#comment
 END CODE
+#comment
+#comment
+#comment
