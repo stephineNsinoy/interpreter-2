@@ -1,17 +1,20 @@
-1.NOT GOODS
-BEGIN CODE
+1.GOODS
 #comment
 #comment
 #comment
-INT xyz =5, abc=100
+BEGIN CODE #comments
 #comment
 #comment
 #comment
-xyz= ((abc *5)/10 + 10) * -1 
+INT xyz =5, abc=100 #comment
 #comment
 #comment
 #comment
-DISPLAY: [[] & xyz & []] 
+xyz= ((abc *5)/10 + 10) * -1 #comment
+#comment
+#comment
+#comment
+DISPLAY: [[] & xyz & []] #comment
 #comment
 #comment
 #comment
@@ -19,6 +22,8 @@ END CODE
 #comment
 #comment
 #comment
+
+
 
 2. NOT GOODS
 BEGIN CODE #comment
