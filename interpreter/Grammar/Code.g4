@@ -2,16 +2,16 @@
 
 program: lineBlock EOF ;
 
-BEGIN_CODE: NEWLINE? 'BEGIN CODE' NEWLINE ;
-END_CODE: 'END CODE' NEWLINE?;
+BEGIN_CODE: NEWLINE? 'BEGIN CODE' ;
+END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: (statement | ifBlock | whileBlock) NEWLINE;
+line: NEWLINE? (statement | ifBlock | whileBlock);
 
 statement: assignment | functionCall;
 
-declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* NEWLINE ;
+declaration: NEWLINE? dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
@@ -77,6 +77,6 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 
-COMMENT: '#' ~[\r\n]* NEWLINE? -> skip ;
+COMMENT: NEWLINE? '#' ~[\r\n]* NEWLINE? -> skip ;
 NEWLINE: [\r?\n]+ ;
 WS: [ \t\r]+ -> skip ;
