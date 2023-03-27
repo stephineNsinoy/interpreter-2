@@ -77,6 +77,6 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 
-COMMENT: NEWLINE? '#' ~[\r\n]* NEWLINE? -> skip ;
-NEWLINE: [\r?\n]+ ;
-WS: [ \t\r]+ -> skip ;
+COMMENT: NEWLINE? '#' ~[\r?\n]*-> channel(HIDDEN);
+NEWLINE: ('\r'? '\n')+;
+WS: [ \t]+ -> skip ;
