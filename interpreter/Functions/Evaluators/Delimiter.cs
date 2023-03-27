@@ -9,40 +9,80 @@ namespace interpreter.Functions.Evaluators
         *************************************/
 
         /// <summary>
-        /// Evaluates BEGIN CODE and END CODE delimiters
+        /// Evaluates BEGIN CODE and END CODE delimeters for program
+        /// </summary>
+        public static void EvaluateProgramDelimiter(CodeParser.ProgramContext context)
+        {
+            var content = context.GetText();
+            var start = context.start.Text;
+            var end = context.stop.Text;
+            string beginDelimiter = "BEGIN CODE";
+            string endDelimiter = "END CODE";
+            string EOF = "<EOF>";
+            int beginCodeCount = content.Split("BEGIN CODE").Length - 1;
+            int endCodeCount = content.Split("END CODE").Length - 1;
+
+            // more than 1 BEGIN CODE
+            if (beginCodeCount > 1 && endCodeCount == 1)
+            {
+                Console.WriteLine($"SYNTAX ERROR: {beginCodeCount} BEGIN CODE delimeter found");
+                Environment.Exit(1);
+            }
+
+            // More than 1 END CODE
+            else if (beginCodeCount == 1 && endCodeCount > 1)
+            {
+                Console.WriteLine($"SYNTAX ERROR: {endCodeCount} END CODE delimeter found");
+                Environment.Exit(1);
+            }
+
+            // More than 1 BEGIN CODE and END CODE
+            else if (beginCodeCount > 1 && endCodeCount > 1)
+            {
+                Console.WriteLine("SYNTAX ERROR: Multiple CODE delimeters found");
+                Environment.Exit(1);
+            }
+
+            // Starting delimeter is not BEGIN CODE
+            if (!(start.Equals(beginDelimiter) || (start.Contains("\r\n") && start.Contains(beginDelimiter))))
+            {
+                Console.WriteLine("SYNTAX ERROR: Invalid starting delimeter");
+                Environment.Exit(1);
+            }
+
+            // Ending delimeter is not END CODE
+            if (!(end.Equals(endDelimiter) || end.Equals(EOF) || end.Contains("\r\n")))
+            {
+                Console.WriteLine("SYNTAX ERROR: Invalid ending delimeter");
+                Environment.Exit(1);
+            }
+        }
+
+        /// <summary>
+        /// Evaluates BEGIN CODE and END CODE delimiters in lineBlock
         /// </summary>
         public static bool EvaluateCodeDelimiter(CodeParser.LineBlockContext context)
         {
             string beginDelimiter = "BEGIN CODE";
-            string endDelimiter = "END CODE";
             string? beginCode = context.BEGIN_CODE()?.GetText();
             string? endCode = context.END_CODE()?.GetText();
             string missingBeginCode = "<missing BEGIN_CODE>";
             string missingEndCode = "<missing END_CODE>";
+            string start = context.start.Text;
 
-            //Both delimiters are present in the code
+            if (!(start.Equals(beginDelimiter) || (start.Contains("\r\n") && start.Contains(beginDelimiter))))
+            {
+                Console.WriteLine("SYNTAX ERROR: Invalid starting delimeter");
+                Environment.Exit(1);
+            }
+
+            // Both delimiters are present in the code
             if (beginCode != null && endCode != null && beginCode != missingBeginCode && endCode != missingEndCode)
             {
                 // Visit the declarations and lines only if the delimiters are at the beginning and end of the program
                 if (context.declaration().Length == 0 && context.line().Length == 0)
                 {
                     Console.WriteLine("SYNTAX ERROR: CODE not recognized - Cannot be executed");
-                    Environment.Exit(1);
-                }
-
-                // Declaration contains BEGIN CODE
-                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(beginDelimiter)))
-                {
-                    Console.WriteLine($"SYNTAX ERROR: BEGIN CODE must only be at the beginning of the program");
-                    Environment.Exit(1);
-                }
-
-                //_isBeginCodeVisited = true;
-
-                // Declaration contains END CODE
-                if (context.declaration().Length > 0 && context.declaration().Any(d => d.GetText().Contains(endDelimiter) && d.GetText().IndexOf(endDelimiter) > 0))
-                {
-                    Console.WriteLine($" SYNTAX ERROR:END CODE must be only at the end of the program");
                     Environment.Exit(1);
                 }
 
