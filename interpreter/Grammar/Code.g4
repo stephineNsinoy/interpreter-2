@@ -70,13 +70,11 @@ compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
 unary: '+' | '-' ;
 concat: '&' ;
 logicOp: LOGICAL_OPERATOR ;
-
 LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
-
 COMMENT: NEWLINE? '#' ~[\r?\n]*-> channel(HIDDEN);
 NEWLINE: ('\r'? '\n')+;
 WS: [ \t]+ -> skip ;
