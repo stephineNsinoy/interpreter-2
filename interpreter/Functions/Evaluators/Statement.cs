@@ -3,7 +3,6 @@
     internal class Statement
     {
         /// <summary>
-        /// IN-PROGRESS
         /// Evaluates if new line exists per line
         /// </summary>
         public static void EvaluateNewLine(string? newline)

@@ -11,7 +11,6 @@ namespace interpreter.Functions.Evaluators
         *************************************/
 
         /// <summary>
-        /// GOODS
         /// Evaluates if value conforms to data type
         /// </summary>
         private static bool EvaluateDataType(string dataType, object? value)

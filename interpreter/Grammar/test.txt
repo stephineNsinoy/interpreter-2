@@ -1,16 +1,19 @@
-BEGIN CODE
 #comment
 #comment
 #comment
-INT xyz =5, abc=100
+BEGIN CODE #comments
 #comment
 #comment
 #comment
-xyz= ((abc *5)/10 + 10) * -1 
-#comment	
+INT xyz =5, abc=100 #comment
 #comment
 #comment
-DISPLAY: [[] & xyz & []] 
+#comment
+xyz= ((abc *5)/10 + 10) * -1 #comment
+#comment
+#comment
+#comment
+DISPLAY: [[] & xyz & []] #comment
 #comment
 #comment
 #comment

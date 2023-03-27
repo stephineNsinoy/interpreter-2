@@ -26,7 +26,6 @@
         }
 
         /// <summary>
-        /// GOODS
         /// Checks if variable is not defined
         /// </summary>
         public static void EvaluateIsVariableDefined(string varName, Dictionary<string, object?> Variable)
