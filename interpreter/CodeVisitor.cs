@@ -24,6 +24,13 @@ namespace interpreter
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
+        public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
+        {
+            Delimiter.EvaluateProgramDelimiter(context);
+
+            return base.VisitProgram(context);
+        }
+
         public override object? VisitLineBlock([NotNull] CodeParser.LineBlockContext context)
         {
             if (Delimiter.EvaluateCodeDelimiter(context))
