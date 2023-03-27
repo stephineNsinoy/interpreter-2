@@ -1,15 +1,9 @@
 ﻿using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using interpreter.Functions;
+using interpreter.Functions.Evaluators;
+using interpreter.Functions.Operators;
+using interpreter.Functions.Operators.Expressions;
 using interpreter.Grammar;
 using interpreter.Variables;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace interpreter
 {
@@ -26,13 +20,13 @@ namespace interpreter
 
         public CodeVisitor()
         {
-            Variable["DISPLAY:"] = new Func<object?[], object?>(Operator.Display);
+            Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
         public override object? VisitLineBlock([NotNull] CodeParser.LineBlockContext context)
         {
-            if (Evaluator.EvaluateCodeDelimiter(context))
+            if (Delimiter.EvaluateCodeDelimiter(context))
             {
                 _isBeginCodeVisited = true;
                 _isEndCodeVisited = true;
@@ -45,7 +39,7 @@ namespace interpreter
         // IN-PROGRESS
         public override object? VisitLine([NotNull] CodeParser.LineContext context)
         {
-            Evaluator.EvaluateNewLine(context.GetText());
+            Statement.EvaluateNewLine(context.NEWLINE()?.GetText());
             return base.VisitLine(context);
         }
 
@@ -54,7 +48,8 @@ namespace interpreter
         /// </summary>
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
-            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
+            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
+            Statement.EvaluateNewLine(context.NEWLINE()?.GetText());
 
             string dataType = context.dataType().GetText();
 
@@ -64,26 +59,27 @@ namespace interpreter
                                  .Select(id => new VariableDeclaration { Name = id.GetText(), Value = null })
                                  .ToList();
 
-            Evaluator.EvaluateDeclarationContent(varDeclarations, content);
+
+            Declaration.EvaluateDeclarationContent(varDeclarations, content);
 
             var expressionList = context.expression()?.ToList() ?? new List<CodeParser.ExpressionContext>();
             var valueIndex = 0;
 
-            Evaluator.EvaluateIsVariableReDeclared(varDeclarations, Variable);
+            Declaration.EvaluateIsVariableReDeclared(varDeclarations, Variable);
 
             // Iterate the declaration content
-            for (int i = 0; i < content.Count(); i++)
+            for (int i = 0; i < content.Count; i++)
             {
                 foreach (var varDecl in varDeclarations)
                 {
                     if (varDecl.Name == content[i].GetText())
                     {
-                        Evaluator.EvaluateIsDeclarationValid(content[i - 1].GetText());
+                        Declaration.EvaluateIsDeclarationValid(content[i - 1].GetText());
 
                         //Check if the variable has an initial value
-                        if (i != content.Count() - 1 && content[i + 1].GetText() == "=")
+                        if (i != content.Count - 1 && content[i + 1].GetText() == "=")
                         {
-                            Evaluator.EvaluateIsValuePresent(expressionList[valueIndex].GetText());
+                            Declaration.EvaluateIsValuePresent(expressionList[valueIndex].GetText());
 
                             if (expressionList.Count > valueIndex)
                             {
@@ -96,7 +92,7 @@ namespace interpreter
                     Variable[varDecl.Name!] = varDecl.Value;
                     VariableDeclaration[varDecl.Name!] = dataType;
 
-                    Evaluator.EvaluateDeclaration(dataType, new string[] { varDecl.Name! }, varDecl.Value);
+                    Declaration.EvaluateDeclaration(dataType, new string[] { varDecl.Name! }, varDecl.Value);
                 }
             }
 
@@ -105,24 +101,23 @@ namespace interpreter
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
-            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
-            Evaluator.EvaluateNotValidDeclaration(context);
+            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
+            Declaration.EvaluateNotValidDeclaration(context);
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
             var value = context.expression() == null ? null :(object?)Visit(context.expression());
 
             foreach (var name in varNameArray)
             {
-                Evaluator.EvaluateIsVariableDefined(name, Variable);
+                Assignment.EvaluateIsVariableDefined(name, Variable);
             
                 var dataType = VariableDeclaration[name];
 
-                Evaluator.EvaluateDeclaration(dataType, varNameArray, value);
+                Assignment.EvaluateAssignment(varNameArray, value, context.GetText());
+                Declaration.EvaluateDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
-
-            Evaluator.EvaluateAssignment(varNameArray, value);
 
             return null;
         } 
@@ -131,7 +126,7 @@ namespace interpreter
         {
             var varName = context.IDENTIFIER().GetText();
 
-            Evaluator.EvaluateIsVariableDefined(varName, Variable);
+            Assignment.EvaluateIsVariableDefined(varName, Variable);
 
             return Variable[varName];
         }
@@ -147,7 +142,7 @@ namespace interpreter
             if (context.STRING_VAL() is { } s)
             {
                 if(s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\""))
-                    return Evaluator.EvaluateBool(s.GetText());
+                    return FunctionsOp.GetBool(s.GetText());
                 
                 else
                     return s.GetText()[1..^1];
@@ -163,14 +158,14 @@ namespace interpreter
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            Evaluator.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
+            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
             var args = context.expression().Select(Visit).ToArray();
 
             try
             {
-                Evaluator.EvaluateIsFunctionDefined(name, Variable);
+                Function.EvaluateIsFunctionDefined(name, Variable);
             }
             catch (Exception ex)
             {
@@ -200,8 +195,8 @@ namespace interpreter
 
             return op switch
             {
-                "+" => Operator.Add(left, right),
-                "-" => Operator.Subtract(left, right),
+                "+" => Additive.Add(left, right),
+                "-" => Additive.Subtract(left, right),
                 _ => throw new NotImplementedException()
             };
         }
@@ -215,12 +210,12 @@ namespace interpreter
 
             return op switch
             {
-                "==" => Operator.IsEqual(left, right),
-                "<>" => Operator.IsNotEqual(left, right),
-                ">" => Operator.GreaterThan(left, right),
-                "<" => Operator.LessThan(left, right),
-                ">=" => Operator.GreaterThanOrEqual(left, right),
-                "<=" => Operator.LessThanOrEqual(left, right),
+                "==" => Comparative.IsEqual(left, right),
+                "<>" => Comparative.IsNotEqual(left, right),
+                ">" => Comparative.GreaterThan(left, right),
+                "<" => Comparative.LessThan(left, right),
+                ">=" => Comparative.GreaterThanOrEqual(left, right),
+                "<=" => Comparative.LessThanOrEqual(left, right),
                 _ => throw new NotImplementedException()
             };
         }
@@ -234,9 +229,9 @@ namespace interpreter
 
             return op switch
             {
-                "*" => Operator.Multiply(left, right),
-                "/" => Operator.Divide(left, right),
-                "%" => Operator.Modulo(left, right),
+                "*" => Multiplicative.Multiply(left, right),
+                "/" => Multiplicative.Divide(left, right),
+                "%" => Multiplicative.Modulo(left, right),
                 _ => throw new NotImplementedException()
             };
         }
@@ -250,15 +245,15 @@ namespace interpreter
             
             return op switch
             {
-                "AND" => Operator.And(left, right),
-                "OR" => Operator.Or(left, right),
+                "AND" => Logical.And(left, right),
+                "OR" => Logical.Or(left, right),
                 _ => throw new NotImplementedException()
             };
         }
 
         public override object? VisitNotExpression([NotNull] CodeParser.NotExpressionContext context)
         {
-            return Operator.Not(Visit(context.expression()));
+            return Logical.Not(Visit(context.expression()));
         }
 
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
@@ -271,7 +266,7 @@ namespace interpreter
             string symbol = context.unary().GetText();
             var expressionValue = Visit(context.expression());
 
-            return Operator.UnaryValue(symbol, expressionValue);
+            return Unary.UnaryValue(symbol, expressionValue);
         }
 
         public override object? VisitConcatExpression([NotNull] CodeParser.ConcatExpressionContext context)
@@ -279,18 +274,18 @@ namespace interpreter
             var left = Visit(context.expression(0));
             var right = Visit(context.expression(1));
 
-            return Operator.Concatenate(left, right);
+            return Concat.Concatenate(left, right);
         }
 
         // IN-PROGRESS
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
             Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
-               ? Operator.IsTrue
-               : Operator.IsFalse
+               ? Condition.IsTrue
+               : Condition.IsFalse
            ;
 
-            Evaluator.EvaluateWhileDelimiter(context);
+            Delimiter.EvaluateWhileDelimiter(context);
 
             if (condition(Visit(context.expression())))
             {
