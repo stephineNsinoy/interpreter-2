@@ -45,7 +45,7 @@ namespace interpreter.Functions.Evaluators
                 // Checks if only data type is specified no identifier
                 if (name == "<missing IDENTIFIER>")
                 {
-                    Console.WriteLine("SYNTAX ERROR - MISSING: IDENTIFIER!");
+                    Console.WriteLine("SYNTAX ERROR - MISSING: Identifier");
                     Environment.Exit(400);
                 }
 
@@ -90,7 +90,7 @@ namespace interpreter.Functions.Evaluators
         /// </summary>
         public static void EvaluateIsValuePresent(string expression)
         {
-            if (string.IsNullOrWhiteSpace(expression) || expression == "," || expression == "=")
+            if (string.IsNullOrWhiteSpace(expression) || expression.Contains(",") || expression == "=")
             {
                 Console.WriteLine("SYNTAX ERROR: Value is missing");
                 Environment.Exit(400);

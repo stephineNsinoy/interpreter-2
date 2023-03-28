@@ -77,4 +77,4 @@ IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 COMMENT: NEWLINE? '#' ~[\r?\n]*-> channel(HIDDEN);
 NEWLINE: ('\r'? '\n')+;
-WS: [ \t]+ -> skip ;
+WS: [\t]+ -> skip ;

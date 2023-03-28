@@ -17,12 +17,6 @@
                 Console.WriteLine($"SYNTAX ERROR: Incorrect statement: {variables}=?");
                 Environment.Exit(400);
             }
-
-            if (content.Contains("=="))
-            {
-                Console.WriteLine("SYNTAX ERROR: Invalid assignment statement - consecutive equals sign detected");
-                Environment.Exit(400);
-            }
         }
 
         /// <summary>
