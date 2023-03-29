@@ -3,21 +3,21 @@
 	#comment
 	#comment
 	BEGIN CODE #comments
-		#comment
-		#comment
-		#comment
-		INT xyz =5, abc=100 #comment
-		#comment
-		#comment
-		#comment
-		xyz= ((abc *5)/10 + 10) * -1 #comment
-		#comment
-		#comment
-		#comment
-		DISPLAY: [[] & xyz & []] #comment
-		#comment
-		#comment
-		#comment
+	#comment
+	#comment
+	#comment
+	INT xyz =5, abc=100 #comment
+	#comment
+	#comment
+	#comment
+	xyz= ((abc *5)/10 + 10) * -1 #comment
+	#comment
+	#comment
+	#comment
+	DISPLAY: [[] & xyz & []] #comment
+	#comment
+	#comment
+	#comment
 	END CODE
 	#comment
 	#comment
@@ -36,7 +36,7 @@
 		xyz= ((abc *5)/10 + 10) * -1 DISPLAY: [[] & xyz & []] 
 	END CODE
 
-4. NOT GOODS  -- Add in the line grammar a declaration and check if it exists and still can declare
+4. GOODS  -- Add in the line grammar a declaration and check if it exists and still can declare
 	BEGIN CODE
 		INT xyz =5, abc=100
 		xyz= ((abc *5)/10 + 10) * -1
@@ -68,7 +68,7 @@
 		DISPLAY: [[] & xyz & []]            
 	END CODE
 
-8. NOT GOODS
+8. GOODS
 	BEGIN CODE
 		INT abc=1
 		INT xyz = absc=100   <--- ERROR
@@ -76,7 +76,7 @@
 		DISPLAY: [[] & xyz & []]            
 	END CODE
 
-9. NOT GOODS
+9.  GOODS
 	BEGIN CODE
 		INT hehe = 3
 		INT y= 2, z = 2, r= 

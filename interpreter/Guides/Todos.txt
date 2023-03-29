@@ -23,7 +23,7 @@ TODOS:
 
     GOODS   7.) Assignment still not supports x=y=5
 
-            8.) Handle error for declaring more than one character inside single quote ex. 'dada'
+    GOODS   8.) Handle error for declaring more than one character inside single quote ex. 'dada'
 
     GOODS   9.) Cannot read boolean values because it will be stored as a string
 
@@ -33,16 +33,16 @@ TODOS:
 
     GOODS   12.) Update Code.g4 for BEGIN CODE and END CODE put it in line block
 
-            13.) Check if there is a declaration in the line*
+    GOODS   13.) Check if there is a declaration in the line*
                        - if line contains (INT, FLOAT, BOOL, CHAR) in line handle error
 
-            14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
+    GOODS   14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
 
             15.) IF ELSE ELSEIF statement implementation
 
 IN-PROGRESS 16.) WHILE statement implementation
 
-            17.) Make an error handler for not declaring variables after begin code
+    GOODS   17.) Make an error handler for not declaring variables after begin code
 
     GOODS   18.) x=z=-4=4 -> Handle this error
 
