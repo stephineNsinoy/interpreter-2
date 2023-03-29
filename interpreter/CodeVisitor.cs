@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using System.Security.Cryptography.X509Certificates;
+using Antlr4.Runtime.Misc;
 using interpreter.Functions.Evaluators;
 using interpreter.Functions.Operators;
 using interpreter.Functions.Operators.Expressions;
@@ -15,49 +16,14 @@ namespace interpreter
         // Variable name and its data type
         private Dictionary<string, string> VariableDeclaration { get; } = new Dictionary<string, string>();
 
-        private bool _isBeginCodeVisited = false;
-        private bool _isEndCodeVisited = false;
-
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
             //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
 
-        public override object? VisitProgram([NotNull] CodeParser.ProgramContext context)
-        {
-            Delimiter.EvaluateProgramDelimiter(context);
-
-            return base.VisitProgram(context);
-        }
-
-        public override object? VisitLineBlock([NotNull] CodeParser.LineBlockContext context)
-        {
-            if (Delimiter.EvaluateCodeDelimiter(context))
-            {
-                _isBeginCodeVisited = true;
-                _isEndCodeVisited = true;
-                return base.VisitLineBlock(context); // Visit the program normally
-            }
-
-            return null;
-        }
-
-        // IN-PROGRESS
-        public override object? VisitLine([NotNull] CodeParser.LineContext context)
-        {
-            Statement.EvaluateNewLine(context.NEWLINE()?.GetText());
-            return base.VisitLine(context);
-        }
-
-        /// <summary>
-        /// Still needs to be double checked, test for all possbile cases
-        /// </summary>
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
-            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
-            Statement.EvaluateNewLine(context.NEWLINE()?.GetText());
-
             string dataType = context.dataType().GetText();
 
             var content = context.children.ToList();
@@ -67,12 +33,10 @@ namespace interpreter
                                  .ToList();
 
 
-            Declaration.EvaluateDeclarationContent(varDeclarations, content);
-
             var expressionList = context.expression()?.ToList() ?? new List<CodeParser.ExpressionContext>();
             var valueIndex = 0;
 
-            Declaration.EvaluateIsVariableReDeclared(varDeclarations, Variable);
+            SemanticErrorEvaluator.EvaluateIsVariableReDeclared(varDeclarations, Variable);
 
             // Iterate the declaration content
             for (int i = 0; i < content.Count; i++)
@@ -81,13 +45,9 @@ namespace interpreter
                 {
                     if (varDecl.Name == content[i].GetText())
                     {
-                        Declaration.EvaluateIsDeclarationValid(content[i - 1].GetText());
-
                         //Check if the variable has an initial value
                         if (i != content.Count - 1 && content[i + 1].GetText() == "=")
                         {
-                            Declaration.EvaluateIsValuePresent(expressionList[valueIndex].GetText());
-
                             if (expressionList.Count > valueIndex)
                             {
                                 varDecl.Value = Visit(expressionList[valueIndex]);
@@ -99,7 +59,7 @@ namespace interpreter
                     Variable[varDecl.Name!] = varDecl.Value;
                     VariableDeclaration[varDecl.Name!] = dataType;
 
-                    Declaration.EvaluateDeclaration(dataType, new string[] { varDecl.Name! }, varDecl.Value);
+                    SemanticErrorEvaluator.EvaluateDeclaration(dataType, new string[] { varDecl.Name! }, varDecl.Value);
                 }
             }
 
@@ -108,20 +68,16 @@ namespace interpreter
 
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
-            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
-            Declaration.EvaluateNotValidDeclaration(context);
-
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-
-            var values = context.expression().ToList();
-            Assignment.EvaluateAssignment(varNameArray, values);
-            var value = values.Count == 1 ? Visit(values[0]) : null;
+            var value = Visit(context.expression());
 
             foreach (var name in varNameArray)
             {
-                Assignment.EvaluateIsVariableDefined(name, Variable);
+                SemanticErrorEvaluator.EvaluateIsVariableDefined(name, Variable);
+
                 var dataType = VariableDeclaration[name];
-                Declaration.EvaluateDeclaration(dataType, varNameArray, value);
+
+                SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
@@ -132,7 +88,7 @@ namespace interpreter
         {
             var varName = context.IDENTIFIER().GetText();
 
-            Assignment.EvaluateIsVariableDefined(varName, Variable);
+            SemanticErrorEvaluator.EvaluateIsVariableDefined(varName, Variable);
 
             return Variable[varName];
         }
@@ -154,19 +110,17 @@ namespace interpreter
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
 
-            Console.WriteLine("ERROR: Unknown value type.");
+            Console.WriteLine("SEMANTIC ERROR: Unknown value type.");
             Environment.Exit(400);
             return null;
         }
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
-
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
             var args = Visit(context.expression());
 
-            Function.EvaluateIsFunctionDefined(name, Variable);
+            SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable);
             FunctionsOp.Display(args);
 
             return args;
@@ -272,11 +226,10 @@ namespace interpreter
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
             Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
-               ? Condition.IsTrue
-               : Condition.IsFalse
+               ? SemanticErrorEvaluator.IsTrue
+               : SemanticErrorEvaluator.IsFalse
            ;
 
-            Delimiter.EvaluateWhileDelimiter(context);
             if (condition(Visit(context.expression())))
             {
                 do
