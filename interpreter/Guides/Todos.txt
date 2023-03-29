@@ -44,6 +44,6 @@ IN-PROGRESS 16.) WHILE statement implementation
 
             17.) Make an error handler for not declaring variables after begin code
 
-            18.) x=z=-4=4 -> Handle this error
+    GOODS   18.) x=z=-4=4 -> Handle this error
 
     GOODS   19.) 1 statement per line only
