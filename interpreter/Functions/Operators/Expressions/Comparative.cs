@@ -22,6 +22,9 @@
             if (left is string lString && right is string rString)
                 return lString == rString;
 
+            if (left is char lChar && right is char rChar)
+                return lChar == rChar;
+
             if (left is bool lBool && right is bool rBool)
                 return lBool == rBool;
 
@@ -49,6 +52,9 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat > rInt;
 
+            if (left is char lChar && right is char rChar)
+                return lChar > rChar;
+
             Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
@@ -67,6 +73,9 @@
 
             if (left is float lFloat && right is int rInt)
                 return lFloat < rInt;
+
+            if (left is char lChar && right is char rChar)
+                return lChar < rChar;
 
             Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
@@ -87,6 +96,9 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat >= rInt;
 
+            if (left is char lChar && right is char rChar)
+                return lChar >= rChar;
+
             Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
@@ -105,6 +117,9 @@
 
             if (left is float lFloat && right is int rInt)
                 return lFloat <= rInt;
+
+            if (left is char lChar && right is char rChar)
+                return lChar >= rChar;
 
             Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
