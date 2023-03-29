@@ -1,4 +1,6 @@
-﻿namespace interpreter.Functions.Evaluators
+﻿using interpreter.Grammar;
+
+namespace interpreter.Functions.Evaluators
 {
     internal class Assignment
     {
@@ -9,12 +11,18 @@
         /// <summary>
         /// Checks if assignment is incomplete, no expression
         /// </summary>
-        public static void EvaluateAssignment(string[] varNameArray, object? value, string content)
+        public static void EvaluateAssignment(string[] varNameArray, List<CodeParser.ExpressionContext?> values)
         {
-            if (value == null)
+            if (values.Count == 0)
             {
                 string variables = string.Join("=", varNameArray);
-                Console.WriteLine($"SYNTAX ERROR: Incorrect statement: {variables}=?");
+                Console.WriteLine($"SYNTAX ERROR: Invaild statement: {variables}=?");
+                Environment.Exit(400);
+            }
+            
+            if (values.Count > 1)
+            {
+                Console.WriteLine($"SYNTAX ERROR - UNEXPECTED TOKEN: Invalid assignment statement");
                 Environment.Exit(400);
             }
         }
