@@ -112,20 +112,19 @@ namespace interpreter
             Declaration.EvaluateNotValidDeclaration(context);
 
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-            var value = context.expression() == null ? null :(object?)Visit(context.expression());
+
+            var values = context.expression().ToList();
+            Assignment.EvaluateAssignment(varNameArray, values);
+            var value = values.Count == 1 ? Visit(values[0]) : null;
 
             foreach (var name in varNameArray)
             {
                 Assignment.EvaluateIsVariableDefined(name, Variable);
-            
                 var dataType = VariableDeclaration[name];
-
-                Assignment.EvaluateAssignment(varNameArray, value, context.GetText());
                 Declaration.EvaluateDeclaration(dataType, varNameArray, value);
 
                 Variable[name] = value;
             }
-
             return null;
         } 
 
@@ -146,14 +145,11 @@ namespace interpreter
             if (context.FLOAT_VAL() is { } f)
                 return float.Parse(f.GetText());
 
+            if (context.BOOL_VAL() is { } b)
+                return b.GetText().Equals("\"TRUE\"");
+
             if (context.STRING_VAL() is { } s)
-            {
-                if(s.GetText().Equals("\"TRUE\"") || s.GetText().Equals("\"FALSE\""))
-                    return FunctionsOp.GetBool(s.GetText());
-                
-                else
                     return s.GetText()[1..^1];
-            }
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
@@ -168,24 +164,12 @@ namespace interpreter
             Delimiter.EvaluateAfterBeginCodeStatements(!_isBeginCodeVisited);
 
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
-            var args = context.expression().Select(Visit).ToArray();
+            var args = Visit(context.expression());
 
-            try
-            {
-                Function.EvaluateIsFunctionDefined(name, Variable);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Environment.Exit(400);
-            }
+            Function.EvaluateIsFunctionDefined(name, Variable);
+            FunctionsOp.Display(args);
 
-            if (Variable[name] is not Func<object?[], object?> func)
-            {
-                throw new Exception($"ERROR: {name} is not a function.");
-            }
-
-            return func(args);
+            return args;
         }
 
         public override object? VisitParenthesizedExpression([NotNull] CodeParser.ParenthesizedExpressionContext context)
@@ -293,7 +277,6 @@ namespace interpreter
            ;
 
             Delimiter.EvaluateWhileDelimiter(context);
-
             if (condition(Visit(context.expression())))
             {
                 do
