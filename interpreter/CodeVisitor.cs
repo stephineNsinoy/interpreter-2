@@ -222,7 +222,6 @@ namespace interpreter
             return Concat.Concatenate(left, right);
         }
 
-        // IN-PROGRESS
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
             Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"

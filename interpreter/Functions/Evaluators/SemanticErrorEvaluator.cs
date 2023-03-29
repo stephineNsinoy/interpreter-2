@@ -57,7 +57,6 @@ namespace interpreter.Functions.Evaluators
         }
 
         ///// <summary>
-        ///// GOODS
         ///// Checks if variable is redeclared
         ///// </summary>
         public static void EvaluateIsVariableReDeclared(List<VariableDeclaration> varDeclarations, Dictionary<string, object?> Variable)

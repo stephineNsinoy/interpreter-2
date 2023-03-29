@@ -14,7 +14,6 @@ statement: assignment | functionCall;
 declaration: NEWLINE dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression;
 
-// GOODS
 dataType: INT | FLOAT | BOOL | CHAR | STRING;
 INT: 'INT' ;
 FLOAT: 'FLOAT';
@@ -29,14 +28,12 @@ BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
-// GOODS
 BEGIN_IF: 'BEGIN IF' ;
 END_IF: 'END IF' ;
 
 ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? ;
 elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
 
-// GOODS
 WHILE: 'WHILE' ;
 BEGIN_WHILE: 'BEGIN WHILE' ;
 END_WHILE: 'END WHILE' ;
@@ -72,7 +69,6 @@ concat: '&' ;
 logicOp: LOGICAL_OPERATOR ;
 LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
-// GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 COMMENT: NEWLINE? '#' ~[\r?\n]* -> channel(HIDDEN);
