@@ -7,7 +7,7 @@ END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: NEWLINE (statement | ifBlock | whileBlock); 
+line: NEWLINE (statement | ifBlock | whileBlock | switchCaseBlock); 
 
 statement: assignment | functionCall;
 
@@ -35,9 +35,21 @@ ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? ;
 elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
 
 WHILE: 'WHILE' ;
-BEGIN_WHILE: 'BEGIN WHILE' ;
-END_WHILE: 'END WHILE' ;
-whileBlock: WHILE '(' expression ')' NEWLINE BEGIN_WHILE NEWLINE line* END_WHILE NEWLINE;
+BEGIN_WHILE: NEWLINE 'BEGIN WHILE' ;
+END_WHILE: NEWLINE 'END WHILE' ;
+whileBlock: WHILE '(' expression ')' BEGIN_WHILE line* END_WHILE ;
+
+BEGIN_SWITCH: NEWLINE 'BEGIN SWITCH';
+END_SWITCH: NEWLINE 'END SWITCH';
+switchCaseBlock: 'SWITCH' '(' expression ')' BEGIN_SWITCH caseBlock* defaultBlock? END_SWITCH;
+
+BEGIN_CASE: NEWLINE 'BEGIN CASE';
+END_CASE: NEWLINE 'END CASE';
+caseBlock: NEWLINE 'CASE' expression ':' BEGIN_CASE line* END_CASE;
+
+BEGIN_DEFAULT: NEWLINE 'BEGIN DEFAULT';
+END_DEFAULT: NEWLINE 'END DEFAULT';
+defaultBlock: NEWLINE 'DEFAULT:' BEGIN_DEFAULT line* END_DEFAULT;
 
 functionCall
     : DISPLAY expression
@@ -73,4 +85,4 @@ IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 COMMENT: NEWLINE? '#' ~[\r?\n]* -> channel(HIDDEN);
 NEWLINE: ('\r'? '\n')+;
-WS: [\t\r]+ -> skip ;
+WS: [\t]+ -> skip ;
