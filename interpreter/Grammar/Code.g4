@@ -12,7 +12,7 @@ line: NEWLINE? (statement | ifBlock | whileBlock);
 statement: assignment | functionCall;
 
 declaration: NEWLINE? dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
-assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
+assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ('=' expression)?;
 
 // GOODS
 dataType: INT | FLOAT | BOOL | CHAR | STRING;
@@ -25,8 +25,8 @@ STRING: 'STRING' ;
 constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
 FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
-STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 BOOL_VAL: '"TRUE"' | '"FALSE"' ;
+STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
 // GOODS
@@ -43,7 +43,7 @@ END_WHILE: 'END WHILE' ;
 whileBlock: WHILE '(' expression ')' NEWLINE BEGIN_WHILE NEWLINE line* END_WHILE NEWLINE;
 
 functionCall
-    : DISPLAY (expression (',' expression)*)? 
+    : DISPLAY expression
     | SCAN IDENTIFIER (',' IDENTIFIER)* ;
 
 DISPLAY: 'DISPLAY:' ;
