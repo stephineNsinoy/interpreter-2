@@ -2,8 +2,8 @@
 
 program: lineBlock EOF ;
 
-BEGIN_CODE: NEWLINE? 'BEGIN CODE' NEWLINE ;
-END_CODE: 'END CODE' NEWLINE?;
+BEGIN_CODE: NEWLINE? 'BEGIN CODE' ;
+END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
 // GOODS
 BEGIN_IF: 'BEGIN IF' ;
@@ -11,11 +11,11 @@ END_IF: 'END IF' ;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: (statement | ifBlock | whileBlock) NEWLINE;
+line: NEWLINE? (statement | ifBlock | whileBlock);
 
 statement: assignment | functionCall;
 
-declaration: dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* NEWLINE ;
+declaration: NEWLINE? dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
 assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ;
 
 // GOODS
@@ -34,9 +34,9 @@ BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
 
-ifBlock: 'IF' '('expression')' NEWLINE BEGIN_IF NEWLINE line* END_IF elseIfBlock? elseBlock? ;
-elseIfBlock: 'ELSE IF' '('expression')' NEWLINE BEGIN_IF NEWLINE line* NEWLINE END_IF elseIfBlock? elseBlock ;
-elseBlock: 'ELSE' NEWLINE BEGIN_IF NEWLINE line* END_IF ;
+ifBlock: 'IF' '('expression')' NEWLINE BEGIN_IF line* END_IF elseIfBlock? elseBlock? ;
+elseIfBlock: 'ELSE IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? elseBlock ;
+elseBlock: 'ELSE' NEWLINE BEGIN_IF NEWLINE line* END_IF ifBlock? ;
 
 // GOODS
 WHILE: 'WHILE' ;
@@ -72,13 +72,11 @@ compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
 unary: '+' | '-' ;
 concat: '&' ;
 logicOp: LOGICAL_OPERATOR ;
-
 LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
-
-COMMENT: '#' ~[\r\n]* NEWLINE? -> skip ;
-NEWLINE: [\r?\n]+ ;
-WS: [ \t\r]+ -> skip ;
+COMMENT: NEWLINE? '#' ~[\r?\n]*-> channel(HIDDEN);
+NEWLINE: ('\r'? '\n')+;
+WS: [\t]+ -> skip ;

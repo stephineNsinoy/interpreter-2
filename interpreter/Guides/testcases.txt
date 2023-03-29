@@ -1,0 +1,97 @@
+1.GOODS
+	#comment
+	#comment
+	#comment
+	BEGIN CODE #comments
+		#comment
+		#comment
+		#comment
+		INT xyz =5, abc=100 #comment
+		#comment
+		#comment
+		#comment
+		xyz= ((abc *5)/10 + 10) * -1 #comment
+		#comment
+		#comment
+		#comment
+		DISPLAY: [[] & xyz & []] #comment
+		#comment
+		#comment
+		#comment
+	END CODE
+	#comment
+	#comment
+	#comment
+
+2. GOODS
+	BEGIN CODE #comment
+		INT xyz =5, abc=100
+		xyz= ((abc *5)/10 + 10) * -1 
+		DISPLAY: [[] & xyz & []] 
+	END CODE
+
+3. GOODS
+	BEGIN CODE
+		INT xyz =5, abc=100 
+		xyz= ((abc *5)/10 + 10) * -1 DISPLAY: [[] & xyz & []] 
+	END CODE
+
+4. NOT GOODS  -- Add in the line grammar a declaration and check if it exists and still can declare
+	BEGIN CODE
+		INT xyz =5, abc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		INT xyz =2          <--- ERROR  
+		DISPLAY: [[] & xyz & []]            
+	END CODE
+
+5.GOODS
+	BEGIN CODE
+		INT xyz =5, abc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		abc=xyz==4=4
+		DISPLAY: [[] & xyz & []]            
+	END CODE
+
+6.NOT GOODS -- Add in the grammar another (expression?) if this exists print error
+	BEGIN CODE
+		INT xyz =5, abc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		abc=xyz=4=4          <--- ERROR
+		DISPLAY: [[] & xyz & []]            
+	END CODE
+
+7. GOODS
+	BEGIN CODE
+		INT abc=1
+		INT xyz = , absc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		DISPLAY: [[] & xyz & []]            
+	END CODE
+
+8. NOT GOODS
+	BEGIN CODE
+		INT abc=1
+		INT xyz = absc=100   <--- ERROR
+		xyz= ((abc *5)/10 + 10) * -1
+		DISPLAY: [[] & xyz & []]            
+	END CODE
+
+9. NOT GOODS
+	BEGIN CODE
+		INT hehe = 3
+		INT y= 2, z = 2, r= 
+		DISPLAY: hehe 
+	END CODE
+
+
+10. NOT GOODS -- empty spaces in END CODE results to END CODE missing
+   BEGIN CODE
+		INT xyz = 2, abc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		DISPLAY: [[] & xyz & []]            
+ END CODE 
+
+11. NOT GOODS -- must not print "TRUE one"
+	BEGIN CODE
+		DISPLAY: "TRUE" == "FALSE" & " " & "True One" 
+	END CODE
