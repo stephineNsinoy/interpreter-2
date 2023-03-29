@@ -3,8 +3,8 @@
     internal class Unary
     {
         /******************************
-             Unary expressions
-      *******************************/
+              Unary expressions
+        ******************************/
         public static object? UnaryValue(string symbol, object? expressionValue)
         {
             if (expressionValue is int intValue)
@@ -31,12 +31,11 @@
             }
             else
             {
-                Console.WriteLine($"ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
+               Console.WriteLine($"SEMANTIC ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
                Environment.Exit(400);
             }
 
             return null;
         }
-
     }
 }

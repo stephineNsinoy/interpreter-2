@@ -19,7 +19,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat + rInt;
 
-            Console.WriteLine($"Cannot add values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot add values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return null;
         }
@@ -38,7 +38,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat - rInt;
 
-            Console.WriteLine($"Cannot subtract values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot subtract values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return null;
         }

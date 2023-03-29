@@ -25,7 +25,7 @@
             if (left is bool lBool && right is bool rBool)
                 return lBool == rBool;
 
-            Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
         }
@@ -49,7 +49,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat > rInt;
 
-            Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
         }
@@ -68,7 +68,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat < rInt;
 
-            Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
         }
@@ -87,7 +87,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat >= rInt;
 
-            Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
         }
@@ -106,7 +106,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat <= rInt;
 
-            Console.WriteLine($"Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot compare values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return false;
         }

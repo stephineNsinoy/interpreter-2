@@ -20,7 +20,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat * rInt;
 
-            Console.WriteLine($"Cannot multiply values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot multiply values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return null;
         }
@@ -39,7 +39,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat / rInt;
 
-            Console.WriteLine($"Cannot divide values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot divide values of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return null;
         }
@@ -58,7 +58,7 @@
             if (left is float lFloat && right is int rInt)
                 return lFloat % rInt;
 
-            Console.WriteLine($"Cannot get modulo of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
+            Console.WriteLine($"SEMANTIC ERROR: Cannot get modulo of types {FunctionsOp.GetObject(left)} and {FunctionsOp.GetObject(right)}");
             Environment.Exit(400);
             return null;
         }
