@@ -7,12 +7,12 @@ END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: NEWLINE? (statement | ifBlock | whileBlock);
+line: NEWLINE (statement | ifBlock | whileBlock); 
 
 statement: assignment | functionCall;
 
-declaration: NEWLINE? dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
-assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression ('=' expression)?;
+declaration: NEWLINE dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
+assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression;
 
 // GOODS
 dataType: INT | FLOAT | BOOL | CHAR | STRING;
@@ -75,6 +75,6 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 // GOODS
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
-COMMENT: NEWLINE? '#' ~[\r?\n]*-> channel(HIDDEN);
+COMMENT: NEWLINE? '#' ~[\r?\n]* -> channel(HIDDEN);
 NEWLINE: ('\r'? '\n')+;
-WS: [\t]+ -> skip ;
+WS: [\t\r]+ -> skip ;
