@@ -4,11 +4,17 @@
     {
         public static object? Concatenate(object? left, object? right)
         {
-            return $"{left}{right}";
+            if (left is bool l)
+            {
+                left = l.ToString().ToUpper();
+            }
 
-            //Console.WriteLine($"Cannot concatenate values of types {left?.GetType()} and {right?.GetType()}");
-            //Environment.Exit(400);
-            //return null;
+            if (right is bool r)
+            {
+                left = r.ToString().ToUpper();
+            }
+
+            return $"{left}{right}";
         }
     }
 }
