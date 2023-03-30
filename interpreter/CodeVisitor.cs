@@ -19,9 +19,8 @@ namespace interpreter
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
-            //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
-
+        
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
@@ -118,10 +117,33 @@ namespace interpreter
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
-            var args = Visit(context.expression());
+            var args = context.expression() == null ? null : Visit(context.expression());
 
-            SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable);
-            FunctionsOp.Display(args);
+            if (name.Equals("DISPLAY:")) 
+            { 
+                FunctionsOp.Display(args);
+            }
+            else if (name.Equals("SCAN:"))
+            {
+                var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
+
+                foreach(var variable in varNameArray)
+                {
+                    SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, Variable);
+
+                    var userInput = Console.ReadLine();
+
+                    SemanticErrorEvaluator.EvaluateScanInput(userInput);
+
+                    var parsed = FunctionsOp.ValueParser(userInput!);
+
+                    Variable[variable] = parsed;
+
+                    var dataType = VariableDeclaration[variable];
+
+                    SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
+                }
+            }
 
             return args;
         }
