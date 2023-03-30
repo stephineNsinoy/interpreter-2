@@ -264,7 +264,6 @@ namespace interpreter
             return base.VisitWhileBlock(context);
         }
 
-<<<<<<< HEAD
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
         {
             var switchExpression = Visit(context.expression());
@@ -293,6 +292,8 @@ namespace interpreter
                 }
 
             }
+
+            return null;
         }
 
         public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
