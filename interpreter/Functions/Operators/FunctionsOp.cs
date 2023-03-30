@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿    using System.Text.RegularExpressions;
 
 namespace interpreter.Functions.Operators
 {
@@ -74,6 +74,43 @@ namespace interpreter.Functions.Operators
                 return lBool == rBool;
 
             return false;
+        }
+
+        /// <summary>
+        /// Parses the inputted value in scan
+        /// </summary>
+        public static object ValueParser(string value)
+        {
+            if (int.TryParse(value, out int intValue))
+            {
+                return intValue;
+            }
+            else if (float.TryParse(value, out float floatValue))
+            {
+                return floatValue;
+            }
+            else if (value.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else if (value.Equals("FALSE", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            else if (value.Length == 1)
+            {
+                return value[0];
+            }
+            else if(value.Length > 1)
+            {
+                return value[0..^0];
+            }
+            else
+            {
+                Console.WriteLine("SEMANTIC ERROR: Unknown value type.");
+                Environment.Exit(400);
+                return null;
+            }
         }
     }
 }

@@ -28,11 +28,12 @@ BOOL_VAL: '"TRUE"' | '"FALSE"' ;
 STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
 CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
-BEGIN_IF: 'BEGIN IF' ;
-END_IF: 'END IF' ;
+BEGIN_IF: NEWLINE 'BEGIN IF' ;
+END_IF: NEWLINE 'END IF' ;
 
-ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock? ;
-elseIfBlock: 'ELSE' (BEGIN_IF line* END_IF) | ifBlock ;
+ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock* elseBlock? ;
+elseIfBlock: NEWLINE 'ELSE IF' '('expression')' BEGIN_IF line* END_IF ;
+elseBlock: NEWLINE 'ELSE' BEGIN_IF line* END_IF ;
 
 WHILE: 'WHILE' ;
 BEGIN_WHILE: NEWLINE 'BEGIN WHILE' ;

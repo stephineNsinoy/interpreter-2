@@ -18,9 +18,8 @@ namespace interpreter
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
-            //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
-
+        
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
@@ -117,10 +116,33 @@ namespace interpreter
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
-            var args = Visit(context.expression());
+            var args = context.expression() == null ? null : Visit(context.expression());
 
-            SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable);
-            FunctionsOp.Display(args);
+            if (name.Equals("DISPLAY:")) 
+            { 
+                FunctionsOp.Display(args);
+            }
+            else if (name.Equals("SCAN:"))
+            {
+                var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
+
+                foreach(var variable in varNameArray)
+                {
+                    SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, Variable);
+
+                    var userInput = Console.ReadLine();
+
+                    SemanticErrorEvaluator.EvaluateScanInput(userInput);
+
+                    var parsed = FunctionsOp.ValueParser(userInput!);
+
+                    Variable[variable] = parsed;
+
+                    var dataType = VariableDeclaration[variable];
+
+                    SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
+                }
+            }
 
             return args;
         }
@@ -242,10 +264,11 @@ namespace interpreter
             return base.VisitWhileBlock(context);
         }
 
+<<<<<<< HEAD
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
         {
             var switchExpression = Visit(context.expression());
-         
+
             foreach (var caseBlockContext in context.caseBlock())
             {
                 var expression = Visit(caseBlockContext.expression());
@@ -259,6 +282,7 @@ namespace interpreter
 
                     return null;
                 }
+
             }
 
             if (context.defaultBlock() != null)
@@ -269,7 +293,44 @@ namespace interpreter
                 }
 
             }
+        }
 
+        public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
+        {
+            var condition = SemanticErrorEvaluator.IsTrue(Visit(context.expression()));
+
+            if (condition == true)
+            {
+                foreach (var line in context.line())
+                {
+                    Visit(line);
+                }
+                return null;
+            }
+          
+            foreach (var elseIf in context.elseIfBlock())
+            {
+                var elseIfCondition = SemanticErrorEvaluator.IsTrue(Visit(elseIf.expression()));
+
+                if (elseIfCondition)
+                {
+                    foreach (var line in elseIf.line())
+                    {
+                        Visit(line);
+                    }
+            return null;
+                }
+            }
+
+            if(context.elseBlock() != null)
+            {
+                var elseBlock = context.elseBlock();
+                
+                foreach (var line in elseBlock.line())
+                {
+                    Visit(line);
+                }
+            }
             return null;
         }
     }

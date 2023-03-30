@@ -127,5 +127,15 @@ namespace interpreter.Functions.Evaluators
                 Environment.Exit(400);
             }
         }
+
+        public static object? EvaluateScanInput(string? input)
+        {
+            if (input == null || input.Equals(""))
+            {
+                Console.WriteLine("SEMANTIC ERROR: Scan function expects input.");
+                return null;
+            }
+            return null;
+        }
     }
 }
