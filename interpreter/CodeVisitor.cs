@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
 using interpreter.Functions.Evaluators;
 using interpreter.Functions.Operators;
 using interpreter.Functions.Operators.Expressions;
@@ -241,6 +240,37 @@ namespace interpreter
             }
 
             return base.VisitWhileBlock(context);
+        }
+
+        public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
+        {
+            var switchExpression = Visit(context.expression());
+         
+            foreach (var caseBlockContext in context.caseBlock())
+            {
+                var expression = Visit(caseBlockContext.expression());
+
+                if (FunctionsOp.GetSwitchCaseBool(expression, switchExpression))
+                {
+                    foreach (var line in caseBlockContext.line())
+                    {
+                        Visit(line);
+                    }
+
+                    return null;
+                }
+            }
+
+            if (context.defaultBlock() != null)
+            {
+                foreach (var line in context.defaultBlock().line())
+                {
+                    Visit(line);
+                }
+
+            }
+
+            return null;
         }
     }
 }
