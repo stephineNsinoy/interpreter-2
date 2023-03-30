@@ -11,7 +11,7 @@
 
             if (right is bool r)
             {
-                left = r.ToString().ToUpper();
+                right = r.ToString().ToUpper();
             }
 
             return $"{left}{right}";
