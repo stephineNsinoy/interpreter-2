@@ -19,9 +19,8 @@ namespace interpreter
         public CodeVisitor()
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
-            //Variable["SCAN:"] = new Func<object?[], object?>(Scan);
         }
-
+        
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
@@ -119,8 +118,6 @@ namespace interpreter
         {
             var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
             var args = context.expression() == null ? null : Visit(context.expression());
-
-            //SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable);
 
             if (name.Equals("DISPLAY:")) 
             { 
