@@ -242,5 +242,44 @@ namespace interpreter
 
             return base.VisitWhileBlock(context);
         }
+
+        public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
+        {
+            var condition = SemanticErrorEvaluator.IsTrue(Visit(context.expression()));
+
+            if (condition == true)
+            {
+                foreach (var line in context.line())
+                {
+                    Visit(line);
+                }
+                return null;
+            }
+          
+            foreach (var elseIf in context.elseIfBlock())
+            {
+                var elseIfCondition = SemanticErrorEvaluator.IsTrue(Visit(elseIf.expression()));
+
+                if (elseIfCondition)
+                {
+                    foreach (var line in elseIf.line())
+                    {
+                        Visit(line);
+                    }
+                    return null;
+                }
+            }
+
+            if(context.elseBlock() != null)
+            {
+                var elseBlock = context.elseBlock();
+                
+                foreach (var line in elseBlock.line())
+                {
+                    Visit(line);
+                }
+            }
+            return null;
+        }
     }
 }
