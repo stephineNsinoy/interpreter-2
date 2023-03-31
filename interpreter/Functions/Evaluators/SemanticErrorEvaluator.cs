@@ -56,9 +56,9 @@ namespace interpreter.Functions.Evaluators
             }
         }
 
-        ///// <summary>
-        ///// Checks if variable is redeclared
-        ///// </summary>
+        /// <summary>
+        /// Checks if variable is redeclared
+        /// </summary>
         public static void EvaluateIsVariableReDeclared(List<VariableDeclaration> varDeclarations, Dictionary<string, object?> Variable)
         {
             var redeclaredVars1 = varDeclarations.GroupBy(x => x.Name).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
@@ -93,6 +93,11 @@ namespace interpreter.Functions.Evaluators
            EVALUATOR FOR CONDITIONS
         *******************************/
 
+        /// <summary>
+        /// Checks if condition is Valid
+        /// </summary>
+        /// <param name="value">Boolean value</param>
+        /// <returns>Value of the bool</returns>
         public static bool IsTrue(object? value)
         {
             if (value is bool b)
@@ -103,6 +108,11 @@ namespace interpreter.Functions.Evaluators
             return false;
         }
 
+        /// <summary>
+        /// Checks if condition is Valid, and changes it to the opposite value
+        /// </summary>
+        /// <param name="value">Boolean value</param>
+        /// <returns>The opposite value of the boolean</returns>
         public static bool IsFalse(object? value) => !IsTrue(value);
 
 
@@ -129,6 +139,11 @@ namespace interpreter.Functions.Evaluators
             return null;
         }
 
+        /// <summary>
+        /// Evaluates the scan input if it is a valid input
+        /// </summary>
+        /// <param name="input">Inputt of the user</param>
+        /// <returns>Error if condition is met, nothing if its not met</returns>
         public static object? EvaluateScanInput(string? input)
         {
             if (input == null || input.Equals(""))
