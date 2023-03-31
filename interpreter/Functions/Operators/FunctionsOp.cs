@@ -1,5 +1,4 @@
 ﻿using interpreter.Functions.Evaluators;
-using System.Text.RegularExpressions;
 
 namespace interpreter.Functions.Operators
 {
@@ -102,7 +101,7 @@ namespace interpreter.Functions.Operators
             {
                 return value[0];
             }
-            else if(value.Length > 1)
+            else if (value.Length > 1)
             {
                 return value[0..^0];
             }

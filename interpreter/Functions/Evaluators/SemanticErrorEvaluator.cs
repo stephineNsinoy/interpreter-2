@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using interpreter.Variables;
+﻿using interpreter.Variables;
 
 namespace interpreter.Functions.Evaluators
 {
@@ -73,9 +68,9 @@ namespace interpreter.Functions.Evaluators
         }
 
 
-       /************************************
-             EVALUATION FOR ASSIGNMENT
-       *************************************/
+        /************************************
+              EVALUATION FOR ASSIGNMENT
+        *************************************/
 
         /// <summary>
         /// Checks if variable is not defined

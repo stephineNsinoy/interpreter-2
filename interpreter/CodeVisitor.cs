@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
 using interpreter.Functions.Evaluators;
 using interpreter.Functions.Operators;
 using interpreter.Functions.Operators.Expressions;
@@ -124,7 +123,7 @@ namespace interpreter
                 return b.GetText().Equals("\"TRUE\"");
 
             if (context.STRING_VAL() is { } s)
-                    return s.GetText()[1..^1];
+                return s.GetText()[1..^1];
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
@@ -205,7 +204,8 @@ namespace interpreter
         }
 
         /// <summary>
-        /// Visits the expression and evaluates the Multiplicative expression based on the operator.
+        /// Visits the expression and evaluates the Multiplicative expression
+        /// based on the operator.
         /// </summary>
         public override object? VisitMultiplicativeExpression([NotNull] CodeParser.MultiplicativeExpressionContext context)
         {
@@ -230,9 +230,9 @@ namespace interpreter
         {
             var left = Visit(context.expression(0));
             var right = Visit(context.expression(1));
-            
+
             var op = context.logicOp().LOGICAL_OPERATOR().GetText();
-            
+
             return op switch
             {
                 "AND" => Logical.And(left, right),
@@ -253,7 +253,7 @@ namespace interpreter
         /// Adds next line to the output.
         /// </summary>
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
-        { 
+        {
             return "\n";
         }
 
@@ -320,7 +320,7 @@ namespace interpreter
                 }
                 return null;
             }
-          
+
             foreach (var elseIf in context.elseIfBlock())
             {
                 var elseIfCondition = SemanticErrorEvaluator.IsTrue(Visit(elseIf.expression()));
@@ -335,10 +335,10 @@ namespace interpreter
                 }
             }
 
-            if(context.elseBlock() != null)
+            if (context.elseBlock() != null)
             {
                 var elseBlock = context.elseBlock();
-                
+
                 foreach (var line in elseBlock.line())
                 {
                     Visit(line);

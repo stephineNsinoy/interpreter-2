@@ -38,8 +38,8 @@
             }
             else
             {
-               Console.WriteLine($"SEMANTIC ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
-               Environment.Exit(400);
+                Console.WriteLine($"SEMANTIC ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
+                Environment.Exit(400);
             }
 
             return null;
