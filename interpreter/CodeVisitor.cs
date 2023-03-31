@@ -365,7 +365,6 @@ namespace interpreter
                     }
                     return null;
                 }
-
             }
 
             if (context.defaultBlock() != null)
