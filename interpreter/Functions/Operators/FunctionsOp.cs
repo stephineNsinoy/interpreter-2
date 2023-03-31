@@ -17,6 +17,12 @@ namespace interpreter.Functions.Operators
             return null;
         }
 
+        /// <summary>
+        /// Scans the input from the user and stores it in the dictionary
+        /// </summary>
+        /// <param name="varNameArray">Array of identifier</param>
+        /// <param name="variableDict">Dictionary that stores the dataype and expression</param>
+        /// <param name="varDeclarationDict">Dictionary that stores the dataype and identifier</param>
         public static object? Scan(string[] varNameArray, Dictionary<string, object?> variableDict, Dictionary<string, string> varDeclarationDict)
         {
             foreach (var variable in varNameArray)
@@ -69,6 +75,11 @@ namespace interpreter.Functions.Operators
             }
         }
 
+        /// <summary>
+        /// Parses the value to its corresponding data type
+        /// </summary>
+        /// <param name="value">value inputted by the user</param>
+        /// <returns>Parsed value</returns>
         public static object ValueParser(string value)
         {
             if (int.TryParse(value, out int intValue))
