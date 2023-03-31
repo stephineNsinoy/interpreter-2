@@ -113,7 +113,7 @@ namespace interpreter.Functions.Evaluators
         /// <summary>
         /// Checks if function is not defined or if variable is not a function
         /// </summary>
-        public static void EvaluateIsFunctionDefined(string name, Dictionary<string, object?> Variable)
+        public static object? EvaluateIsFunctionDefined(string name, Dictionary<string, object?> Variable)
         {
             if (!Variable.ContainsKey(name))
             {
@@ -126,6 +126,7 @@ namespace interpreter.Functions.Evaluators
                 Console.WriteLine($"SEMANTIC ERROR: {name} is not a function.");
                 Environment.Exit(400);
             }
+            return null;
         }
 
         public static object? EvaluateScanInput(string? input)
