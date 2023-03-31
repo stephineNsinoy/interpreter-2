@@ -251,7 +251,7 @@ namespace interpreter
         /// Adds next line to the output.
         /// </summary>
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
-        { 
+        {
             return "\n";
         }
 
