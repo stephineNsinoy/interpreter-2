@@ -116,37 +116,19 @@ namespace interpreter
 
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
+            string name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
+
             var args = context.expression() == null ? null : Visit(context.expression());
+            var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
-            if (name.Equals("DISPLAY:")) 
-            { 
-                FunctionsOp.Display(args);
-            }
-            else if (name.Equals("SCAN:"))
+            return name switch
             {
-                var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-
-                foreach(var variable in varNameArray)
-                {
-                    SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, Variable);
-
-                    var userInput = Console.ReadLine();
-
-                    SemanticErrorEvaluator.EvaluateScanInput(userInput);
-
-                    var parsed = FunctionsOp.ValueParser(userInput!);
-
-                    Variable[variable] = parsed;
-
-                    var dataType = VariableDeclaration[variable];
-
-                    SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
-                }
-            }
-
-            return args;
+                "DISPLAY:" => FunctionsOp.Display(args),
+                "SCAN:" => FunctionsOp.Scan(varNameArray, Variable, VariableDeclaration),
+                _ => SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable)
+            };
         }
+
 
         public override object? VisitParenthesizedExpression([NotNull] CodeParser.ParenthesizedExpressionContext context)
         {
