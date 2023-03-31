@@ -346,7 +346,7 @@ namespace interpreter
         }
 
         /// <summary>
-        /// Visits the switchCaseBlock and evaluates the condition and the body.
+        /// Visits the switchCaseBlock and evaluates the condition.
         /// It also evaluates the case and default blocks.
         /// </summary>
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
