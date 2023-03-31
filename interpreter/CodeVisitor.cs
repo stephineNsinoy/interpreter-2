@@ -329,11 +329,11 @@ namespace interpreter
                     {
                         Visit(line);
                     }
-            return null;
+                return null;
                 }
             }
 
-            if(context.elseBlock() != null)
+            if (context.elseBlock() != null)
             {
                 var elseBlock = context.elseBlock();
                 
@@ -363,7 +363,6 @@ namespace interpreter
                     {
                         Visit(line);
                     }
-
                     return null;
                 }
 
@@ -377,7 +376,6 @@ namespace interpreter
                 }
 
             }
-
             return null;
         }
     }

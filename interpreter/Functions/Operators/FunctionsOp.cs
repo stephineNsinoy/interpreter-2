@@ -1,5 +1,4 @@
-﻿    using System.Text.RegularExpressions;
-using interpreter.Functions.Evaluators;
+﻿using interpreter.Functions.Evaluators;
 
 namespace interpreter.Functions.Operators
 {
