@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using interpreter.Variables;
+﻿using interpreter.Variables;
 
 namespace interpreter.Functions.Evaluators
 {
@@ -56,9 +51,9 @@ namespace interpreter.Functions.Evaluators
             }
         }
 
-        ///// <summary>
-        ///// Checks if variable is redeclared
-        ///// </summary>
+        /// <summary>
+        /// Checks if variable is redeclared
+        /// </summary>
         public static void EvaluateIsVariableReDeclared(List<VariableDeclaration> varDeclarations, Dictionary<string, object?> Variable)
         {
             var redeclaredVars1 = varDeclarations.GroupBy(x => x.Name).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
@@ -73,9 +68,9 @@ namespace interpreter.Functions.Evaluators
         }
 
 
-       /************************************
-             EVALUATION FOR ASSIGNMENT
-       *************************************/
+        /************************************
+              EVALUATION FOR ASSIGNMENT
+        *************************************/
 
         /// <summary>
         /// Checks if variable is not defined
@@ -93,6 +88,11 @@ namespace interpreter.Functions.Evaluators
            EVALUATOR FOR CONDITIONS
         *******************************/
 
+        /// <summary>
+        /// Checks if condition is Valid
+        /// </summary>
+        /// <param name="value">Boolean value</param>
+        /// <returns>Value of the bool</returns>
         public static bool IsTrue(object? value)
         {
             if (value is bool b)
@@ -103,6 +103,11 @@ namespace interpreter.Functions.Evaluators
             return false;
         }
 
+        /// <summary>
+        /// Checks if condition is Valid, and changes it to the opposite value
+        /// </summary>
+        /// <param name="value">Boolean value</param>
+        /// <returns>The opposite value of the boolean</returns>
         public static bool IsFalse(object? value) => !IsTrue(value);
 
 
@@ -113,7 +118,7 @@ namespace interpreter.Functions.Evaluators
         /// <summary>
         /// Checks if function is not defined or if variable is not a function
         /// </summary>
-        public static void EvaluateIsFunctionDefined(string name, Dictionary<string, object?> Variable)
+        public static object? EvaluateIsFunctionDefined(string name, Dictionary<string, object?> Variable)
         {
             if (!Variable.ContainsKey(name))
             {
@@ -126,8 +131,14 @@ namespace interpreter.Functions.Evaluators
                 Console.WriteLine($"SEMANTIC ERROR: {name} is not a function.");
                 Environment.Exit(400);
             }
+            return null;
         }
 
+        /// <summary>
+        /// Evaluates the scan input if it is a valid input
+        /// </summary>
+        /// <param name="input">Inputt of the user</param>
+        /// <returns>Error if condition is met, nothing if its not met</returns>
         public static object? EvaluateScanInput(string? input)
         {
             if (input == null || input.Equals(""))

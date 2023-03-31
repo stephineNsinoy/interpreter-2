@@ -5,6 +5,13 @@
         /***************************
             Additive expressions
         ***************************/
+
+        /// <summary>
+        /// Adds two numbers (int or float)
+        /// </summary>
+        /// <param name="left">left side of the operator</param>
+        /// <param name="right">right side of the operator</param>
+        /// <returns>Sum of the two numbers</returns>
         public static object? Add(object? left, object? right)
         {
             if (left is int l && right is int r)
@@ -24,6 +31,12 @@
             return null;
         }
 
+        /// <summary>
+        /// Subtracts two numbers (int or float)
+        /// </summary>
+        /// <param name="left">left side of the operator</param>
+        /// <param name="right">right side of the operator</param>
+        /// <returns>Difference of the two numbers</returns>
         public static object? Subtract(object? left, object? right)
         {
             if (left is int l && right is int r)

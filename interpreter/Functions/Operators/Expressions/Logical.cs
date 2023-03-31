@@ -6,6 +6,12 @@
             LOGICAL OPERATOR expressions
         ************************************/
 
+        /// <summary>
+        /// Uses Logical AND to compare two BOOLEAN values
+        /// </summary>
+        /// <param name="left">left side of the operator</param>
+        /// <param name="right">right side of the operator</param>
+        /// <returns>Boolean Value</returns>
         public static object? And(object? left, object? right)
         {
             if (left is bool l && right is bool r)
@@ -16,6 +22,12 @@
             return null;
         }
 
+        /// <summary>
+        /// Uses Logical OR to compare two BOOLEAN values
+        /// </summary>
+        /// <param name="left">left side of the operator</param>
+        /// <param name="right">right side of the operator</param>
+        /// <returns>Boolean Value</returns>
         public static object? Or(object? left, object? right)
         {
             if (left is bool l && right is bool r)
@@ -26,6 +38,11 @@
             return null;
         }
 
+        /// <summary>
+        /// Converts a BOOLEAN value to its opposite value
+        /// </summary>
+        /// <param name="value">right side of the operator</param>
+        /// <returns>Boolean Value</returns>
         public static object? Not(object? value)
         {
             if (value is bool b)
