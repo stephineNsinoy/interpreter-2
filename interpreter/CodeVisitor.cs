@@ -121,7 +121,7 @@ namespace interpreter
                 return b.GetText().Equals("\"TRUE\"");
 
             if (context.STRING_VAL() is { } s)
-                    return s.GetText()[1..^1];
+                return s.GetText()[1..^1];
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
