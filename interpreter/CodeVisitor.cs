@@ -374,7 +374,6 @@ namespace interpreter
                 {
                     Visit(line);
                 }
-
             }
             return null;
         }
