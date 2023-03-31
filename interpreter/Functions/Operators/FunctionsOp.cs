@@ -1,4 +1,5 @@
-﻿    using System.Text.RegularExpressions;
+﻿using interpreter.Functions.Evaluators;
+using System.Text.RegularExpressions;
 
 namespace interpreter.Functions.Operators
 {
@@ -13,6 +14,27 @@ namespace interpreter.Functions.Operators
                 args = b.ToString().ToUpper();
 
             Console.Write(args);
+            return null;
+        }
+
+        public static object? Scan(string[] varNameArray, Dictionary<string, object?> variableDict, Dictionary<string, string> varDeclarationDict)
+        {
+            foreach (var variable in varNameArray)
+            {
+                SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, variableDict);
+
+                var userInput = Console.ReadLine();
+
+                SemanticErrorEvaluator.EvaluateScanInput(userInput);
+
+                var parsed = FunctionsOp.ValueParser(userInput!);
+
+                variableDict[variable] = parsed;
+
+                var dataType = varDeclarationDict[variable];
+
+                SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
+            }
             return null;
         }
 
