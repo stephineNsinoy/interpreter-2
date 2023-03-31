@@ -5,6 +5,13 @@
         /******************************
               Unary expressions
         ******************************/
+
+        /// <summary>
+        /// Changes the sign of a number
+        /// </summary>
+        /// <param name="symbol">Either '+' or '-'</param>
+        /// <param name="expressionValue">Any number</param>
+        /// <returns>New value of the number depending on the sign</returns>
         public static object? UnaryValue(string symbol, object? expressionValue)
         {
             if (expressionValue is int intValue)
@@ -31,8 +38,8 @@
             }
             else
             {
-               Console.WriteLine($"SEMANTIC ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
-               Environment.Exit(400);
+                Console.WriteLine($"SEMANTIC ERROR: Unary operator {symbol} cannot be applied to non-numeric value.");
+                Environment.Exit(400);
             }
 
             return null;
