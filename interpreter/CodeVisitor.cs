@@ -138,36 +138,17 @@ namespace interpreter
         /// </summary>
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
-            var name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
+            string name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
+
             var args = context.expression() == null ? null : Visit(context.expression());
+            var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
 
-            if (name.Equals("DISPLAY:")) 
-            { 
-                FunctionsOp.Display(args);
-            }
-            else if (name.Equals("SCAN:"))
+            return name switch
             {
-                var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
-
-                foreach(var variable in varNameArray)
-                {
-                    SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, Variable);
-
-                    var userInput = Console.ReadLine();
-
-                    SemanticErrorEvaluator.EvaluateScanInput(userInput);
-
-                    var parsed = FunctionsOp.ValueParser(userInput!);
-
-                    Variable[variable] = parsed;
-
-                    var dataType = VariableDeclaration[variable];
-
-                    SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
-                }
-            }
-
-            return args;
+                "DISPLAY:" => FunctionsOp.Display(args),
+                "SCAN:" => FunctionsOp.Scan(varNameArray, Variable, VariableDeclaration),
+                _ => SemanticErrorEvaluator.EvaluateIsFunctionDefined(name, Variable)
+            };
         }
 
         /// <summary>
@@ -321,42 +302,6 @@ namespace interpreter
         }
 
         /// <summary>
-        /// Visits the switchCaseBlock and evaluates the condition and the body.
-        /// It also evaluates the case and default blocks.
-        /// </summary>
-        public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
-        {
-            var switchExpression = Visit(context.expression());
-
-            foreach (var caseBlockContext in context.caseBlock())
-            {
-                var expression = Visit(caseBlockContext.expression());
-
-                if (FunctionsOp.GetSwitchCaseBool(expression, switchExpression))
-                {
-                    foreach (var line in caseBlockContext.line())
-                    {
-                        Visit(line);
-                    }
-
-                    return null;
-                }
-
-            }
-
-            if (context.defaultBlock() != null)
-            {
-                foreach (var line in context.defaultBlock().line())
-                {
-                    Visit(line);
-                }
-
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Visits the if block and evaluates the condition and the body.
         /// It also evaluates the else if and else blocks if the condition of 
         /// the if block is false.
@@ -397,6 +342,42 @@ namespace interpreter
                     Visit(line);
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// Visits the switchCaseBlock and evaluates the condition and the body.
+        /// It also evaluates the case and default blocks.
+        /// </summary>
+        public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
+        {
+            var switchExpression = Visit(context.expression());
+
+            foreach (var caseBlockContext in context.caseBlock())
+            {
+                var expression = Visit(caseBlockContext.expression());
+
+                if (FunctionsOp.GetSwitchCaseBool(expression, switchExpression))
+                {
+                    foreach (var line in caseBlockContext.line())
+                    {
+                        Visit(line);
+                    }
+
+                    return null;
+                }
+
+            }
+
+            if (context.defaultBlock() != null)
+            {
+                foreach (var line in context.defaultBlock().line())
+                {
+                    Visit(line);
+                }
+
+            }
+
             return null;
         }
     }

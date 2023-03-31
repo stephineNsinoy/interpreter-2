@@ -1,4 +1,5 @@
 ﻿    using System.Text.RegularExpressions;
+using interpreter.Functions.Evaluators;
 
 namespace interpreter.Functions.Operators
 {
@@ -7,6 +8,8 @@ namespace interpreter.Functions.Operators
         /// <summary>
         /// Prints the contents inside DISPLAY:
         /// </summary>
+        /// <param name="args">Objects to be printed</param>
+        /// <returns>null</returns>
         public static object? Display(object? args)
         {
             if (args is bool b)
@@ -17,8 +20,37 @@ namespace interpreter.Functions.Operators
         }
 
         /// <summary>
+        /// Scans the input from the user and stores it in the dictionary
+        /// </summary>
+        /// <param name="varNameArray">Array of identifier</param>
+        /// <param name="variableDict">Dictionary that stores the dataype and expression</param>
+        /// <param name="varDeclarationDict">Dictionary that stores the dataype and identifier</param>
+        public static object? Scan(string[] varNameArray, Dictionary<string, object?> variableDict, Dictionary<string, string> varDeclarationDict)
+        {
+            foreach (var variable in varNameArray)
+            {
+                SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, variableDict);
+
+                var userInput = Console.ReadLine();
+
+                SemanticErrorEvaluator.EvaluateScanInput(userInput);
+
+                var parsed = ValueParser(userInput!);
+
+                variableDict[variable] = parsed;
+
+                var dataType = varDeclarationDict[variable];
+
+                SemanticErrorEvaluator.EvaluateDeclaration(dataType, varNameArray, parsed);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Gets the data type of the value
         /// </summary>
+        /// <param name="obj">The object to be checked</param>
+        /// <returns>The object type in string format</returns>
         public static object? GetObject(object? obj)
         {
             if (obj is int)
@@ -48,8 +80,50 @@ namespace interpreter.Functions.Operators
         }
 
         /// <summary>
-        /// Evaluatees the expression of the SWITCH CASE
+        /// Parses the value to its corresponding data type
         /// </summary>
+        /// <param name="value">value inputted by the user</param>
+        /// <returns>Parsed value</returns>
+        public static object ValueParser(string value)
+        {
+            if (int.TryParse(value, out int intValue))
+            {
+                return intValue;
+            }
+            else if (float.TryParse(value, out float floatValue))
+            {
+                return floatValue;
+            }
+            else if (value.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            else if (value.Equals("FALSE", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            else if (value.Length == 1)
+            {
+                return value[0];
+            }
+            else if (value.Length > 1)
+            {
+                return value[0..^0];
+            }
+            else
+            {
+                Console.WriteLine("SEMANTIC ERROR: Unknown value type.");
+                Environment.Exit(400);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Evaluatees the expression of the SWITCH expression and CASE expression
+        /// </summary>
+        /// <param name="left">Case expression</param>
+        /// <param name="right">Switch expression</param>
+        /// <returns>True if equal, otherwise false</returns>
         public static bool GetSwitchCaseBool(object? left, object? right)
         {
             if (left is int l && right is int r)
@@ -74,43 +148,6 @@ namespace interpreter.Functions.Operators
                 return lBool == rBool;
 
             return false;
-        }
-
-        /// <summary>
-        /// Parses the inputted value in scan
-        /// </summary>
-        public static object ValueParser(string value)
-        {
-            if (int.TryParse(value, out int intValue))
-            {
-                return intValue;
-            }
-            else if (float.TryParse(value, out float floatValue))
-            {
-                return floatValue;
-            }
-            else if (value.Equals("TRUE", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-            else if (value.Equals("FALSE", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-            else if (value.Length == 1)
-            {
-                return value[0];
-            }
-            else if(value.Length > 1)
-            {
-                return value[0..^0];
-            }
-            else
-            {
-                Console.WriteLine("SEMANTIC ERROR: Unknown value type.");
-                Environment.Exit(400);
-                return null;
-            }
         }
     }
 }
