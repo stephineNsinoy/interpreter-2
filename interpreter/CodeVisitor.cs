@@ -20,7 +20,12 @@ namespace interpreter
         {
             Variable["DISPLAY:"] = new Func<object?[], object?>(FunctionsOp.Display);
         }
-        
+
+        /// <summary>
+        /// Visits the declaration of the grammar and evaluates if the datatype, identifier, and 
+        /// its value set is valid. If it is, then it adds the identifier and its value to the
+        /// dictionary specific to it.
+        /// </summary>
         public override object? VisitDeclaration(CodeParser.DeclarationContext context)
         {
             string dataType = context.dataType().GetText();
@@ -65,6 +70,12 @@ namespace interpreter
             return null;
         }
 
+        /// <summary>
+        /// Visits the assignment of the grammar and evaluates if the identifier is already
+        /// defined, or if the identifier's value is valid to the expression assigned to it.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -81,8 +92,13 @@ namespace interpreter
                 Variable[name] = value;
             }
             return null;
-        } 
+        }
 
+        /// <summary>
+        /// Visits the identifier and checks the dictionary if the identifier is defined.
+        /// If it is already defined, then it throws an error. Otherwise, it stores it to 
+        /// the dictionary assigned to it.
+        /// </summary>
         public override object? VisitIdentifierExpression(CodeParser.IdentifierExpressionContext context)
         {
             var varName = context.IDENTIFIER().GetText();
@@ -92,6 +108,10 @@ namespace interpreter
             return Variable[varName];
         }
 
+        /// <summary>
+        /// Visits the constant and identifies the context value 
+        /// and parses it to its corresponding data type.
+        /// </summary>
         public override object? VisitConstant([NotNull] CodeParser.ConstantContext context)
         {
             if (context.INTEGER_VAL() is { } i)
@@ -114,6 +134,11 @@ namespace interpreter
             return null;
         }
 
+        /// <summary>
+        /// Visits the function call and checks if the function is defined.
+        /// If not, then it throws an error. Otherwise it evaluates the function
+        /// based on the function name.
+        /// </summary>
         public override object? VisitFunctionCall([NotNull] CodeParser.FunctionCallContext context)
         {
             string name = context.DISPLAY() != null ? "DISPLAY:" : "SCAN:";
@@ -129,12 +154,19 @@ namespace interpreter
             };
         }
 
-
+        /// <summary>
+        /// Visits the parenthesized expression 
+        /// E.G. ( )
+        /// and applies the rule to it 
+        /// </summary>
         public override object? VisitParenthesizedExpression([NotNull] CodeParser.ParenthesizedExpressionContext context)
         {
             return Visit(context.expression());
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates the Additive expression based on the operator.
+        /// </summary>
         public override object? VisitAdditiveExpression([NotNull] CodeParser.AdditiveExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -150,6 +182,9 @@ namespace interpreter
             };
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates the Comparative expression based on the operator.
+        /// </summary>
         public override object? VisitComparativeExpression([NotNull] CodeParser.ComparativeExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -169,6 +204,9 @@ namespace interpreter
             };
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates the Multiplicative expression based on the operator.
+        /// </summary>
         public override object? VisitMultiplicativeExpression([NotNull] CodeParser.MultiplicativeExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -185,6 +223,9 @@ namespace interpreter
             };
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates the Logical expression based on the operator.
+        /// </summary>
         public override object? VisitBooleanExpression([NotNull] CodeParser.BooleanExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -200,16 +241,25 @@ namespace interpreter
             };
         }
 
+        /// <summary>
+        /// Visits the expression and returns the opposite value of the boolean inputted.
+        /// </summary>
         public override object? VisitNotExpression([NotNull] CodeParser.NotExpressionContext context)
         {
             return Logical.Not(Visit(context.expression()));
         }
 
+        /// <summary>
+        /// Adds next line to the output.
+        /// </summary>
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
         { 
             return "\n";
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates the Unary expression based on the operator.
+        /// </summary>
         public override object? VisitUnaryExpression([NotNull] CodeParser.UnaryExpressionContext context)
         {
             string symbol = context.unary().GetText();
@@ -218,6 +268,9 @@ namespace interpreter
             return Unary.UnaryValue(symbol, expressionValue);
         }
 
+        /// <summary>
+        /// Visits the expression and evaluates concatenates left and right values.
+        /// </summary>
         public override object? VisitConcatExpression([NotNull] CodeParser.ConcatExpressionContext context)
         {
             var left = Visit(context.expression(0));
@@ -226,6 +279,9 @@ namespace interpreter
             return Concat.Concatenate(left, right);
         }
 
+        /// <summary>
+        /// Visits the while block and evaluates the condition and the body.
+        /// </summary>
         public override object? VisitWhileBlock([NotNull] CodeParser.WhileBlockContext context)
         {
             Func<object?, bool> condition = context.WHILE().GetText() == "WHILE"
@@ -247,6 +303,11 @@ namespace interpreter
             return base.VisitWhileBlock(context);
         }
 
+        /// <summary>
+        /// Visits the if block and evaluates the condition and the body.
+        /// It also evaluates the else if and else blocks if the condition of 
+        /// the if block is false.
+        /// </summary>
         public override object? VisitIfBlock([NotNull] CodeParser.IfBlockContext context)
         {
             var condition = SemanticErrorEvaluator.IsTrue(Visit(context.expression()));
