@@ -346,5 +346,35 @@ namespace interpreter
             }
             return null;
         }
+
+        public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
+        {
+           
+            var value = Visit(context.expression());
+            bool caseVisited = false;
+
+            foreach (var caseBlock in context.caseBlock())
+            {
+                var constant = Visit(caseBlock.expression());
+                if (FunctionsOp.EvaluateSwitchCase(value, constant) == true)
+                {
+                    foreach (var line in caseBlock.line())
+                    {
+                        Visit(line);
+                    }
+                    caseVisited = true;
+                    break;
+                }
+            }
+
+            if (!caseVisited && context.defaultBlock() != null)
+            {
+                foreach (var line in context.defaultBlock().line())
+                {
+                    Visit(line);
+                }
+            }
+            return null;
+        }
     }
 }
