@@ -73,6 +73,8 @@ namespace interpreter
         /// Visits the assignment of the grammar and evaluates if the identifier is already
         /// defined, or if the identifier's value is valid to the expression assigned to it.
         /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override object? VisitAssignment([NotNull] CodeParser.AssignmentContext context)
         {
             var varNameArray = context.IDENTIFIER().Select(id => id.GetText()).ToArray();
@@ -121,7 +123,7 @@ namespace interpreter
                 return b.GetText().Equals("\"TRUE\"");
 
             if (context.STRING_VAL() is { } s)
-                    return s.GetText()[1..^1];
+                return s.GetText()[1..^1];
 
             if (context.CHAR_VAL() is { } c)
                 return c.GetText()[1];
@@ -228,9 +230,9 @@ namespace interpreter
         {
             var left = Visit(context.expression(0));
             var right = Visit(context.expression(1));
-            
+
             var op = context.logicOp().LOGICAL_OPERATOR().GetText();
-            
+
             return op switch
             {
                 "AND" => Logical.And(left, right),
@@ -251,7 +253,7 @@ namespace interpreter
         /// Adds next line to the output.
         /// </summary>
         public override object? VisitNextLineExpression([NotNull] CodeParser.NextLineExpressionContext context)
-        { 
+        {
             return "\n";
         }
 
@@ -318,7 +320,7 @@ namespace interpreter
                 }
                 return null;
             }
-          
+
             foreach (var elseIf in context.elseIfBlock())
             {
                 var elseIfCondition = SemanticErrorEvaluator.IsTrue(Visit(elseIf.expression()));
@@ -329,14 +331,14 @@ namespace interpreter
                     {
                         Visit(line);
                     }
-            return null;
+                    return null;
                 }
             }
 
-            if(context.elseBlock() != null)
+            if (context.elseBlock() != null)
             {
                 var elseBlock = context.elseBlock();
-                
+
                 foreach (var line in elseBlock.line())
                 {
                     Visit(line);
@@ -346,27 +348,25 @@ namespace interpreter
         }
 
         /// <summary>
-        /// Visits the switchCaseBlock and evaluates the condition and the body.
-        /// It also evaluates the case and default blocks.
+        /// Visits the switch case block and         
+        /// evaluates the case block  the default block
         /// </summary>
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
         {
+           
             var switchExpression = Visit(context.expression());
 
-            foreach (var caseBlockContext in context.caseBlock())
+            foreach (var caseBlock in context.caseBlock())
             {
-                var expression = Visit(caseBlockContext.expression());
-
-                if (FunctionsOp.GetSwitchCaseBool(expression, switchExpression))
+                var caseExpression = Visit(caseBlock.expression());
+                if (FunctionsOp.GetSwitchCaseBool(caseExpression, switchExpression))
                 {
-                    foreach (var line in caseBlockContext.line())
+                    foreach (var line in caseBlock.line())
                     {
                         Visit(line);
                     }
-
                     return null;
                 }
-
             }
 
             if (context.defaultBlock() != null)
@@ -375,9 +375,7 @@ namespace interpreter
                 {
                     Visit(line);
                 }
-
             }
-
             return null;
         }
     }

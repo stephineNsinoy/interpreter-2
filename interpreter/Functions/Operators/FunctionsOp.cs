@@ -1,5 +1,4 @@
-﻿    using System.Text.RegularExpressions;
-using interpreter.Functions.Evaluators;
+﻿using interpreter.Functions.Evaluators;
 
 namespace interpreter.Functions.Operators
 {
@@ -8,8 +7,6 @@ namespace interpreter.Functions.Operators
         /// <summary>
         /// Prints the contents inside DISPLAY:
         /// </summary>
-        /// <param name="args">Objects to be printed</param>
-        /// <returns>null</returns>
         public static object? Display(object? args)
         {
             if (args is bool b)
@@ -35,7 +32,7 @@ namespace interpreter.Functions.Operators
 
                 SemanticErrorEvaluator.EvaluateScanInput(userInput);
 
-                var parsed = ValueParser(userInput!);
+                var parsed = FunctionsOp.ValueParser(userInput!);
 
                 variableDict[variable] = parsed;
 
@@ -49,8 +46,6 @@ namespace interpreter.Functions.Operators
         /// <summary>
         /// Gets the data type of the value
         /// </summary>
-        /// <param name="obj">The object to be checked</param>
-        /// <returns>The object type in string format</returns>
         public static object? GetObject(object? obj)
         {
             if (obj is int)
@@ -119,33 +114,33 @@ namespace interpreter.Functions.Operators
         }
 
         /// <summary>
-        /// Evaluatees the expression of the SWITCH expression and CASE expression
+        /// Evaluates the expression of the SWITCH expression and CASE expression
         /// </summary>
         /// <param name="left">Case expression</param>
         /// <param name="right">Switch expression</param>
-        /// <returns>True if equal, otherwise false</returns>
-        public static bool GetSwitchCaseBool(object? left, object? right)
+        /// <returns>returns true if the values are equal, otherwise false</returns>
+        public static bool GetSwitchCaseBool(object? left, object? right) 
         {
             if (left is int l && right is int r)
                 return l == r;
 
-            if (left is float lf && right is float rf)
-                return lf == rf;
-
             if (left is int lInt && right is float rFloat)
                 return lInt == rFloat;
 
-            if (left is float lFloat && right is int rInt)
+            if (left is float lf && right is float rf)
+                return lf == rf;
+
+            if (left is float lFloat && right is int rInt) 
                 return lFloat == rInt;
 
-            if (left is string lString && right is string rString)
-                return lString == rString;
+            if (left is bool lBool && right is bool rBool)
+                return lBool == rBool;
 
             if (left is char lChar && right is char rChar)
                 return lChar == rChar;
 
-            if (left is bool lBool && right is bool rBool)
-                return lBool == rBool;
+            if (left is string lString && right is string rString) 
+                return lString == rString;
 
             return false;
         }
