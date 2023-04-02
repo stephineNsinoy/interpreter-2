@@ -84,7 +84,7 @@
 	END CODE
 
 
-10. NOT GOODS -- empty spaces in END CODE results to END CODE missing
+10. GOODS -- empty spaces in END CODE results to END CODE missing
    BEGIN CODE
 		INT xyz = 2, abc=100
 		xyz= ((abc *5)/10 + 10) * -1
