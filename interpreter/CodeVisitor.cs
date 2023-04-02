@@ -346,5 +346,37 @@ namespace interpreter
             }
             return null;
         }
+
+        /// <summary>
+        /// Visits the switch case block and         
+        /// evaluates the case block  the default block
+        /// </summary>
+        public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
+        {
+           
+            var switchExpression = Visit(context.expression());
+
+            foreach (var caseBlock in context.caseBlock())
+            {
+                var caseExpression = Visit(caseBlock.expression());
+                if (FunctionsOp.GetSwitchCaseBool(caseExpression, switchExpression))
+                {
+                    foreach (var line in caseBlock.line())
+                    {
+                        Visit(line);
+                    }
+                    return null;
+                }
+            }
+
+            if (context.defaultBlock() != null)
+            {
+                foreach (var line in context.defaultBlock().line())
+                {
+                    Visit(line);
+                }
+            }
+            return null;
+        }
     }
 }

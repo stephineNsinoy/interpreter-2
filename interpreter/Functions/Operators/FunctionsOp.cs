@@ -113,5 +113,36 @@ namespace interpreter.Functions.Operators
             }
         }
 
+        /// <summary>
+        /// Evaluates the expression of the SWITCH expression and CASE expression
+        /// </summary>
+        /// <param name="left">Case expression</param>
+        /// <param name="right">Switch expression</param>
+        /// <returns>returns true if the values are equal, otherwise false</returns>
+        public static bool GetSwitchCaseBool(object? left, object? right) 
+        {
+            if (left is int l && right is int r)
+                return l == r;
+
+            if (left is int lInt && right is float rFloat)
+                return lInt == rFloat;
+
+            if (left is float lf && right is float rf)
+                return lf == rf;
+
+            if (left is float lFloat && right is int rInt) 
+                return lFloat == rInt;
+
+            if (left is bool lBool && right is bool rBool)
+                return lBool == rBool;
+
+            if (left is char lChar && right is char rChar)
+                return lChar == rChar;
+
+            if (left is string lString && right is string rString) 
+                return lString == rString;
+
+            return false;
+        }
     }
 }
