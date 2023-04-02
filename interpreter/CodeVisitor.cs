@@ -355,7 +355,7 @@ namespace interpreter
             foreach (var caseBlock in context.caseBlock())
             {
                 var caseExpression = Visit(caseBlock.expression());
-                if (FunctionsOp.GetSwitchCaseBool(switchExpression, caseExpression))
+                if (FunctionsOp.GetSwitchCaseBool(caseExpression, switchExpression))
                 {
                     foreach (var line in caseBlock.line())
                     {
