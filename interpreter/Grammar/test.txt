@@ -1,22 +1,6 @@
-BEGIN CODE 
-INT x = 1
-SWITCH (x)
-BEGIN SWITCH
-CASE 1:
-BEGIN CASE
-DISPLAY: "Case 1"
-END CASE
-CASE 2:
-BEGIN CASE
-DISPLAY: "Case 2"
-END CASE
-CASE 3:
-BEGIN CASE
-DISPLAY: "Case 3"
-END CASE
-DEFAULT:
-BEGIN DEFAULT
-DISPLAY: "Default case"
-END DEFAULT
-END SWITCH
-END CODE
+BEGIN CODE
+		INT abc=1
+		INT xyz = , absc=100
+		xyz= ((abc *5)/10 + 10) * -1
+		DISPLAY: [[] & xyz & []]            
+	END CODE

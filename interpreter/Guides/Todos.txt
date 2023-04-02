@@ -4,7 +4,7 @@ TODOS:
     GOODS   2.) Complete the Display function
                   GOODS - Can recognize '$' as newline
 
-            3.) Make a Scan function
+    GOODS   3.) Make a Scan function
 
     GOODS   4.) implement the expressions operators
                   GOODS -  Additive 
@@ -38,9 +38,9 @@ TODOS:
 
     GOODS   14.) CHECK THE EVALUATOR CLASS -- CHECK LISTED TODOS IN COMMENTS
 
-            15.) IF ELSE ELSEIF statement implementation
+    GOODS   15.) IF ELSE ELSEIF statement implementation
 
-IN-PROGRESS 16.) WHILE statement implementation
+    GOODS   16.) WHILE statement implementation
 
     GOODS   17.) Make an error handler for not declaring variables after begin code
 
