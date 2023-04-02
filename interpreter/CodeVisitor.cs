@@ -347,6 +347,10 @@ namespace interpreter
             return null;
         }
 
+        /// <summary>
+        /// Visits the switch case block and         
+        /// evaluates the case block and the default block
+        /// </summary>
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
         {
            
