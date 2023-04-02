@@ -113,7 +113,7 @@ namespace interpreter.Functions.Operators
             }
         }
 
-        public static bool EvaluateSwitchCase(object? left, object? right) 
+        public static bool GetSwitchCaseBool(object? left, object? right) 
         {
             if (left is int l && right is int r)
                 return l == r;
