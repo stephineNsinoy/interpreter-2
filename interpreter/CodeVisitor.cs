@@ -350,24 +350,22 @@ namespace interpreter
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
         {
            
-            var value = Visit(context.expression());
-            bool caseVisited = false;
+            var switchExpression = Visit(context.expression());
 
             foreach (var caseBlock in context.caseBlock())
             {
-                var constant = Visit(caseBlock.expression());
-                if (FunctionsOp.EvaluateSwitchCase(value, constant) == true)
+                var caseExpression = Visit(caseBlock.expression());
+                if (FunctionsOp.GetSwitchCaseBool(switchExpression, caseExpression))
                 {
                     foreach (var line in caseBlock.line())
                     {
                         Visit(line);
                     }
-                    caseVisited = true;
-                    break;
+                    return null;
                 }
             }
 
-            if (!caseVisited && context.defaultBlock() != null)
+            if (context.defaultBlock() != null)
             {
                 foreach (var line in context.defaultBlock().line())
                 {
