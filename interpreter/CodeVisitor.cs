@@ -300,7 +300,7 @@ namespace interpreter
                 } while (condition(Visit(context.expression())));
             }
 
-            return base.VisitWhileBlock(context);
+            return null;
         }
 
         /// <summary>
@@ -359,12 +359,14 @@ namespace interpreter
             foreach (var caseBlock in context.caseBlock())
             {
                 var caseExpression = Visit(caseBlock.expression());
+
                 if (FunctionsOp.GetSwitchCaseBool(caseExpression, switchExpression))
                 {
                     foreach (var line in caseBlock.line())
                     {
                         Visit(line);
                     }
+
                     return null;
                 }
             }
@@ -376,6 +378,7 @@ namespace interpreter
                     Visit(line);
                 }
             }
+
             return null;
         }
     }
