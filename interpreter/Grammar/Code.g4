@@ -1,59 +1,63 @@
 ﻿grammar Code;
 
-program: BEGIN_CODE line* END_CODE  EOF ;
+program: lineBlock EOF ;
 
-BEGIN_CODE: 'BEGIN' 'CODE' ;
-END_CODE: 'END' 'CODE' ;
+BEGIN_CODE: NEWLINE? 'BEGIN CODE' ;
+END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
-line: declaration | statement | ifBlock | whileBlock;
+lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-statement: (assignment | functionCall) ';' ;
+line: NEWLINE (statement | ifBlock | whileBlock | switchCaseBlock); 
 
-declaration: dataType IDENTIFIER (',' IDENTIFIER)* ('=' expression)? ;
-assignment: IDENTIFIER '=' expression ;
+statement: assignment | functionCall;
 
-// GOODS
-dataType: INT | FLOAT | BOOL | CHAR ;
+declaration: NEWLINE dataType IDENTIFIER ('=' expression)? (',' IDENTIFIER ('=' expression)?)* ;
+assignment: IDENTIFIER ('=' IDENTIFIER)* '=' expression;
+
+dataType: INT | FLOAT | BOOL | CHAR | STRING;
 INT: 'INT' ;
 FLOAT: 'FLOAT';
 CHAR: 'CHAR';
 BOOL: 'BOOL';
+STRING: 'STRING' ;
 
-block: (BEGIN_CODE | BEGIN_IF | BEGIN_WHILE);
-
-constant: INTEGER_VAL | FLOAT_VAL | CHARACTER_VAL | BOOL_VAL | STRING_VAL ;
+constant: INTEGER_VAL | FLOAT_VAL | CHAR_VAL | BOOL_VAL | STRING_VAL ;
 INTEGER_VAL: [0-9]+ ;
 FLOAT_VAL: [0-9]+ '.' [0-9]+ ;
-STRING_VAL: ('"' ~'"'* '"') | ('\'' ~'\''* '\'') ;
-CHARACTER_VAL: '\"TRUE\"' | '\"FALSE\"' ;
-BOOL_VAL: '\'' ~[\r\n\'] '\'' ; 
+BOOL_VAL: '"TRUE"' | '"FALSE"' ;
+STRING_VAL:  '"' ( ~('"' | '\\') | '\\' . )* '"';
+CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ; 
 
-// GOODS
-IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
-COMMENT: '#' ~[\r\n]* -> skip ;
-BLANK_LINE: [ \t]* [\r]? [\n] ; 
-WS: [ \t\r]+ -> skip ;
+BEGIN_IF: NEWLINE 'BEGIN IF' ;
+END_IF: NEWLINE 'END IF' ;
 
-// GOODS
-BEGIN_IF: 'BEGIN' 'IF' ;
-END_IF: 'END' 'IF' ;
-ifBlock: 'IF' '('expression')' BEGIN_IF block END_IF elseIfBlock? ;
-elseIfBlock: 'ELSE' (BEGIN_IF block END_IF) | ifBlock ;
+ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock* elseBlock? ;
+elseIfBlock: NEWLINE 'ELSE IF' '('expression')' BEGIN_IF line* END_IF ;
+elseBlock: NEWLINE 'ELSE' BEGIN_IF line* END_IF ;
 
-// GOODS
 WHILE: 'WHILE' ;
-BEGIN_WHILE: 'BEGIN' 'WHILE' ;
-END_WHILE: 'END' 'WHILE' ;
-whileBlock: WHILE '(' expression ')' BEGIN_WHILE block* END_WHILE ;
+BEGIN_WHILE: NEWLINE 'BEGIN WHILE' ;
+END_WHILE: NEWLINE 'END WHILE' ;
+whileBlock: WHILE '(' expression ')' BEGIN_WHILE line* END_WHILE ;
 
-// for DISPLAY: and SCAN:
-functionCall: IDENTIFIER ':' (expression (',' expression)*)? ;
+BEGIN_SWITCH: NEWLINE 'BEGIN SWITCH';
+END_SWITCH: NEWLINE 'END SWITCH';
+switchCaseBlock: 'SWITCH' '(' expression ')' BEGIN_SWITCH caseBlock* defaultBlock? END_SWITCH;
 
-// Not used
-SCAN: 'SCAN:';
-scanFunction: SCAN IDENTIFIER (',' IDENTIFIER)* ;
+BEGIN_CASE: NEWLINE 'BEGIN CASE';
+END_CASE: NEWLINE 'END CASE';
+caseBlock: NEWLINE 'CASE' expression ':' BEGIN_CASE line* END_CASE;
 
-// find a way for the newline when displaying
+BEGIN_DEFAULT: NEWLINE 'BEGIN DEFAULT';
+END_DEFAULT: NEWLINE 'END DEFAULT';
+defaultBlock: NEWLINE 'DEFAULT:' BEGIN_DEFAULT line* END_DEFAULT;
+
+functionCall
+    : DISPLAY expression
+    | SCAN IDENTIFIER (',' IDENTIFIER)* ;
+
+DISPLAY: 'DISPLAY:' ;
+SCAN: 'SCAN:' ;
 
 expression
     : constant                          #constantExpression
@@ -61,19 +65,25 @@ expression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
     | 'NOT' expression                  #notExpression
+    | unary expression                  #unaryExpression
     | expression multOp expression      #multiplicativeExpression
     | expression addOp expression       #additiveExpression
-    | expression compareOp expression   #comparisonExpression
+    | expression compareOp expression   #comparativeExpression
     | expression logicOp expression     #booleanExpression
-    | parenOpen expression parenClose   #escapeCodeExpression //add comment to be included
-    ; 
+    | expression concat expression      #concatExpression
+    | NEXTLINE                          #nextLineExpression
+    ;
 
-// add unary operator
 multOp: '*' | '/' | '%' ;
-addOp: '+' | '-' | '&' ;
+addOp: '+' | '-' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
+unary: '+' | '-' ;
+concat: '&' ;
 logicOp: LOGICAL_OPERATOR ;
-parenOpen: '[' ;
-parenClose: ']' ;
+LOGICAL_OPERATOR: 'AND' | 'OR' ;
 
-LOGICAL_OPERATOR: 'AND' | 'OR' | 'NOT' ;
+IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
+NEXTLINE: '$' ;
+COMMENT: NEWLINE? '#' ~[\r?\n]* -> channel(HIDDEN);
+NEWLINE: ('\r'? '\n')+;
+WS: [\t]+ -> skip ;
