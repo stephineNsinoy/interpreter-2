@@ -30,7 +30,6 @@ CHAR_VAL: ('\'' ~[\r\n\'] '\'') | '[' .? ']' ;
 
 BEGIN_IF: NEWLINE 'BEGIN IF' ;
 END_IF: NEWLINE 'END IF' ;
-
 ifBlock: 'IF' '('expression')' BEGIN_IF line* END_IF elseIfBlock* elseBlock? ;
 elseIfBlock: NEWLINE 'ELSE IF' '('expression')' BEGIN_IF line* END_IF ;
 elseBlock: NEWLINE 'ELSE' BEGIN_IF line* END_IF ;
@@ -85,5 +84,5 @@ LOGICAL_OPERATOR: 'AND' | 'OR' ;
 IDENTIFIER: [a-zA-Z_][a-zA-Z0-9_]* ;
 NEXTLINE: '$' ;
 COMMENT: NEWLINE? '#' ~[\r?\n]* -> channel(HIDDEN);
-NEWLINE: ('\r'? '\n')+;
+NEWLINE: (('\r'? '\n') | '\r' | '\t')+;
 WS: [\t]+ -> skip ;
