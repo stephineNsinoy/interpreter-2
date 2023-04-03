@@ -352,15 +352,20 @@ namespace interpreter
         /// evaluates the case block  the default block
         /// </summary>
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
-        {
-           
+        {  
             var switchExpression = Visit(context.expression());
 
             foreach (var caseBlock in context.caseBlock())
             {
                 var caseExpression = Visit(caseBlock.expression());
+                Comparative.IsEqual(caseExpression, switchExpression);
+            }
 
-                if (FunctionsOp.GetSwitchCaseBool(caseExpression, switchExpression))
+            foreach (var caseBlock in context.caseBlock())
+            {
+                var caseExpression = Visit(caseBlock.expression());
+
+                if (Comparative.IsEqual(caseExpression, switchExpression))
                 {
                     foreach (var line in caseBlock.line())
                     {
