@@ -58,9 +58,12 @@ functionCall
 DISPLAY: 'DISPLAY:' ;
 SCAN: 'SCAN:' ;
 
+INCREMENT: '++' | '--';
+
 expression
     : constant                          #constantExpression
     | IDENTIFIER                        #identifierExpression
+    | expression INCREMENT              #incrementExpression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
     | 'NOT' expression                  #notExpression
