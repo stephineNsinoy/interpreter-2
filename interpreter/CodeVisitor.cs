@@ -371,7 +371,6 @@ namespace interpreter
                     {
                         Visit(line);
                     }
-
                     return null;
                 }
             }
@@ -383,10 +382,12 @@ namespace interpreter
                     Visit(line);
                 }
             }
-
             return null;
         }
 
+        /// <summary>
+        /// Visits the increment expression, calls the Increment function and evaluates it.
+        /// </summary>
         public override object? VisitIncrementExpression([NotNull] CodeParser.IncrementExpressionContext context)
         {
             var identifier = int.TryParse(Visit(context.expression())?.ToString(), out int value);
