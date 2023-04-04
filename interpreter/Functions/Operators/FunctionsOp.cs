@@ -113,6 +113,14 @@ namespace interpreter.Functions.Operators
             }
         }
 
+        /// <summary>
+        /// Increment\Decrement a value if whether it is an identifier (with a value 
+        /// or just a number)
+        /// </summary>
+        /// <param name="symbol">symbol whether ++ or --</param>
+        /// <param name="value">the value to be incremented or decremented</param>
+        /// <param name="isInt">if the value is int, throws an error otherwise</param>
+        /// <returns>Incremented or Decremented value</returns>
         public static int? IncrementValue(string symbol, int value, bool isInt)
         {
             if (isInt)
