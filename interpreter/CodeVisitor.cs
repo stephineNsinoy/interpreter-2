@@ -386,5 +386,14 @@ namespace interpreter
 
             return null;
         }
+
+        public override object? VisitIncrementExpression([NotNull] CodeParser.IncrementExpressionContext context)
+        {
+            var identifier = int.TryParse(Visit(context.expression())?.ToString(), out int value);
+
+            var symbol = context.INCREMENT().GetText();
+
+            return FunctionsOp.IncrementValue(symbol, value, identifier);
+        }
     }
 }
