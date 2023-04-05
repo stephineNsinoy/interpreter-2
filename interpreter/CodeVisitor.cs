@@ -371,7 +371,6 @@ namespace interpreter
                     {
                         Visit(line);
                     }
-
                     return null;
                 }
             }
@@ -383,7 +382,33 @@ namespace interpreter
                     Visit(line);
                 }
             }
+            return null;
+        }
 
+        /// <summary>
+        /// Visits the increment expression, evaluates whether it is a float or an int
+        /// then returns the incremented value, returns an error otherwise.
+        /// </summary>
+        public override object? VisitIncrementExpression([NotNull] CodeParser.IncrementExpressionContext context)
+        {
+            var isInt = int.TryParse(Visit(context.expression())?.ToString(), out int intValue);
+
+            var isFloat = float.TryParse(Visit(context.expression())?.ToString(), out float floatValue);
+                
+            var symbol = context.INCREMENT().GetText();
+
+            SemanticErrorEvaluator.EvaluateBoolValues(isInt, isFloat);
+
+            if (isFloat)
+            {
+                return symbol.Equals("++") ? floatValue + 1 : floatValue - 1;
+            }
+
+            if (isInt)
+            {
+                return symbol.Equals("++") ? intValue + 1 : intValue - 1;
+            }
+            
             return null;
         }
     }
