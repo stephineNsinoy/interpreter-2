@@ -58,8 +58,6 @@ functionCall
 DISPLAY: 'DISPLAY:' ;
 SCAN: 'SCAN:' ;
 
-INCREMENT: '++' | '--';
-
 expression
     : constant                          #constantExpression
     | IDENTIFIER                        #identifierExpression
@@ -76,6 +74,7 @@ expression
     | NEXTLINE                          #nextLineExpression
     ;
 
+INCREMENT: '++' | '--';
 multOp: '*' | '/' | '%' ;
 addOp: '+' | '-' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
