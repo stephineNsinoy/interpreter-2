@@ -112,31 +112,5 @@ namespace interpreter.Functions.Operators
                 return null;
             }
         }
-
-        /// <summary>
-        /// Increment\Decrement a value if whether it is an identifier (with a value 
-        /// or just a number)
-        /// </summary>
-        /// <param name="symbol">symbol whether ++ or --</param>
-        /// <param name="value">the value to be incremented or decremented</param>
-        /// <param name="isInt">if the value is int, throws an error otherwise</param>
-        /// <returns>Incremented or Decremented value</returns>
-        public static int? IncrementValue(string symbol, int value, bool isInt)
-        {
-            if (isInt)
-            {
-                if (symbol.Equals("++"))
-                {
-                    return value + 1;
-                }
-                else
-                {
-                    return value - 1;
-                }
-            }
-            Console.WriteLine("SEMANTIC ERROR: Cannot increment or decrement a non-integer value!");
-            Environment.Exit(400);
-            return null;
-        }
     }
 }
