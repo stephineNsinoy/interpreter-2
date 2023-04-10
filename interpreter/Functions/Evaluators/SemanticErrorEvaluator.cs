@@ -136,13 +136,13 @@ namespace interpreter.Functions.Evaluators
 
         public static void EvaluateScanInput(int arrLength, int scanLength)
         {
-            
+
             if (arrLength != scanLength)
             {
                 Console.WriteLine($"SEMANTIC ERROR: Invalid number of arguments for scan function.");
                 Environment.Exit(400);
             }
-            
+
         }
 
         /// <summary>
@@ -151,13 +151,11 @@ namespace interpreter.Functions.Evaluators
         /// <param name="isInt">if the parsed value is an integer</param>
         /// <param name="isFloat">if the parsed value is a float</param>
         /// <returns>an error if condition is satisfied, null otherwise</returns>
-        public static void EvaluateBoolValues(bool isInt, bool isFloat)
+        public static void EvaluateBoolValues()
         {
-            if(!isInt && !isFloat)
-            {
-                Console.WriteLine("SEMANTIC ERROR: Cannot increment or decrement a non-integer or a non-float value!");
-                Environment.Exit(400);  
-            }
+            Console.WriteLine("SEMANTIC ERROR: Cannot increment or decrement a non-integer or a non-float value!");
+            Environment.Exit(400);
+
         }
     }
 }
