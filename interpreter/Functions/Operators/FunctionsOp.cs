@@ -38,7 +38,7 @@ namespace interpreter.Functions.Operators
 
                 SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, variableDict);
 
-                var parsed = FunctionsOp.ValueParser(inputValue);
+                var parsed = ValueParser(inputValue);
 
                 variableDict[variable] = parsed;
 
