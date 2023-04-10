@@ -4,6 +4,7 @@ using interpreter.Functions.Operators;
 using interpreter.Functions.Operators.Expressions;
 using interpreter.Grammar;
 using interpreter.Variables;
+using System.Collections.Generic;
 
 namespace interpreter
 {
@@ -389,24 +390,22 @@ namespace interpreter
         /// Visits the increment expression, evaluates whether it is a float or an int
         /// then returns the incremented value, returns an error otherwise.
         /// </summary>
-        public override object? VisitIncrementExpression([NotNull] CodeParser.IncrementExpressionContext context)
+        public override object? VisitIncrement([NotNull] CodeParser.IncrementContext context)
         {
-            var isInt = int.TryParse(Visit(context.expression())?.ToString(), out int intValue);
+            var varName = context.IDENTIFIER().GetText();
 
-            var isFloat = float.TryParse(Visit(context.expression())?.ToString(), out float floatValue);
-                
-            var symbol = context.INCREMENT().GetText();
+            var symbol = context.incOp().GetText();
 
-            SemanticErrorEvaluator.EvaluateBoolValues(isInt, isFloat);
+            SemanticErrorEvaluator.EvaluateIsVariableDefined(varName, Variable);
 
-            if (isFloat)
+            if (Variable[varName] is int intValue)
             {
-                return symbol.Equals("++") ? floatValue + 1 : floatValue - 1;
+                return symbol.Equals("++") ? Variable[varName] = intValue + 1 : Variable[varName] = intValue - 1;
             }
 
-            if (isInt)
+            if (Variable[varName] is float floatValue)
             {
-                return symbol.Equals("++") ? intValue + 1 : intValue - 1;
+                return symbol.Equals("++") ? Variable[varName] = floatValue + 1 : Variable[varName] = floatValue - 1;
             }
             
             return null;
