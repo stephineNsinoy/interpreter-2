@@ -4,7 +4,6 @@ using interpreter.Functions.Operators;
 using interpreter.Functions.Operators.Expressions;
 using interpreter.Grammar;
 using interpreter.Variables;
-using System.Collections.Generic;
 
 namespace interpreter
 {
@@ -353,7 +352,7 @@ namespace interpreter
         /// evaluates the case block  the default block
         /// </summary>
         public override object? VisitSwitchCaseBlock([NotNull] CodeParser.SwitchCaseBlockContext context)
-        {  
+        {
             var switchExpression = Visit(context.expression());
 
             foreach (var caseBlock in context.caseBlock())
@@ -407,7 +406,12 @@ namespace interpreter
             {
                 return symbol.Equals("++") ? Variable[varName] = floatValue + 1 : Variable[varName] = floatValue - 1;
             }
-            
+
+            else
+            {
+                SemanticErrorEvaluator.EvaluateBoolValues();
+            }
+
             return null;
         }
     }
