@@ -134,19 +134,15 @@ namespace interpreter.Functions.Evaluators
             return null;
         }
 
-        /// <summary>
-        /// Evaluates the scan input if it is a valid input
-        /// </summary>
-        /// <param name="input">Inputt of the user</param>
-        /// <returns>Error if condition is met, nothing if its not met</returns>
-        public static object? EvaluateScanInput(string? input)
+        public static void EvaluateScanInput(int arrLength, int scanLength)
         {
-            if (input == null || input.Equals(""))
+            
+            if (arrLength != scanLength)
             {
-                Console.WriteLine("SEMANTIC ERROR: Scan function expects input.");
-                return null;
+                Console.WriteLine($"SEMANTIC ERROR: Invalid number of arguments for scan function.");
+                Environment.Exit(400);
             }
-            return null;
+            
         }
 
         /// <summary>
