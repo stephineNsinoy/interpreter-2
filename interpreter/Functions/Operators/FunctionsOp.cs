@@ -28,7 +28,7 @@ namespace interpreter.Functions.Operators
 
             // Split input on commas
             var inputValues = userInput!.Split(',');
-            
+
             SemanticErrorEvaluator.EvaluateScanInput(varNameArray.Length, inputValues.Length);
 
             for (int i = 0; i < varNameArray.Length; i++)
