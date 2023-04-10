@@ -7,7 +7,7 @@ END_CODE:  NEWLINE 'END CODE' NEWLINE?;
 
 lineBlock: BEGIN_CODE declaration* line* END_CODE ;
 
-line: NEWLINE (statement | ifBlock | whileBlock | switchCaseBlock); 
+line: NEWLINE (statement | ifBlock | whileBlock | switchCaseBlock | increment); 
 
 statement: assignment | functionCall;
 
@@ -58,10 +58,11 @@ functionCall
 DISPLAY: 'DISPLAY:' ;
 SCAN: 'SCAN:' ;
 
+increment: IDENTIFIER incOp ;
+
 expression
     : constant                          #constantExpression
     | IDENTIFIER                        #identifierExpression
-    | expression INCREMENT              #incrementExpression
     | functionCall                      #functionCallExpression
     | '(' expression ')'                #parenthesizedExpression
     | 'NOT' expression                  #notExpression
@@ -74,7 +75,7 @@ expression
     | NEXTLINE                          #nextLineExpression
     ;
 
-INCREMENT: '++' | '--';
+incOp: '++' | '--';
 multOp: '*' | '/' | '%' ;
 addOp: '+' | '-' ;
 compareOp: '==' | '<>' | '>' | '<' | '>=' | '<='  ;
