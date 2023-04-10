@@ -144,5 +144,20 @@ namespace interpreter.Functions.Evaluators
             }
             
         }
+
+        /// <summary>
+        /// Checks whether the boolans are false and checks an error if neither is true
+        /// </summary>
+        /// <param name="isInt">if the parsed value is an integer</param>
+        /// <param name="isFloat">if the parsed value is a float</param>
+        /// <returns>an error if condition is satisfied, null otherwise</returns>
+        public static void EvaluateBoolValues(bool isInt, bool isFloat)
+        {
+            if(!isInt && !isFloat)
+            {
+                Console.WriteLine("SEMANTIC ERROR: Cannot increment or decrement a non-integer or a non-float value!");
+                Environment.Exit(400);  
+            }
+        }
     }
 }
