@@ -24,6 +24,12 @@ namespace interpreter.Functions.Operators
         /// <param name="varDeclarationDict">Dictionary that stores the dataype and identifier</param>
         public static object? Scan(string[] varNameArray, Dictionary<string, object?> variableDict, Dictionary<string, string> varDeclarationDict)
         {
+
+            foreach (var name in varNameArray)
+            {
+                SemanticErrorEvaluator.EvaluateIsVariableDefined(name, variableDict);
+            }
+
             var userInput = Console.ReadLine();
 
             // Split input on commas
@@ -35,8 +41,6 @@ namespace interpreter.Functions.Operators
             {
                 var variable = varNameArray[i];
                 var inputValue = inputValues[i].Trim();
-
-                SemanticErrorEvaluator.EvaluateIsVariableDefined(variable, variableDict);
 
                 var parsed = ValueParser(inputValue);
 
